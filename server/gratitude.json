@@ -1,0 +1,39 @@
+{
+    "challenges": [
+        {
+            "id": 1,
+            "title": "json-server",
+            "description": "typicode"
+        },
+        {
+            "id": 2,
+            "title": "http-server",
+            "description": "indexzero"
+        }
+    ],
+    "users": [
+        {
+            "id": 1,
+            "name": "some name",
+            "completedChallenges": [
+                1,
+                2
+            ]
+        },
+        {
+            "id": 2,
+            "name": "some other name",
+            "completedChallenges": [
+                1
+            ]
+        },
+        {
+            "id": 3,
+            "name": "a new name",
+            "completedChallenges": []
+        }
+    ],
+    "profile": {
+        "name": "typicode"
+    }
+}
