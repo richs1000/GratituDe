@@ -9,12 +9,17 @@ import Challenge
 import Html exposing (a)
 import Json.Decode as Decode
 import Json.Decode.Pipeline as Pipeline
+import Json.Encode as Encode
 import Url.Parser exposing (Parser)
 
 
 
 {-
    https://elmprogramming.com/creating-post-module.html
+-}
+{-
+   This is the definition for the User record. All the stuff below is for accessing, encoding,
+   decoding and parsing this record.
 -}
 
 
@@ -25,6 +30,35 @@ type alias User =
     }
 
 
+userDecoder : Decode.Decoder User
+userDecoder =
+    Decode.succeed User
+        |> Pipeline.required "id" userIdDecoder
+        |> Pipeline.required "name" userNameDecoder
+        |> Pipeline.required "completedChallenges" completedChallengesDecoder
+
+
+userEncoder : User -> Encode.Value
+userEncoder user =
+    Encode.object
+        [ ( "id", userIdEncoder user.id )
+        , ( "name", userNameEncoder user.name )
+        , ( "completedChallenges", completedChallengesEncoder user.completedChallenges )
+        ]
+
+
+listOfUsersDecoder : Decode.Decoder (List User)
+listOfUsersDecoder =
+    Decode.list userDecoder
+
+
+
+{-
+   The UserId is a unique identifier for each user. To ask the JSON database for a specific
+   user, use "/users/<id>"
+-}
+
+
 type UserId
     = UserId Int
 
@@ -32,6 +66,11 @@ type UserId
 userIdDecoder : Decode.Decoder UserId
 userIdDecoder =
     Decode.map UserId Decode.int
+
+
+userIdEncoder : UserId -> Encode.Value
+userIdEncoder (UserId id) =
+    Encode.int id
 
 
 userIdToString : UserId -> String
@@ -50,6 +89,13 @@ userIdParser =
             Maybe.map UserId (String.toInt userIdAsString)
 
 
+
+{-
+   The name of the user. At some point, maybe we get fancy and support
+   separate first and last names...
+-}
+
+
 type UserName
     = UserName String
 
@@ -59,14 +105,32 @@ userNameDecoder =
     Decode.map UserName Decode.string
 
 
+userNameEncoder : UserName -> Encode.Value
+userNameEncoder (UserName name) =
+    Encode.string name
+
+
 userNameToString : UserName -> String
 userNameToString (UserName titleAsString) =
     titleAsString
 
 
+
+{-
+   Each user has completed 0 or more challenges. We store a list of
+   ChallengeIds (from the Challenge module) to reflect the challenges
+   that have been completed.
+-}
+
+
 completedChallengesDecoder : Decode.Decoder (List Challenge.ChallengeId)
 completedChallengesDecoder =
     Decode.list Challenge.challengeIdDecoder
+
+
+completedChallengesEncoder : List Challenge.ChallengeId -> Encode.Value
+completedChallengesEncoder =
+    Encode.list Challenge.challengeIdEncoder
 
 
 completedChallengesToString : List Challenge.ChallengeId -> String
@@ -75,16 +139,3 @@ completedChallengesToString listOfChallengeIds =
     List.map Challenge.challengeIdToString listOfChallengeIds
         -- convert list of strings to a single comma-separated string
         |> String.join ", "
-
-
-listOfUsersDecoder : Decode.Decoder (List User)
-listOfUsersDecoder =
-    Decode.list userDecoder
-
-
-userDecoder : Decode.Decoder User
-userDecoder =
-    Decode.succeed User
-        |> Pipeline.required "id" userIdDecoder
-        |> Pipeline.required "name" userNameDecoder
-        |> Pipeline.required "completedChallenges" completedChallengesDecoder

@@ -3,11 +3,13 @@ module Route exposing (..)
 {-
    https://elmprogramming.com/navigating-to-list-posts-page.html
    https://elmprogramming.com/editing-a-post.html
+
 -}
 {-
    elm install elm/url
 -}
 
+import Browser.Navigation as Nav
 import Url
 import Url.Parser exposing ((</>))
 import User
@@ -38,3 +40,25 @@ routeParsers =
         , Url.Parser.map ListOfChallengesRoute (Url.Parser.s "challenges")
         , Url.Parser.map UserRoute (Url.Parser.s "users" </> User.userIdParser)
         ]
+
+
+pushUrl : Route -> Nav.Key -> Cmd msg
+pushUrl route navKey =
+    routeToString route
+        |> Nav.pushUrl navKey
+
+
+routeToString : Route -> String
+routeToString route =
+    case route of
+        RouteNotFound ->
+            "/not-found"
+
+        ListOfChallengesRoute ->
+            "/challenges"
+
+        ListOfUsersRoute ->
+            "/users"
+
+        UserRoute userId ->
+            "/users/" ++ User.userIdToString userId

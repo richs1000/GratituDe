@@ -1,39 +1,57 @@
 {
-    "challenges": [
-        {
-            "id": 1,
-            "title": "json-server",
-            "description": "typicode"
-        },
-        {
-            "id": 2,
-            "title": "http-server",
-            "description": "indexzero"
-        }
-    ],
-    "users": [
-        {
-            "id": 1,
-            "name": "some name",
-            "completedChallenges": [
-                1,
-                2
-            ]
-        },
-        {
-            "id": 2,
-            "name": "some other name",
-            "completedChallenges": [
-                1
-            ]
-        },
-        {
-            "id": 3,
-            "name": "a new name",
-            "completedChallenges": []
-        }
-    ],
-    "profile": {
-        "name": "typicode"
+  "challenges": [
+    {
+      "id": 1,
+      "title": "Deep Breathing",
+      "description": "Do a deep breathing exercise"
+    },
+    {
+      "id": 2,
+      "title": "Yoga",
+      "description": "Do 20 minutes of yoga"
+    },
+    {
+      "id": 3,
+      "title": "Friend",
+      "description": "Catch up with a friend"
+    },
+    {
+      "id": 4,
+      "title": "Walk",
+      "description": "Go for a long walk"
+    },
+    {
+      "id": 5,
+      "title": "Music",
+      "description": "Listen to your favorite happy music each day this week"
     }
+  ],
+  "users": [
+    {
+      "id": 1,
+      "name": "updated name",
+      "completedChallenges": [
+        1,
+        2,
+        3,
+        4
+      ]
+    },
+    {
+      "id": 2,
+      "name": "some other name",
+      "completedChallenges": [
+        2,
+        5
+      ]
+    },
+    {
+      "id": 3,
+      "name": "a new name",
+      "completedChallenges": []
+    }
+  ],
+  "profile": {
+    "name": "typicode"
+  }
 }

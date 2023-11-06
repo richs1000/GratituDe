@@ -7,6 +7,7 @@ module Page.ListOfChallenges exposing (..)
 --import Json.Decode as Decode
 
 import Challenge
+import ErrorMessages as EM
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events as Events
@@ -93,7 +94,7 @@ viewListOfChallenges challenges =
                 ]
 
         RD.Failure httpError ->
-            viewFetchError (buildErrorMessage httpError)
+            viewFetchError (EM.buildErrorMessage httpError)
 
 
 viewChallenge : Challenge.Challenge -> Html MsgLoC

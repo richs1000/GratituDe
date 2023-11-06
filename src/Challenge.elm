@@ -7,6 +7,7 @@ module Challenge exposing (..)
 
 import Json.Decode as Decode
 import Json.Decode.Pipeline as Pipeline
+import Json.Encode as Encode
 
 
 
@@ -29,6 +30,11 @@ type ChallengeId
 challengeIdDecoder : Decode.Decoder ChallengeId
 challengeIdDecoder =
     Decode.map ChallengeId Decode.int
+
+
+challengeIdEncoder : ChallengeId -> Encode.Value
+challengeIdEncoder (ChallengeId id) =
+    Encode.int id
 
 
 challengeIdToString : ChallengeId -> String

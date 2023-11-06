@@ -6,6 +6,7 @@ module Page.ListOfUsers exposing (..)
 -}
 --import Json.Decode as Decode
 
+import ErrorMessages as EM
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events as Events
@@ -94,7 +95,7 @@ viewListOfUsers users =
                 ]
 
         RD.Failure httpError ->
-            viewFetchError (buildErrorMessage httpError)
+            viewFetchError (EM.buildErrorMessage httpError)
 
 
 viewUser : User.User -> Html MsgLoU
@@ -137,22 +138,3 @@ viewFetchError errorMessage =
         [ h3 [] [ text errorHeading ]
         , text ("Error: " ++ errorMessage)
         ]
-
-
-buildErrorMessage : Http.Error -> String
-buildErrorMessage httpError =
-    case httpError of
-        Http.BadUrl message ->
-            message
-
-        Http.Timeout ->
-            "Server is taking too long to respond. Please try again later."
-
-        Http.NetworkError ->
-            "Unable to reach server."
-
-        Http.BadStatus statusCode ->
-            "Request failed with status code: " ++ String.fromInt statusCode
-
-        Http.BadBody message ->
-            message

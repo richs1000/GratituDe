@@ -7,6 +7,10 @@ module Main exposing (main)
 {-
    json-server --watch server/gratitude.json -p 5019 --delay 2000
    elm-live src/Main.elm --pushstate -- --debug
+
+   git add .
+   git commit -m "
+   git push -u github main
 -}
 
 import Browser
@@ -151,8 +155,8 @@ headerView model =
 
         links =
             ul []
-                [ li [] [ a [ href "#" ] [ text "Link 1" ] ]
-                , li [] [ a [ href "#" ] [ text "Link 2" ] ]
+                [ li [] [ a [ href "users" ] [ text "Users" ] ]
+                , li [] [ a [ href "challenges" ] [ text "Challenges" ] ]
                 ]
     in
     nav [] [ logo, links ]
@@ -207,6 +211,18 @@ updateMain msg model =
             ( { model | currentPage = ListOfChallengesPage updatedLoCModel }
               -- update the current command to be the command from the LoU init function
             , Cmd.map LoCPageMsg updatedLoCCmd
+            )
+
+        ( EUPageMsg msgEU, EditUserPage modelEU ) ->
+            let
+                -- use the Edit User update function to get new model and command
+                ( updatedEUModel, updatedEUCmd ) =
+                    EU.updateEU msgEU modelEU
+            in
+            -- update current page to have the new model
+            ( { model | currentPage = EditUserPage updatedEUModel }
+              -- update the current command to be the command from the EU init function
+            , Cmd.map EUPageMsg updatedEUCmd
             )
 
         ( LinkClicked urlRequest, _ ) ->
