@@ -17,6 +17,7 @@ import User
 
 {-
    https://elmprogramming.com/creating-list-posts-page.html
+   https://elmprogramming.com/editing-a-post.html
 -}
 
 
@@ -98,6 +99,10 @@ viewListOfUsers users =
 
 viewUser : User.User -> Html MsgLoU
 viewUser user =
+    let
+        userPath =
+            "/users/" ++ User.userIdToString user.id
+    in
     tr []
         [ td []
             [ text (User.userIdToString user.id) ]
@@ -105,6 +110,8 @@ viewUser user =
             [ text (User.userNameToString user.name) ]
         , td []
             [ text (User.completedChallengesToString user.completedChallenges) ]
+        , td []
+            [ a [ href userPath ] [ text "Edit" ] ]
         ]
 
 

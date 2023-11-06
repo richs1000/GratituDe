@@ -4969,6 +4969,23 @@ function _Browser_load(url)
 }
 
 
+function _Url_percentEncode(string)
+{
+	return encodeURIComponent(string);
+}
+
+function _Url_percentDecode(string)
+{
+	try
+	{
+		return $elm$core$Maybe$Just(decodeURIComponent(string));
+	}
+	catch (e)
+	{
+		return $elm$core$Maybe$Nothing;
+	}
+}
+
 
 // SEND REQUEST
 
@@ -5142,23 +5159,6 @@ function _Http_track(router, xhr, tracker)
 			size: event.lengthComputable ? $elm$core$Maybe$Just(event.total) : $elm$core$Maybe$Nothing
 		}))));
 	});
-}
-
-function _Url_percentEncode(string)
-{
-	return encodeURIComponent(string);
-}
-
-function _Url_percentDecode(string)
-{
-	try
-	{
-		return $elm$core$Maybe$Just(decodeURIComponent(string));
-	}
-	catch (e)
-	{
-		return $elm$core$Maybe$Nothing;
-	}
 }var $author$project$Main$LinkClicked = function (a) {
 	return {$: 'LinkClicked', a: a};
 };
@@ -10767,6 +10767,311 @@ var $elm$core$Basics$never = function (_v0) {
 };
 var $elm$browser$Browser$application = _Browser_application;
 var $author$project$Main$NotFoundPage = {$: 'NotFoundPage'};
+var $author$project$Route$RouteNotFound = {$: 'RouteNotFound'};
+var $elm$url$Url$Parser$State = F5(
+	function (visited, unvisited, params, frag, value) {
+		return {frag: frag, params: params, unvisited: unvisited, value: value, visited: visited};
+	});
+var $elm$url$Url$Parser$getFirstMatch = function (states) {
+	getFirstMatch:
+	while (true) {
+		if (!states.b) {
+			return $elm$core$Maybe$Nothing;
+		} else {
+			var state = states.a;
+			var rest = states.b;
+			var _v1 = state.unvisited;
+			if (!_v1.b) {
+				return $elm$core$Maybe$Just(state.value);
+			} else {
+				if ((_v1.a === '') && (!_v1.b.b)) {
+					return $elm$core$Maybe$Just(state.value);
+				} else {
+					var $temp$states = rest;
+					states = $temp$states;
+					continue getFirstMatch;
+				}
+			}
+		}
+	}
+};
+var $elm$url$Url$Parser$removeFinalEmpty = function (segments) {
+	if (!segments.b) {
+		return _List_Nil;
+	} else {
+		if ((segments.a === '') && (!segments.b.b)) {
+			return _List_Nil;
+		} else {
+			var segment = segments.a;
+			var rest = segments.b;
+			return A2(
+				$elm$core$List$cons,
+				segment,
+				$elm$url$Url$Parser$removeFinalEmpty(rest));
+		}
+	}
+};
+var $elm$url$Url$Parser$preparePath = function (path) {
+	var _v0 = A2($elm$core$String$split, '/', path);
+	if (_v0.b && (_v0.a === '')) {
+		var segments = _v0.b;
+		return $elm$url$Url$Parser$removeFinalEmpty(segments);
+	} else {
+		var segments = _v0;
+		return $elm$url$Url$Parser$removeFinalEmpty(segments);
+	}
+};
+var $elm$url$Url$Parser$addToParametersHelp = F2(
+	function (value, maybeList) {
+		if (maybeList.$ === 'Nothing') {
+			return $elm$core$Maybe$Just(
+				_List_fromArray(
+					[value]));
+		} else {
+			var list = maybeList.a;
+			return $elm$core$Maybe$Just(
+				A2($elm$core$List$cons, value, list));
+		}
+	});
+var $elm$url$Url$percentDecode = _Url_percentDecode;
+var $elm$url$Url$Parser$addParam = F2(
+	function (segment, dict) {
+		var _v0 = A2($elm$core$String$split, '=', segment);
+		if ((_v0.b && _v0.b.b) && (!_v0.b.b.b)) {
+			var rawKey = _v0.a;
+			var _v1 = _v0.b;
+			var rawValue = _v1.a;
+			var _v2 = $elm$url$Url$percentDecode(rawKey);
+			if (_v2.$ === 'Nothing') {
+				return dict;
+			} else {
+				var key = _v2.a;
+				var _v3 = $elm$url$Url$percentDecode(rawValue);
+				if (_v3.$ === 'Nothing') {
+					return dict;
+				} else {
+					var value = _v3.a;
+					return A3(
+						$elm$core$Dict$update,
+						key,
+						$elm$url$Url$Parser$addToParametersHelp(value),
+						dict);
+				}
+			}
+		} else {
+			return dict;
+		}
+	});
+var $elm$url$Url$Parser$prepareQuery = function (maybeQuery) {
+	if (maybeQuery.$ === 'Nothing') {
+		return $elm$core$Dict$empty;
+	} else {
+		var qry = maybeQuery.a;
+		return A3(
+			$elm$core$List$foldr,
+			$elm$url$Url$Parser$addParam,
+			$elm$core$Dict$empty,
+			A2($elm$core$String$split, '&', qry));
+	}
+};
+var $elm$url$Url$Parser$parse = F2(
+	function (_v0, url) {
+		var parser = _v0.a;
+		return $elm$url$Url$Parser$getFirstMatch(
+			parser(
+				A5(
+					$elm$url$Url$Parser$State,
+					_List_Nil,
+					$elm$url$Url$Parser$preparePath(url.path),
+					$elm$url$Url$Parser$prepareQuery(url.query),
+					url.fragment,
+					$elm$core$Basics$identity)));
+	});
+var $author$project$Route$ListOfChallengesRoute = {$: 'ListOfChallengesRoute'};
+var $author$project$Route$ListOfUsersRoute = {$: 'ListOfUsersRoute'};
+var $author$project$Route$UserRoute = function (a) {
+	return {$: 'UserRoute', a: a};
+};
+var $elm$url$Url$Parser$Parser = function (a) {
+	return {$: 'Parser', a: a};
+};
+var $elm$url$Url$Parser$mapState = F2(
+	function (func, _v0) {
+		var visited = _v0.visited;
+		var unvisited = _v0.unvisited;
+		var params = _v0.params;
+		var frag = _v0.frag;
+		var value = _v0.value;
+		return A5(
+			$elm$url$Url$Parser$State,
+			visited,
+			unvisited,
+			params,
+			frag,
+			func(value));
+	});
+var $elm$url$Url$Parser$map = F2(
+	function (subValue, _v0) {
+		var parseArg = _v0.a;
+		return $elm$url$Url$Parser$Parser(
+			function (_v1) {
+				var visited = _v1.visited;
+				var unvisited = _v1.unvisited;
+				var params = _v1.params;
+				var frag = _v1.frag;
+				var value = _v1.value;
+				return A2(
+					$elm$core$List$map,
+					$elm$url$Url$Parser$mapState(value),
+					parseArg(
+						A5($elm$url$Url$Parser$State, visited, unvisited, params, frag, subValue)));
+			});
+	});
+var $elm$url$Url$Parser$oneOf = function (parsers) {
+	return $elm$url$Url$Parser$Parser(
+		function (state) {
+			return A2(
+				$elm$core$List$concatMap,
+				function (_v0) {
+					var parser = _v0.a;
+					return parser(state);
+				},
+				parsers);
+		});
+};
+var $elm$url$Url$Parser$s = function (str) {
+	return $elm$url$Url$Parser$Parser(
+		function (_v0) {
+			var visited = _v0.visited;
+			var unvisited = _v0.unvisited;
+			var params = _v0.params;
+			var frag = _v0.frag;
+			var value = _v0.value;
+			if (!unvisited.b) {
+				return _List_Nil;
+			} else {
+				var next = unvisited.a;
+				var rest = unvisited.b;
+				return _Utils_eq(next, str) ? _List_fromArray(
+					[
+						A5(
+						$elm$url$Url$Parser$State,
+						A2($elm$core$List$cons, next, visited),
+						rest,
+						params,
+						frag,
+						value)
+					]) : _List_Nil;
+			}
+		});
+};
+var $elm$url$Url$Parser$slash = F2(
+	function (_v0, _v1) {
+		var parseBefore = _v0.a;
+		var parseAfter = _v1.a;
+		return $elm$url$Url$Parser$Parser(
+			function (state) {
+				return A2(
+					$elm$core$List$concatMap,
+					parseAfter,
+					parseBefore(state));
+			});
+	});
+var $elm$url$Url$Parser$top = $elm$url$Url$Parser$Parser(
+	function (state) {
+		return _List_fromArray(
+			[state]);
+	});
+var $author$project$User$UserId = function (a) {
+	return {$: 'UserId', a: a};
+};
+var $elm$url$Url$Parser$custom = F2(
+	function (tipe, stringToSomething) {
+		return $elm$url$Url$Parser$Parser(
+			function (_v0) {
+				var visited = _v0.visited;
+				var unvisited = _v0.unvisited;
+				var params = _v0.params;
+				var frag = _v0.frag;
+				var value = _v0.value;
+				if (!unvisited.b) {
+					return _List_Nil;
+				} else {
+					var next = unvisited.a;
+					var rest = unvisited.b;
+					var _v2 = stringToSomething(next);
+					if (_v2.$ === 'Just') {
+						var nextValue = _v2.a;
+						return _List_fromArray(
+							[
+								A5(
+								$elm$url$Url$Parser$State,
+								A2($elm$core$List$cons, next, visited),
+								rest,
+								params,
+								frag,
+								value(nextValue))
+							]);
+					} else {
+						return _List_Nil;
+					}
+				}
+			});
+	});
+var $elm$core$Maybe$map = F2(
+	function (f, maybe) {
+		if (maybe.$ === 'Just') {
+			var value = maybe.a;
+			return $elm$core$Maybe$Just(
+				f(value));
+		} else {
+			return $elm$core$Maybe$Nothing;
+		}
+	});
+var $author$project$User$userIdParser = A2(
+	$elm$url$Url$Parser$custom,
+	'USERID',
+	function (userIdAsString) {
+		return A2(
+			$elm$core$Maybe$map,
+			$author$project$User$UserId,
+			$elm$core$String$toInt(userIdAsString));
+	});
+var $author$project$Route$routeParsers = $elm$url$Url$Parser$oneOf(
+	_List_fromArray(
+		[
+			A2($elm$url$Url$Parser$map, $author$project$Route$ListOfUsersRoute, $elm$url$Url$Parser$top),
+			A2(
+			$elm$url$Url$Parser$map,
+			$author$project$Route$ListOfUsersRoute,
+			$elm$url$Url$Parser$s('users')),
+			A2(
+			$elm$url$Url$Parser$map,
+			$author$project$Route$ListOfChallengesRoute,
+			$elm$url$Url$Parser$s('challenges')),
+			A2(
+			$elm$url$Url$Parser$map,
+			$author$project$Route$UserRoute,
+			A2(
+				$elm$url$Url$Parser$slash,
+				$elm$url$Url$Parser$s('users'),
+				$author$project$User$userIdParser))
+		]));
+var $author$project$Route$parseUrl = function (url) {
+	var _v0 = A2($elm$url$Url$Parser$parse, $author$project$Route$routeParsers, url);
+	if (_v0.$ === 'Just') {
+		var route = _v0.a;
+		return route;
+	} else {
+		return $author$project$Route$RouteNotFound;
+	}
+};
+var $author$project$Main$EUPageMsg = function (a) {
+	return {$: 'EUPageMsg', a: a};
+};
+var $author$project$Main$EditUserPage = function (a) {
+	return {$: 'EditUserPage', a: a};
+};
 var $author$project$Main$ListOfChallengesPage = function (a) {
 	return {$: 'ListOfChallengesPage', a: a};
 };
@@ -10779,8 +11084,8 @@ var $author$project$Main$LoCPageMsg = function (a) {
 var $author$project$Main$LoUPageMsg = function (a) {
 	return {$: 'LoUPageMsg', a: a};
 };
-var $author$project$Page$ListOfChallenges$ChallengesReceived = function (a) {
-	return {$: 'ChallengesReceived', a: a};
+var $author$project$Page$EditUser$UserReceived = function (a) {
+	return {$: 'UserReceived', a: a};
 };
 var $elm$http$Http$BadStatus_ = F2(
 	function (a, b) {
@@ -11045,22 +11350,15 @@ var $elm$http$Http$get = function (r) {
 	return $elm$http$Http$request(
 		{body: $elm$http$Http$emptyBody, expect: r.expect, headers: _List_Nil, method: 'GET', timeout: $elm$core$Maybe$Nothing, tracker: $elm$core$Maybe$Nothing, url: r.url});
 };
-var $author$project$Challenge$Challenge = F3(
-	function (id, title, description) {
-		return {description: description, id: id, title: title};
+var $author$project$User$User = F3(
+	function (id, name, completedChallenges) {
+		return {completedChallenges: completedChallenges, id: id, name: name};
 	});
-var $author$project$Challenge$ChallengeDescription = function (a) {
-	return {$: 'ChallengeDescription', a: a};
-};
-var $author$project$Challenge$challengeDescriptionDecoder = A2($elm$json$Json$Decode$map, $author$project$Challenge$ChallengeDescription, $elm$json$Json$Decode$string);
 var $author$project$Challenge$ChallengeId = function (a) {
 	return {$: 'ChallengeId', a: a};
 };
 var $author$project$Challenge$challengeIdDecoder = A2($elm$json$Json$Decode$map, $author$project$Challenge$ChallengeId, $elm$json$Json$Decode$int);
-var $author$project$Challenge$ChallengeTitle = function (a) {
-	return {$: 'ChallengeTitle', a: a};
-};
-var $author$project$Challenge$challengeTitleDecoder = A2($elm$json$Json$Decode$map, $author$project$Challenge$ChallengeTitle, $elm$json$Json$Decode$string);
+var $author$project$User$completedChallengesDecoder = $elm$json$Json$Decode$list($author$project$Challenge$challengeIdDecoder);
 var $NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$custom = $elm$json$Json$Decode$map2($elm$core$Basics$apR);
 var $NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required = F3(
 	function (key, valDecoder, decoder) {
@@ -11069,6 +11367,63 @@ var $NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required = F3(
 			A2($elm$json$Json$Decode$field, key, valDecoder),
 			decoder);
 	});
+var $author$project$User$userIdDecoder = A2($elm$json$Json$Decode$map, $author$project$User$UserId, $elm$json$Json$Decode$int);
+var $author$project$User$UserName = function (a) {
+	return {$: 'UserName', a: a};
+};
+var $author$project$User$userNameDecoder = A2($elm$json$Json$Decode$map, $author$project$User$UserName, $elm$json$Json$Decode$string);
+var $author$project$User$userDecoder = A3(
+	$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
+	'completedChallenges',
+	$author$project$User$completedChallengesDecoder,
+	A3(
+		$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
+		'name',
+		$author$project$User$userNameDecoder,
+		A3(
+			$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
+			'id',
+			$author$project$User$userIdDecoder,
+			$elm$json$Json$Decode$succeed($author$project$User$User))));
+var $author$project$User$userIdToString = function (_v0) {
+	var idAsInt = _v0.a;
+	return $elm$core$String$fromInt(idAsInt);
+};
+var $author$project$Page$EditUser$fetchUser = function (userId) {
+	return $elm$http$Http$get(
+		{
+			expect: A2(
+				$elm$http$Http$expectJson,
+				A2($elm$core$Basics$composeR, $krisajenkins$remotedata$RemoteData$fromResult, $author$project$Page$EditUser$UserReceived),
+				$author$project$User$userDecoder),
+			url: 'http://localhost:5019/users/' + $author$project$User$userIdToString(userId)
+		});
+};
+var $krisajenkins$remotedata$RemoteData$Loading = {$: 'Loading'};
+var $author$project$Page$EditUser$initialModelEU = function (navKeyParam) {
+	return {navKey: navKeyParam, user: $krisajenkins$remotedata$RemoteData$Loading};
+};
+var $author$project$Page$EditUser$initEU = F2(
+	function (userId, navKey) {
+		return _Utils_Tuple2(
+			$author$project$Page$EditUser$initialModelEU(navKey),
+			$author$project$Page$EditUser$fetchUser(userId));
+	});
+var $author$project$Page$ListOfChallenges$ChallengesReceived = function (a) {
+	return {$: 'ChallengesReceived', a: a};
+};
+var $author$project$Challenge$Challenge = F3(
+	function (id, title, description) {
+		return {description: description, id: id, title: title};
+	});
+var $author$project$Challenge$ChallengeDescription = function (a) {
+	return {$: 'ChallengeDescription', a: a};
+};
+var $author$project$Challenge$challengeDescriptionDecoder = A2($elm$json$Json$Decode$map, $author$project$Challenge$ChallengeDescription, $elm$json$Json$Decode$string);
+var $author$project$Challenge$ChallengeTitle = function (a) {
+	return {$: 'ChallengeTitle', a: a};
+};
+var $author$project$Challenge$challengeTitleDecoder = A2($elm$json$Json$Decode$map, $author$project$Challenge$ChallengeTitle, $elm$json$Json$Decode$string);
 var $author$project$Challenge$challengeDecoder = A3(
 	$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
 	'description',
@@ -11091,38 +11446,11 @@ var $author$project$Page$ListOfChallenges$fetchChallenges = $elm$http$Http$get(
 			$author$project$Challenge$listOfChallengesDecoder),
 		url: 'http://localhost:5019/challenges'
 	});
-var $krisajenkins$remotedata$RemoteData$Loading = {$: 'Loading'};
 var $author$project$Page$ListOfChallenges$initModelLoC = {challenges: $krisajenkins$remotedata$RemoteData$Loading};
 var $author$project$Page$ListOfChallenges$initLoC = _Utils_Tuple2($author$project$Page$ListOfChallenges$initModelLoC, $author$project$Page$ListOfChallenges$fetchChallenges);
 var $author$project$Page$ListOfUsers$UsersReceived = function (a) {
 	return {$: 'UsersReceived', a: a};
 };
-var $author$project$User$User = F3(
-	function (id, name, completedChallenges) {
-		return {completedChallenges: completedChallenges, id: id, name: name};
-	});
-var $author$project$User$completedChallengesDecoder = $elm$json$Json$Decode$list($author$project$Challenge$challengeIdDecoder);
-var $author$project$User$UserId = function (a) {
-	return {$: 'UserId', a: a};
-};
-var $author$project$User$userIdDecoder = A2($elm$json$Json$Decode$map, $author$project$User$UserId, $elm$json$Json$Decode$int);
-var $author$project$User$UserName = function (a) {
-	return {$: 'UserName', a: a};
-};
-var $author$project$User$userNameDecoder = A2($elm$json$Json$Decode$map, $author$project$User$UserName, $elm$json$Json$Decode$string);
-var $author$project$User$userDecoder = A3(
-	$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
-	'completedChallenges',
-	$author$project$User$completedChallengesDecoder,
-	A3(
-		$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
-		'name',
-		$author$project$User$userNameDecoder,
-		A3(
-			$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
-			'id',
-			$author$project$User$userIdDecoder,
-			$elm$json$Json$Decode$succeed($author$project$User$User))));
 var $author$project$User$listOfUsersDecoder = $elm$json$Json$Decode$list($author$project$User$userDecoder);
 var $author$project$Page$ListOfUsers$fetchUsers = $elm$http$Http$get(
 	{
@@ -11134,28 +11462,36 @@ var $author$project$Page$ListOfUsers$fetchUsers = $elm$http$Http$get(
 	});
 var $author$project$Page$ListOfUsers$initModelLoU = {users: $krisajenkins$remotedata$RemoteData$Loading};
 var $author$project$Page$ListOfUsers$initLoU = _Utils_Tuple2($author$project$Page$ListOfUsers$initModelLoU, $author$project$Page$ListOfUsers$fetchUsers);
-var $author$project$Main$initCurrentPage = function (_v0) {
+var $author$project$Main$setCurrentPage = function (_v0) {
 	var model = _v0.a;
 	var existingCmds = _v0.b;
 	var _v1 = function () {
 		var _v2 = model.route;
 		switch (_v2.$) {
-			case 'NotFound':
+			case 'RouteNotFound':
 				return _Utils_Tuple2($author$project$Main$NotFoundPage, $elm$core$Platform$Cmd$none);
-			case 'ListOfUsers':
+			case 'ListOfUsersRoute':
 				var _v3 = $author$project$Page$ListOfUsers$initLoU;
 				var modelForLoU = _v3.a;
 				var commandsFromLoU = _v3.b;
 				return _Utils_Tuple2(
 					$author$project$Main$ListOfUsersPage(modelForLoU),
 					A2($elm$core$Platform$Cmd$map, $author$project$Main$LoUPageMsg, commandsFromLoU));
-			default:
+			case 'ListOfChallengesRoute':
 				var _v4 = $author$project$Page$ListOfChallenges$initLoC;
 				var modelForLoC = _v4.a;
 				var commandsFromLoC = _v4.b;
 				return _Utils_Tuple2(
 					$author$project$Main$ListOfChallengesPage(modelForLoC),
 					A2($elm$core$Platform$Cmd$map, $author$project$Main$LoCPageMsg, commandsFromLoC));
+			default:
+				var userId = _v2.a;
+				var _v5 = A2($author$project$Page$EditUser$initEU, userId, model.navKey);
+				var modelForEU = _v5.a;
+				var commandsFromEU = _v5.b;
+				return _Utils_Tuple2(
+					$author$project$Main$EditUserPage(modelForEU),
+					A2($elm$core$Platform$Cmd$map, $author$project$Main$EUPageMsg, commandsFromEU));
 		}
 	}();
 	var currentPage = _v1.a;
@@ -11168,228 +11504,6 @@ var $author$project$Main$initCurrentPage = function (_v0) {
 			_List_fromArray(
 				[existingCmds, mappedPageCmds])));
 };
-var $author$project$Route$NotFound = {$: 'NotFound'};
-var $elm$url$Url$Parser$State = F5(
-	function (visited, unvisited, params, frag, value) {
-		return {frag: frag, params: params, unvisited: unvisited, value: value, visited: visited};
-	});
-var $elm$url$Url$Parser$getFirstMatch = function (states) {
-	getFirstMatch:
-	while (true) {
-		if (!states.b) {
-			return $elm$core$Maybe$Nothing;
-		} else {
-			var state = states.a;
-			var rest = states.b;
-			var _v1 = state.unvisited;
-			if (!_v1.b) {
-				return $elm$core$Maybe$Just(state.value);
-			} else {
-				if ((_v1.a === '') && (!_v1.b.b)) {
-					return $elm$core$Maybe$Just(state.value);
-				} else {
-					var $temp$states = rest;
-					states = $temp$states;
-					continue getFirstMatch;
-				}
-			}
-		}
-	}
-};
-var $elm$url$Url$Parser$removeFinalEmpty = function (segments) {
-	if (!segments.b) {
-		return _List_Nil;
-	} else {
-		if ((segments.a === '') && (!segments.b.b)) {
-			return _List_Nil;
-		} else {
-			var segment = segments.a;
-			var rest = segments.b;
-			return A2(
-				$elm$core$List$cons,
-				segment,
-				$elm$url$Url$Parser$removeFinalEmpty(rest));
-		}
-	}
-};
-var $elm$url$Url$Parser$preparePath = function (path) {
-	var _v0 = A2($elm$core$String$split, '/', path);
-	if (_v0.b && (_v0.a === '')) {
-		var segments = _v0.b;
-		return $elm$url$Url$Parser$removeFinalEmpty(segments);
-	} else {
-		var segments = _v0;
-		return $elm$url$Url$Parser$removeFinalEmpty(segments);
-	}
-};
-var $elm$url$Url$Parser$addToParametersHelp = F2(
-	function (value, maybeList) {
-		if (maybeList.$ === 'Nothing') {
-			return $elm$core$Maybe$Just(
-				_List_fromArray(
-					[value]));
-		} else {
-			var list = maybeList.a;
-			return $elm$core$Maybe$Just(
-				A2($elm$core$List$cons, value, list));
-		}
-	});
-var $elm$url$Url$percentDecode = _Url_percentDecode;
-var $elm$url$Url$Parser$addParam = F2(
-	function (segment, dict) {
-		var _v0 = A2($elm$core$String$split, '=', segment);
-		if ((_v0.b && _v0.b.b) && (!_v0.b.b.b)) {
-			var rawKey = _v0.a;
-			var _v1 = _v0.b;
-			var rawValue = _v1.a;
-			var _v2 = $elm$url$Url$percentDecode(rawKey);
-			if (_v2.$ === 'Nothing') {
-				return dict;
-			} else {
-				var key = _v2.a;
-				var _v3 = $elm$url$Url$percentDecode(rawValue);
-				if (_v3.$ === 'Nothing') {
-					return dict;
-				} else {
-					var value = _v3.a;
-					return A3(
-						$elm$core$Dict$update,
-						key,
-						$elm$url$Url$Parser$addToParametersHelp(value),
-						dict);
-				}
-			}
-		} else {
-			return dict;
-		}
-	});
-var $elm$url$Url$Parser$prepareQuery = function (maybeQuery) {
-	if (maybeQuery.$ === 'Nothing') {
-		return $elm$core$Dict$empty;
-	} else {
-		var qry = maybeQuery.a;
-		return A3(
-			$elm$core$List$foldr,
-			$elm$url$Url$Parser$addParam,
-			$elm$core$Dict$empty,
-			A2($elm$core$String$split, '&', qry));
-	}
-};
-var $elm$url$Url$Parser$parse = F2(
-	function (_v0, url) {
-		var parser = _v0.a;
-		return $elm$url$Url$Parser$getFirstMatch(
-			parser(
-				A5(
-					$elm$url$Url$Parser$State,
-					_List_Nil,
-					$elm$url$Url$Parser$preparePath(url.path),
-					$elm$url$Url$Parser$prepareQuery(url.query),
-					url.fragment,
-					$elm$core$Basics$identity)));
-	});
-var $author$project$Route$ListOfChallenges = {$: 'ListOfChallenges'};
-var $author$project$Route$ListOfUsers = {$: 'ListOfUsers'};
-var $elm$url$Url$Parser$Parser = function (a) {
-	return {$: 'Parser', a: a};
-};
-var $elm$url$Url$Parser$mapState = F2(
-	function (func, _v0) {
-		var visited = _v0.visited;
-		var unvisited = _v0.unvisited;
-		var params = _v0.params;
-		var frag = _v0.frag;
-		var value = _v0.value;
-		return A5(
-			$elm$url$Url$Parser$State,
-			visited,
-			unvisited,
-			params,
-			frag,
-			func(value));
-	});
-var $elm$url$Url$Parser$map = F2(
-	function (subValue, _v0) {
-		var parseArg = _v0.a;
-		return $elm$url$Url$Parser$Parser(
-			function (_v1) {
-				var visited = _v1.visited;
-				var unvisited = _v1.unvisited;
-				var params = _v1.params;
-				var frag = _v1.frag;
-				var value = _v1.value;
-				return A2(
-					$elm$core$List$map,
-					$elm$url$Url$Parser$mapState(value),
-					parseArg(
-						A5($elm$url$Url$Parser$State, visited, unvisited, params, frag, subValue)));
-			});
-	});
-var $elm$url$Url$Parser$oneOf = function (parsers) {
-	return $elm$url$Url$Parser$Parser(
-		function (state) {
-			return A2(
-				$elm$core$List$concatMap,
-				function (_v0) {
-					var parser = _v0.a;
-					return parser(state);
-				},
-				parsers);
-		});
-};
-var $elm$url$Url$Parser$s = function (str) {
-	return $elm$url$Url$Parser$Parser(
-		function (_v0) {
-			var visited = _v0.visited;
-			var unvisited = _v0.unvisited;
-			var params = _v0.params;
-			var frag = _v0.frag;
-			var value = _v0.value;
-			if (!unvisited.b) {
-				return _List_Nil;
-			} else {
-				var next = unvisited.a;
-				var rest = unvisited.b;
-				return _Utils_eq(next, str) ? _List_fromArray(
-					[
-						A5(
-						$elm$url$Url$Parser$State,
-						A2($elm$core$List$cons, next, visited),
-						rest,
-						params,
-						frag,
-						value)
-					]) : _List_Nil;
-			}
-		});
-};
-var $elm$url$Url$Parser$top = $elm$url$Url$Parser$Parser(
-	function (state) {
-		return _List_fromArray(
-			[state]);
-	});
-var $author$project$Route$routeParsers = $elm$url$Url$Parser$oneOf(
-	_List_fromArray(
-		[
-			A2($elm$url$Url$Parser$map, $author$project$Route$ListOfUsers, $elm$url$Url$Parser$top),
-			A2(
-			$elm$url$Url$Parser$map,
-			$author$project$Route$ListOfUsers,
-			$elm$url$Url$Parser$s('users')),
-			A2(
-			$elm$url$Url$Parser$map,
-			$author$project$Route$ListOfChallenges,
-			$elm$url$Url$Parser$s('challenges'))
-		]));
-var $author$project$Route$parseUrl = function (url) {
-	var _v0 = A2($elm$url$Url$Parser$parse, $author$project$Route$routeParsers, url);
-	if (_v0.$ === 'Just') {
-		var route = _v0.a;
-		return route;
-	} else {
-		return $author$project$Route$NotFound;
-	}
-};
 var $author$project$Main$initMain = F3(
 	function (flags, url, navKey) {
 		var model = {
@@ -11397,7 +11511,7 @@ var $author$project$Main$initMain = F3(
 			navKey: navKey,
 			route: $author$project$Route$parseUrl(url)
 		};
-		return $author$project$Main$initCurrentPage(
+		return $author$project$Main$setCurrentPage(
 			_Utils_Tuple2(model, $elm$core$Platform$Cmd$none));
 	});
 var $elm$core$Platform$Sub$batch = _Platform_batch;
@@ -11538,15 +11652,17 @@ var $author$project$Main$updateMain = F2(
 							model,
 							$elm$browser$Browser$Navigation$load(url));
 					}
-				default:
+				case 'UrlChanged':
 					var url = _v0.a.a;
 					var newRoute = $author$project$Route$parseUrl(url);
-					return $author$project$Main$initCurrentPage(
+					return $author$project$Main$setCurrentPage(
 						_Utils_Tuple2(
 							_Utils_update(
 								model,
 								{route: newRoute}),
 							$elm$core$Platform$Cmd$none));
+				default:
+					break _v0$4;
 			}
 		}
 		return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
@@ -11559,6 +11675,21 @@ var $author$project$Main$notFoundView = A2(
 		[
 			$elm$html$Html$text('Oops! The page you requested was not found!')
 		]));
+var $author$project$Page$EditUser$viewEU = function (model) {
+	return A2(
+		$elm$html$Html$div,
+		_List_Nil,
+		_List_fromArray(
+			[
+				A2(
+				$elm$html$Html$h3,
+				_List_Nil,
+				_List_fromArray(
+					[
+						$elm$html$Html$text('Form goes here')
+					]))
+			]));
+};
 var $author$project$Page$ListOfChallenges$FetchChallenges = {$: 'FetchChallenges'};
 var $author$project$Page$ListOfChallenges$buildErrorMessage = function (httpError) {
 	switch (httpError.$) {
@@ -11796,15 +11927,12 @@ var $author$project$User$completedChallengesToString = function (listOfChallenge
 		', ',
 		A2($elm$core$List$map, $author$project$Challenge$challengeIdToString, listOfChallengeIds));
 };
-var $author$project$User$userIdToString = function (_v0) {
-	var idAsInt = _v0.a;
-	return $elm$core$String$fromInt(idAsInt);
-};
 var $author$project$User$userNameToString = function (_v0) {
 	var titleAsString = _v0.a;
 	return titleAsString;
 };
 var $author$project$Page$ListOfUsers$viewUser = function (user) {
+	var userPath = '/users/' + $author$project$User$userIdToString(user.id);
 	return A2(
 		$elm$html$Html$tr,
 		_List_Nil,
@@ -11833,6 +11961,22 @@ var $author$project$Page$ListOfUsers$viewUser = function (user) {
 					[
 						$elm$html$Html$text(
 						$author$project$User$completedChallengesToString(user.completedChallenges))
+					])),
+				A2(
+				$elm$html$Html$td,
+				_List_Nil,
+				_List_fromArray(
+					[
+						A2(
+						$elm$html$Html$a,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$href(userPath)
+							]),
+						_List_fromArray(
+							[
+								$elm$html$Html$text('Edit')
+							]))
 					]))
 			]));
 };
@@ -11906,19 +12050,89 @@ var $author$project$Main$currentView = function (model) {
 				$elm$html$Html$map,
 				$author$project$Main$LoUPageMsg,
 				$author$project$Page$ListOfUsers$viewLoU(modelLoU));
-		default:
+		case 'ListOfChallengesPage':
 			var modelLoC = _v0.a;
 			return A2(
 				$elm$html$Html$map,
 				$author$project$Main$LoCPageMsg,
 				$author$project$Page$ListOfChallenges$viewLoC(modelLoC));
+		default:
+			var modelEU = _v0.a;
+			return A2(
+				$elm$html$Html$map,
+				$author$project$Main$EUPageMsg,
+				$author$project$Page$EditUser$viewEU(modelEU));
 	}
+};
+var $elm$html$Html$footer = _VirtualDom_node('footer');
+var $author$project$Main$footerView = A2(
+	$elm$html$Html$footer,
+	_List_Nil,
+	_List_fromArray(
+		[
+			$elm$html$Html$text('Copyright and other footer stuff...')
+		]));
+var $elm$html$Html$h1 = _VirtualDom_node('h1');
+var $elm$html$Html$nav = _VirtualDom_node('nav');
+var $author$project$Main$headerView = function (model) {
+	var logo = A2(
+		$elm$html$Html$h1,
+		_List_Nil,
+		_List_fromArray(
+			[
+				$elm$html$Html$text('GratituDe')
+			]));
+	var links = A2(
+		$elm$html$Html$ul,
+		_List_Nil,
+		_List_fromArray(
+			[
+				A2(
+				$elm$html$Html$li,
+				_List_Nil,
+				_List_fromArray(
+					[
+						A2(
+						$elm$html$Html$a,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$href('#')
+							]),
+						_List_fromArray(
+							[
+								$elm$html$Html$text('Link 1')
+							]))
+					])),
+				A2(
+				$elm$html$Html$li,
+				_List_Nil,
+				_List_fromArray(
+					[
+						A2(
+						$elm$html$Html$a,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$href('#')
+							]),
+						_List_fromArray(
+							[
+								$elm$html$Html$text('Link 2')
+							]))
+					]))
+			]));
+	return A2(
+		$elm$html$Html$nav,
+		_List_Nil,
+		_List_fromArray(
+			[logo, links]));
 };
 var $author$project$Main$viewMain = function (model) {
 	return {
 		body: _List_fromArray(
 			[
-				$author$project$Main$currentView(model)
+				$author$project$Main$headerView(model),
+				$author$project$Main$currentView(model),
+				$author$project$Main$footerView
 			]),
 		title: 'GratituDUe'
 	};
@@ -11935,7 +12149,7 @@ var $author$project$Main$main = $elm$browser$Browser$application(
 		view: $author$project$Main$viewMain
 	});
 _Platform_export({'Main':{'init':$author$project$Main$main(
-	$elm$json$Json$Decode$succeed(_Utils_Tuple0))({"versions":{"elm":"0.19.1"},"types":{"message":"Main.Msg","aliases":{"Url.Url":{"args":[],"type":"{ protocol : Url.Protocol, host : String.String, port_ : Maybe.Maybe Basics.Int, path : String.String, query : Maybe.Maybe String.String, fragment : Maybe.Maybe String.String }"},"Challenge.Challenge":{"args":[],"type":"{ id : Challenge.ChallengeId, title : Challenge.ChallengeTitle, description : Challenge.ChallengeDescription }"},"User.User":{"args":[],"type":"{ id : User.UserId, name : User.UserName, completedChallenges : List.List Challenge.ChallengeId }"},"RemoteData.WebData":{"args":["a"],"type":"RemoteData.RemoteData Http.Error a"}},"unions":{"Main.Msg":{"args":[],"tags":{"LoUPageMsg":["Page.ListOfUsers.MsgLoU"],"LoCPageMsg":["Page.ListOfChallenges.MsgLoC"],"LinkClicked":["Browser.UrlRequest"],"UrlChanged":["Url.Url"]}},"Basics.Int":{"args":[],"tags":{"Int":[]}},"Maybe.Maybe":{"args":["a"],"tags":{"Just":["a"],"Nothing":[]}},"Page.ListOfChallenges.MsgLoC":{"args":[],"tags":{"FetchChallenges":[],"ChallengesReceived":["RemoteData.WebData (List.List Challenge.Challenge)"]}},"Page.ListOfUsers.MsgLoU":{"args":[],"tags":{"FetchUsers":[],"UsersReceived":["RemoteData.WebData (List.List User.User)"]}},"Url.Protocol":{"args":[],"tags":{"Http":[],"Https":[]}},"String.String":{"args":[],"tags":{"String":[]}},"Browser.UrlRequest":{"args":[],"tags":{"Internal":["Url.Url"],"External":["String.String"]}},"Challenge.ChallengeDescription":{"args":[],"tags":{"ChallengeDescription":["String.String"]}},"Challenge.ChallengeId":{"args":[],"tags":{"ChallengeId":["Basics.Int"]}},"Challenge.ChallengeTitle":{"args":[],"tags":{"ChallengeTitle":["String.String"]}},"Http.Error":{"args":[],"tags":{"BadUrl":["String.String"],"Timeout":[],"NetworkError":[],"BadStatus":["Basics.Int"],"BadBody":["String.String"]}},"List.List":{"args":["a"],"tags":{}},"RemoteData.RemoteData":{"args":["e","a"],"tags":{"NotAsked":[],"Loading":[],"Failure":["e"],"Success":["a"]}},"User.UserId":{"args":[],"tags":{"UserId":["Basics.Int"]}},"User.UserName":{"args":[],"tags":{"UserName":["String.String"]}}}}})}});}(this));
+	$elm$json$Json$Decode$succeed(_Utils_Tuple0))({"versions":{"elm":"0.19.1"},"types":{"message":"Main.Msg","aliases":{"Url.Url":{"args":[],"type":"{ protocol : Url.Protocol, host : String.String, port_ : Maybe.Maybe Basics.Int, path : String.String, query : Maybe.Maybe String.String, fragment : Maybe.Maybe String.String }"},"Challenge.Challenge":{"args":[],"type":"{ id : Challenge.ChallengeId, title : Challenge.ChallengeTitle, description : Challenge.ChallengeDescription }"},"User.User":{"args":[],"type":"{ id : User.UserId, name : User.UserName, completedChallenges : List.List Challenge.ChallengeId }"},"RemoteData.WebData":{"args":["a"],"type":"RemoteData.RemoteData Http.Error a"}},"unions":{"Main.Msg":{"args":[],"tags":{"LoUPageMsg":["Page.ListOfUsers.MsgLoU"],"LoCPageMsg":["Page.ListOfChallenges.MsgLoC"],"EUPageMsg":["Page.EditUser.MsgEU"],"LinkClicked":["Browser.UrlRequest"],"UrlChanged":["Url.Url"]}},"Basics.Int":{"args":[],"tags":{"Int":[]}},"Maybe.Maybe":{"args":["a"],"tags":{"Just":["a"],"Nothing":[]}},"Page.EditUser.MsgEU":{"args":[],"tags":{"UserReceived":["RemoteData.WebData User.User"]}},"Page.ListOfChallenges.MsgLoC":{"args":[],"tags":{"FetchChallenges":[],"ChallengesReceived":["RemoteData.WebData (List.List Challenge.Challenge)"]}},"Page.ListOfUsers.MsgLoU":{"args":[],"tags":{"FetchUsers":[],"UsersReceived":["RemoteData.WebData (List.List User.User)"]}},"Url.Protocol":{"args":[],"tags":{"Http":[],"Https":[]}},"String.String":{"args":[],"tags":{"String":[]}},"Browser.UrlRequest":{"args":[],"tags":{"Internal":["Url.Url"],"External":["String.String"]}},"Challenge.ChallengeDescription":{"args":[],"tags":{"ChallengeDescription":["String.String"]}},"Challenge.ChallengeId":{"args":[],"tags":{"ChallengeId":["Basics.Int"]}},"Challenge.ChallengeTitle":{"args":[],"tags":{"ChallengeTitle":["String.String"]}},"Http.Error":{"args":[],"tags":{"BadUrl":["String.String"],"Timeout":[],"NetworkError":[],"BadStatus":["Basics.Int"],"BadBody":["String.String"]}},"List.List":{"args":["a"],"tags":{}},"RemoteData.RemoteData":{"args":["e","a"],"tags":{"NotAsked":[],"Loading":[],"Failure":["e"],"Success":["a"]}},"User.UserId":{"args":[],"tags":{"UserId":["Basics.Int"]}},"User.UserName":{"args":[],"tags":{"UserName":["String.String"]}}}}})}});}(this));
 
   var app = Elm.Main.init({ node: document.getElementById("elm") });
 }

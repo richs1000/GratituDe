@@ -6,8 +6,10 @@ module User exposing (..)
 -}
 
 import Challenge
+import Html exposing (a)
 import Json.Decode as Decode
 import Json.Decode.Pipeline as Pipeline
+import Url.Parser exposing (Parser)
 
 
 
@@ -35,6 +37,17 @@ userIdDecoder =
 userIdToString : UserId -> String
 userIdToString (UserId idAsInt) =
     String.fromInt idAsInt
+
+
+
+-- Extracts a user ID from a URL
+
+
+userIdParser : Url.Parser.Parser (UserId -> a) a
+userIdParser =
+    Url.Parser.custom "USERID" <|
+        \userIdAsString ->
+            Maybe.map UserId (String.toInt userIdAsString)
 
 
 type UserName
