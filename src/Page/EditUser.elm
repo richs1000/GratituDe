@@ -8,7 +8,7 @@ import Browser.Navigation as Nav
 import ErrorMessages as EM
 import Html exposing (..)
 import Html.Attributes exposing (..)
-import Html.Events exposing (onClick, onInput)
+import Html.Events exposing (onCheck, onClick, onInput)
 import Http
 import RemoteData as RD
 import Route
@@ -141,7 +141,7 @@ saveUser user =
 viewEU : ModelEU -> Html MsgEU
 viewEU model =
     div []
-        [ h3 [] [ text "Edit Post" ]
+        [ h3 [] [ text "User Information" ]
         , viewUser model.user
         , viewSaveError model.saveError
         ]
@@ -175,6 +175,16 @@ editUserForm user =
                 , onInput UpdateUserName
                 ]
                 []
+            ]
+        , div []
+            [ input
+                [ type_ "checkbox"
+                , checked True
+                , name "myCB"
+                ]
+                []
+            , label [ for "myCB" ]
+                [ text "My first checkbox" ]
             ]
 
         -- , br [] []

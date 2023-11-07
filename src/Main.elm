@@ -30,6 +30,9 @@ type alias Model =
 
     -- current page
     , currentPage : Page
+
+    -- navKey is used internally by Elm for accessing the browser's
+    -- address bar
     , navKey : Nav.Key
     }
 

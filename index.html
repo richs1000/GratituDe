@@ -11881,7 +11881,19 @@ var $author$project$Page$EditUser$UpdateUserName = function (a) {
 	return {$: 'UpdateUserName', a: a};
 };
 var $elm$html$Html$br = _VirtualDom_node('br');
+var $elm$json$Json$Encode$bool = _Json_wrap;
+var $elm$html$Html$Attributes$boolProperty = F2(
+	function (key, bool) {
+		return A2(
+			_VirtualDom_property,
+			key,
+			$elm$json$Json$Encode$bool(bool));
+	});
+var $elm$html$Html$Attributes$checked = $elm$html$Html$Attributes$boolProperty('checked');
+var $elm$html$Html$Attributes$for = $elm$html$Html$Attributes$stringProperty('htmlFor');
 var $elm$html$Html$form = _VirtualDom_node('form');
+var $elm$html$Html$label = _VirtualDom_node('label');
+var $elm$html$Html$Attributes$name = $elm$html$Html$Attributes$stringProperty('name');
 var $author$project$User$userNameToString = function (_v0) {
 	var titleAsString = _v0.a;
 	return titleAsString;
@@ -11909,6 +11921,31 @@ var $author$project$Page$EditUser$editUserForm = function (user) {
 								$elm$html$Html$Events$onInput($author$project$Page$EditUser$UpdateUserName)
 							]),
 						_List_Nil)
+					])),
+				A2(
+				$elm$html$Html$div,
+				_List_Nil,
+				_List_fromArray(
+					[
+						A2(
+						$elm$html$Html$input,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$type_('checkbox'),
+								$elm$html$Html$Attributes$checked(true),
+								$elm$html$Html$Attributes$name('myCB')
+							]),
+						_List_Nil),
+						A2(
+						$elm$html$Html$label,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$for('myCB')
+							]),
+						_List_fromArray(
+							[
+								$elm$html$Html$text('My first checkbox')
+							]))
 					])),
 				A2($elm$html$Html$br, _List_Nil, _List_Nil),
 				A2(
@@ -11979,7 +12016,7 @@ var $author$project$Page$EditUser$viewEU = function (model) {
 				_List_Nil,
 				_List_fromArray(
 					[
-						$elm$html$Html$text('Edit Post')
+						$elm$html$Html$text('User Information')
 					])),
 				$author$project$Page$EditUser$viewUser(model.user),
 				$author$project$Page$EditUser$viewSaveError(model.saveError)
