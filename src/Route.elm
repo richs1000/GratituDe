@@ -3,7 +3,7 @@ module Route exposing (..)
 {-
    https://elmprogramming.com/navigating-to-list-posts-page.html
    https://elmprogramming.com/editing-a-post.html
-
+   https://elmprogramming.com/creating-a-new-post.html
 -}
 {-
    elm install elm/url
@@ -22,6 +22,7 @@ type Route
     | ListOfUsersRoute
     | UserRoute User.UserId
     | ChallengeRoute Challenge.ChallengeId
+    | NewUserRoute
 
 
 parseUrl : Url.Url -> Route
@@ -42,6 +43,7 @@ routeParsers =
         , Url.Parser.map ListOfChallengesRoute (Url.Parser.s "challenges")
         , Url.Parser.map UserRoute (Url.Parser.s "users" </> User.userIdParser)
         , Url.Parser.map ChallengeRoute (Url.Parser.s "challenges" </> Challenge.challengeIdParser)
+        , Url.Parser.map NewUserRoute (Url.Parser.s "users" </> Url.Parser.s "new")
         ]
 
 
@@ -67,4 +69,7 @@ routeToString route =
             "/users/" ++ User.userIdToString userId
 
         ChallengeRoute challengeId ->
-            "challenges" ++ Challenge.challengeIdToString challengeId
+            "/challenges/" ++ Challenge.challengeIdToString challengeId
+
+        NewUserRoute ->
+            "/users/new"

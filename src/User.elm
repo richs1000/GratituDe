@@ -30,6 +30,14 @@ type alias User =
     }
 
 
+emptyUser : User
+emptyUser =
+    { id = emptyUserId
+    , name = emptyUserName
+    , completedChallenges = emptyCompletedChallenges
+    }
+
+
 userDecoder : Decode.Decoder User
 userDecoder =
     Decode.succeed User
@@ -43,6 +51,14 @@ userEncoder user =
     Encode.object
         [ ( "id", userIdEncoder user.id )
         , ( "name", userNameEncoder user.name )
+        , ( "completedChallenges", completedChallengesEncoder user.completedChallenges )
+        ]
+
+
+newUserEncoder : User -> Encode.Value
+newUserEncoder user =
+    Encode.object
+        [ ( "name", userNameEncoder user.name )
         , ( "completedChallenges", completedChallengesEncoder user.completedChallenges )
         ]
 
@@ -61,6 +77,11 @@ listOfUsersDecoder =
 
 type UserId
     = UserId Int
+
+
+emptyUserId : UserId
+emptyUserId =
+    UserId -1
 
 
 userIdDecoder : Decode.Decoder UserId
@@ -100,6 +121,11 @@ type UserName
     = UserName String
 
 
+emptyUserName : UserName
+emptyUserName =
+    UserName ""
+
+
 userNameDecoder : Decode.Decoder UserName
 userNameDecoder =
     Decode.map UserName Decode.string
@@ -121,6 +147,11 @@ userNameToString (UserName titleAsString) =
    ChallengeIds (from the Challenge module) to reflect the challenges
    that have been completed.
 -}
+
+
+emptyCompletedChallenges : List Challenge.ChallengeId
+emptyCompletedChallenges =
+    []
 
 
 completedChallengesDecoder : Decode.Decoder (List Challenge.ChallengeId)

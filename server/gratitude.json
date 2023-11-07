@@ -49,6 +49,11 @@
       "id": 3,
       "name": "a new name",
       "completedChallenges": []
+    },
+    {
+      "name": "brand new user",
+      "completedChallenges": [],
+      "id": 4
     }
   ],
   "profile": {
