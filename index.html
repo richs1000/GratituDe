@@ -10887,14 +10887,72 @@ var $elm$url$Url$Parser$parse = F2(
 					url.fragment,
 					$elm$core$Basics$identity)));
 	});
+var $author$project$Route$ChallengeRoute = function (a) {
+	return {$: 'ChallengeRoute', a: a};
+};
 var $author$project$Route$ListOfChallengesRoute = {$: 'ListOfChallengesRoute'};
 var $author$project$Route$ListOfUsersRoute = {$: 'ListOfUsersRoute'};
 var $author$project$Route$UserRoute = function (a) {
 	return {$: 'UserRoute', a: a};
 };
+var $author$project$Challenge$ChallengeId = function (a) {
+	return {$: 'ChallengeId', a: a};
+};
 var $elm$url$Url$Parser$Parser = function (a) {
 	return {$: 'Parser', a: a};
 };
+var $elm$url$Url$Parser$custom = F2(
+	function (tipe, stringToSomething) {
+		return $elm$url$Url$Parser$Parser(
+			function (_v0) {
+				var visited = _v0.visited;
+				var unvisited = _v0.unvisited;
+				var params = _v0.params;
+				var frag = _v0.frag;
+				var value = _v0.value;
+				if (!unvisited.b) {
+					return _List_Nil;
+				} else {
+					var next = unvisited.a;
+					var rest = unvisited.b;
+					var _v2 = stringToSomething(next);
+					if (_v2.$ === 'Just') {
+						var nextValue = _v2.a;
+						return _List_fromArray(
+							[
+								A5(
+								$elm$url$Url$Parser$State,
+								A2($elm$core$List$cons, next, visited),
+								rest,
+								params,
+								frag,
+								value(nextValue))
+							]);
+					} else {
+						return _List_Nil;
+					}
+				}
+			});
+	});
+var $elm$core$Maybe$map = F2(
+	function (f, maybe) {
+		if (maybe.$ === 'Just') {
+			var value = maybe.a;
+			return $elm$core$Maybe$Just(
+				f(value));
+		} else {
+			return $elm$core$Maybe$Nothing;
+		}
+	});
+var $author$project$Challenge$challengeIdParser = A2(
+	$elm$url$Url$Parser$custom,
+	'CHALLENGEID',
+	function (challengeIdAsString) {
+		return A2(
+			$elm$core$Maybe$map,
+			$author$project$Challenge$ChallengeId,
+			$elm$core$String$toInt(challengeIdAsString));
+	});
 var $elm$url$Url$Parser$mapState = F2(
 	function (func, _v0) {
 		var visited = _v0.visited;
@@ -10985,49 +11043,6 @@ var $elm$url$Url$Parser$top = $elm$url$Url$Parser$Parser(
 var $author$project$User$UserId = function (a) {
 	return {$: 'UserId', a: a};
 };
-var $elm$url$Url$Parser$custom = F2(
-	function (tipe, stringToSomething) {
-		return $elm$url$Url$Parser$Parser(
-			function (_v0) {
-				var visited = _v0.visited;
-				var unvisited = _v0.unvisited;
-				var params = _v0.params;
-				var frag = _v0.frag;
-				var value = _v0.value;
-				if (!unvisited.b) {
-					return _List_Nil;
-				} else {
-					var next = unvisited.a;
-					var rest = unvisited.b;
-					var _v2 = stringToSomething(next);
-					if (_v2.$ === 'Just') {
-						var nextValue = _v2.a;
-						return _List_fromArray(
-							[
-								A5(
-								$elm$url$Url$Parser$State,
-								A2($elm$core$List$cons, next, visited),
-								rest,
-								params,
-								frag,
-								value(nextValue))
-							]);
-					} else {
-						return _List_Nil;
-					}
-				}
-			});
-	});
-var $elm$core$Maybe$map = F2(
-	function (f, maybe) {
-		if (maybe.$ === 'Just') {
-			var value = maybe.a;
-			return $elm$core$Maybe$Just(
-				f(value));
-		} else {
-			return $elm$core$Maybe$Nothing;
-		}
-	});
 var $author$project$User$userIdParser = A2(
 	$elm$url$Url$Parser$custom,
 	'USERID',
@@ -11055,7 +11070,14 @@ var $author$project$Route$routeParsers = $elm$url$Url$Parser$oneOf(
 			A2(
 				$elm$url$Url$Parser$slash,
 				$elm$url$Url$Parser$s('users'),
-				$author$project$User$userIdParser))
+				$author$project$User$userIdParser)),
+			A2(
+			$elm$url$Url$Parser$map,
+			$author$project$Route$ChallengeRoute,
+			A2(
+				$elm$url$Url$Parser$slash,
+				$elm$url$Url$Parser$s('challenges'),
+				$author$project$Challenge$challengeIdParser))
 		]));
 var $author$project$Route$parseUrl = function (url) {
 	var _v0 = A2($elm$url$Url$Parser$parse, $author$project$Route$routeParsers, url);
@@ -11065,6 +11087,12 @@ var $author$project$Route$parseUrl = function (url) {
 	} else {
 		return $author$project$Route$RouteNotFound;
 	}
+};
+var $author$project$Main$DCPageMsg = function (a) {
+	return {$: 'DCPageMsg', a: a};
+};
+var $author$project$Main$DisplayChallengePage = function (a) {
+	return {$: 'DisplayChallengePage', a: a};
 };
 var $author$project$Main$EUPageMsg = function (a) {
 	return {$: 'EUPageMsg', a: a};
@@ -11084,8 +11112,46 @@ var $author$project$Main$LoCPageMsg = function (a) {
 var $author$project$Main$LoUPageMsg = function (a) {
 	return {$: 'LoUPageMsg', a: a};
 };
-var $author$project$Page$EditUser$UserReceived = function (a) {
-	return {$: 'UserReceived', a: a};
+var $author$project$Page$DisplayChallenge$ChallengeReceived = function (a) {
+	return {$: 'ChallengeReceived', a: a};
+};
+var $author$project$Challenge$Challenge = F3(
+	function (id, title, description) {
+		return {description: description, id: id, title: title};
+	});
+var $author$project$Challenge$ChallengeDescription = function (a) {
+	return {$: 'ChallengeDescription', a: a};
+};
+var $author$project$Challenge$challengeDescriptionDecoder = A2($elm$json$Json$Decode$map, $author$project$Challenge$ChallengeDescription, $elm$json$Json$Decode$string);
+var $author$project$Challenge$challengeIdDecoder = A2($elm$json$Json$Decode$map, $author$project$Challenge$ChallengeId, $elm$json$Json$Decode$int);
+var $author$project$Challenge$ChallengeTitle = function (a) {
+	return {$: 'ChallengeTitle', a: a};
+};
+var $author$project$Challenge$challengeTitleDecoder = A2($elm$json$Json$Decode$map, $author$project$Challenge$ChallengeTitle, $elm$json$Json$Decode$string);
+var $NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$custom = $elm$json$Json$Decode$map2($elm$core$Basics$apR);
+var $NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required = F3(
+	function (key, valDecoder, decoder) {
+		return A2(
+			$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$custom,
+			A2($elm$json$Json$Decode$field, key, valDecoder),
+			decoder);
+	});
+var $author$project$Challenge$challengeDecoder = A3(
+	$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
+	'description',
+	$author$project$Challenge$challengeDescriptionDecoder,
+	A3(
+		$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
+		'title',
+		$author$project$Challenge$challengeTitleDecoder,
+		A3(
+			$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
+			'id',
+			$author$project$Challenge$challengeIdDecoder,
+			$elm$json$Json$Decode$succeed($author$project$Challenge$Challenge))));
+var $author$project$Challenge$challengeIdToString = function (_v0) {
+	var idAsInt = _v0.a;
+	return $elm$core$String$fromInt(idAsInt);
 };
 var $elm$http$Http$BadStatus_ = F2(
 	function (a, b) {
@@ -11350,23 +11416,34 @@ var $elm$http$Http$get = function (r) {
 	return $elm$http$Http$request(
 		{body: $elm$http$Http$emptyBody, expect: r.expect, headers: _List_Nil, method: 'GET', timeout: $elm$core$Maybe$Nothing, tracker: $elm$core$Maybe$Nothing, url: r.url});
 };
+var $author$project$Page$DisplayChallenge$fetchChallenge = function (challengeId) {
+	return $elm$http$Http$get(
+		{
+			expect: A2(
+				$elm$http$Http$expectJson,
+				A2($elm$core$Basics$composeR, $krisajenkins$remotedata$RemoteData$fromResult, $author$project$Page$DisplayChallenge$ChallengeReceived),
+				$author$project$Challenge$challengeDecoder),
+			url: 'http://localhost:5019/challenges/' + $author$project$Challenge$challengeIdToString(challengeId)
+		});
+};
+var $krisajenkins$remotedata$RemoteData$Loading = {$: 'Loading'};
+var $author$project$Page$DisplayChallenge$initialModelDC = function (navKeyParam) {
+	return {challenge: $krisajenkins$remotedata$RemoteData$Loading, navKey: navKeyParam, saveError: $elm$core$Maybe$Nothing};
+};
+var $author$project$Page$DisplayChallenge$initDC = F2(
+	function (challengeId, navKey) {
+		return _Utils_Tuple2(
+			$author$project$Page$DisplayChallenge$initialModelDC(navKey),
+			$author$project$Page$DisplayChallenge$fetchChallenge(challengeId));
+	});
+var $author$project$Page$EditUser$UserReceived = function (a) {
+	return {$: 'UserReceived', a: a};
+};
 var $author$project$User$User = F3(
 	function (id, name, completedChallenges) {
 		return {completedChallenges: completedChallenges, id: id, name: name};
 	});
-var $author$project$Challenge$ChallengeId = function (a) {
-	return {$: 'ChallengeId', a: a};
-};
-var $author$project$Challenge$challengeIdDecoder = A2($elm$json$Json$Decode$map, $author$project$Challenge$ChallengeId, $elm$json$Json$Decode$int);
 var $author$project$User$completedChallengesDecoder = $elm$json$Json$Decode$list($author$project$Challenge$challengeIdDecoder);
-var $NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$custom = $elm$json$Json$Decode$map2($elm$core$Basics$apR);
-var $NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required = F3(
-	function (key, valDecoder, decoder) {
-		return A2(
-			$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$custom,
-			A2($elm$json$Json$Decode$field, key, valDecoder),
-			decoder);
-	});
 var $author$project$User$userIdDecoder = A2($elm$json$Json$Decode$map, $author$project$User$UserId, $elm$json$Json$Decode$int);
 var $author$project$User$UserName = function (a) {
 	return {$: 'UserName', a: a};
@@ -11399,7 +11476,6 @@ var $author$project$Page$EditUser$fetchUser = function (userId) {
 			url: 'http://localhost:5019/users/' + $author$project$User$userIdToString(userId)
 		});
 };
-var $krisajenkins$remotedata$RemoteData$Loading = {$: 'Loading'};
 var $author$project$Page$EditUser$initialModelEU = function (navKeyParam) {
 	return {navKey: navKeyParam, saveError: $elm$core$Maybe$Nothing, user: $krisajenkins$remotedata$RemoteData$Loading};
 };
@@ -11412,31 +11488,6 @@ var $author$project$Page$EditUser$initEU = F2(
 var $author$project$Page$ListOfChallenges$ChallengesReceived = function (a) {
 	return {$: 'ChallengesReceived', a: a};
 };
-var $author$project$Challenge$Challenge = F3(
-	function (id, title, description) {
-		return {description: description, id: id, title: title};
-	});
-var $author$project$Challenge$ChallengeDescription = function (a) {
-	return {$: 'ChallengeDescription', a: a};
-};
-var $author$project$Challenge$challengeDescriptionDecoder = A2($elm$json$Json$Decode$map, $author$project$Challenge$ChallengeDescription, $elm$json$Json$Decode$string);
-var $author$project$Challenge$ChallengeTitle = function (a) {
-	return {$: 'ChallengeTitle', a: a};
-};
-var $author$project$Challenge$challengeTitleDecoder = A2($elm$json$Json$Decode$map, $author$project$Challenge$ChallengeTitle, $elm$json$Json$Decode$string);
-var $author$project$Challenge$challengeDecoder = A3(
-	$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
-	'description',
-	$author$project$Challenge$challengeDescriptionDecoder,
-	A3(
-		$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
-		'title',
-		$author$project$Challenge$challengeTitleDecoder,
-		A3(
-			$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
-			'id',
-			$author$project$Challenge$challengeIdDecoder,
-			$elm$json$Json$Decode$succeed($author$project$Challenge$Challenge))));
 var $author$project$Challenge$listOfChallengesDecoder = $elm$json$Json$Decode$list($author$project$Challenge$challengeDecoder);
 var $author$project$Page$ListOfChallenges$fetchChallenges = $elm$http$Http$get(
 	{
@@ -11484,7 +11535,7 @@ var $author$project$Main$setCurrentPage = function (_v0) {
 				return _Utils_Tuple2(
 					$author$project$Main$ListOfChallengesPage(modelForLoC),
 					A2($elm$core$Platform$Cmd$map, $author$project$Main$LoCPageMsg, commandsFromLoC));
-			default:
+			case 'UserRoute':
 				var userId = _v2.a;
 				var _v5 = A2($author$project$Page$EditUser$initEU, userId, model.navKey);
 				var modelForEU = _v5.a;
@@ -11492,6 +11543,14 @@ var $author$project$Main$setCurrentPage = function (_v0) {
 				return _Utils_Tuple2(
 					$author$project$Main$EditUserPage(modelForEU),
 					A2($elm$core$Platform$Cmd$map, $author$project$Main$EUPageMsg, commandsFromEU));
+			default:
+				var challengeId = _v2.a;
+				var _v6 = A2($author$project$Page$DisplayChallenge$initDC, challengeId, model.navKey);
+				var modelForDC = _v6.a;
+				var commandsFromDC = _v6.b;
+				return _Utils_Tuple2(
+					$author$project$Main$DisplayChallengePage(modelForDC),
+					A2($elm$core$Platform$Cmd$map, $author$project$Main$DCPageMsg, commandsFromDC));
 		}
 	}();
 	var currentPage = _v1.a;
@@ -11579,6 +11638,99 @@ var $author$project$ErrorMessages$buildErrorMessage = function (httpError) {
 			return message;
 	}
 };
+var $author$project$Page$DisplayChallenge$ChallengeSaved = function (a) {
+	return {$: 'ChallengeSaved', a: a};
+};
+var $author$project$Challenge$challengeDescriptionEncoder = function (_v0) {
+	var description = _v0.a;
+	return $elm$json$Json$Encode$string(description);
+};
+var $elm$json$Json$Encode$int = _Json_wrap;
+var $author$project$Challenge$challengeIdEncoder = function (_v0) {
+	var id = _v0.a;
+	return $elm$json$Json$Encode$int(id);
+};
+var $author$project$Challenge$challengeTitleEncoder = function (_v0) {
+	var title = _v0.a;
+	return $elm$json$Json$Encode$string(title);
+};
+var $author$project$Challenge$challengeEncoder = function (challenge) {
+	return $elm$json$Json$Encode$object(
+		_List_fromArray(
+			[
+				_Utils_Tuple2(
+				'id',
+				$author$project$Challenge$challengeIdEncoder(challenge.id)),
+				_Utils_Tuple2(
+				'title',
+				$author$project$Challenge$challengeTitleEncoder(challenge.title)),
+				_Utils_Tuple2(
+				'authorName',
+				$author$project$Challenge$challengeDescriptionEncoder(challenge.description))
+			]));
+};
+var $elm$http$Http$jsonBody = function (value) {
+	return A2(
+		_Http_pair,
+		'application/json',
+		A2($elm$json$Json$Encode$encode, 0, value));
+};
+var $author$project$Page$DisplayChallenge$saveChallenge = function (challenge) {
+	if (challenge.$ === 'Success') {
+		var challengeData = challenge.a;
+		var challengeUrl = 'http://localhost:5019/challenges/' + $author$project$Challenge$challengeIdToString(challengeData.id);
+		return $elm$http$Http$request(
+			{
+				body: $elm$http$Http$jsonBody(
+					$author$project$Challenge$challengeEncoder(challengeData)),
+				expect: A2($elm$http$Http$expectJson, $author$project$Page$DisplayChallenge$ChallengeSaved, $author$project$Challenge$challengeDecoder),
+				headers: _List_Nil,
+				method: 'PATCH',
+				timeout: $elm$core$Maybe$Nothing,
+				tracker: $elm$core$Maybe$Nothing,
+				url: challengeUrl
+			});
+	} else {
+		return $elm$core$Platform$Cmd$none;
+	}
+};
+var $krisajenkins$remotedata$RemoteData$succeed = $krisajenkins$remotedata$RemoteData$Success;
+var $author$project$Page$DisplayChallenge$updateDC = F2(
+	function (msg, model) {
+		switch (msg.$) {
+			case 'ChallengeReceived':
+				var serverResponse = msg.a;
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{challenge: serverResponse}),
+					$elm$core$Platform$Cmd$none);
+			case 'SaveChallenge':
+				return _Utils_Tuple2(
+					model,
+					$author$project$Page$DisplayChallenge$saveChallenge(model.challenge));
+			default:
+				if (msg.a.$ === 'Ok') {
+					var serverResponse = msg.a.a;
+					var challengeData = $krisajenkins$remotedata$RemoteData$succeed(serverResponse);
+					return _Utils_Tuple2(
+						_Utils_update(
+							model,
+							{challenge: challengeData, saveError: $elm$core$Maybe$Nothing}),
+						$elm$core$Platform$Cmd$none);
+				} else {
+					var error = msg.a.a;
+					return _Utils_Tuple2(
+						_Utils_update(
+							model,
+							{
+								saveError: $elm$core$Maybe$Just(
+									$author$project$ErrorMessages$buildErrorMessage(error))
+							}),
+						$elm$core$Platform$Cmd$none);
+				}
+		}
+	});
 var $krisajenkins$remotedata$RemoteData$NotAsked = {$: 'NotAsked'};
 var $krisajenkins$remotedata$RemoteData$map = F2(
 	function (f, data) {
@@ -11604,9 +11756,12 @@ var $author$project$Route$routeToString = function (route) {
 			return '/challenges';
 		case 'ListOfUsersRoute':
 			return '/users';
-		default:
+		case 'UserRoute':
 			var userId = route.a;
 			return '/users/' + $author$project$User$userIdToString(userId);
+		default:
+			var challengeId = route.a;
+			return 'challenges' + $author$project$Challenge$challengeIdToString(challengeId);
 	}
 };
 var $author$project$Route$pushUrl = F2(
@@ -11618,17 +11773,6 @@ var $author$project$Route$pushUrl = F2(
 	});
 var $author$project$Page$EditUser$UserSaved = function (a) {
 	return {$: 'UserSaved', a: a};
-};
-var $elm$http$Http$jsonBody = function (value) {
-	return A2(
-		_Http_pair,
-		'application/json',
-		A2($elm$json$Json$Encode$encode, 0, value));
-};
-var $elm$json$Json$Encode$int = _Json_wrap;
-var $author$project$Challenge$challengeIdEncoder = function (_v0) {
-	var id = _v0.a;
-	return $elm$json$Json$Encode$int(id);
 };
 var $author$project$User$completedChallengesEncoder = $elm$json$Json$Encode$list($author$project$Challenge$challengeIdEncoder);
 var $author$project$User$userIdEncoder = function (_v0) {
@@ -11673,7 +11817,6 @@ var $author$project$Page$EditUser$saveUser = function (user) {
 		return $elm$core$Platform$Cmd$none;
 	}
 };
-var $krisajenkins$remotedata$RemoteData$succeed = $krisajenkins$remotedata$RemoteData$Success;
 var $author$project$Page$EditUser$updateEU = F2(
 	function (msg, model) {
 		switch (msg.$) {
@@ -11764,7 +11907,7 @@ var $author$project$Page$ListOfUsers$updateLoU = F2(
 var $author$project$Main$updateMain = F2(
 	function (msg, model) {
 		var _v0 = _Utils_Tuple2(msg, model.currentPage);
-		_v0$5:
+		_v0$6:
 		while (true) {
 			switch (_v0.a.$) {
 				case 'LoUPageMsg':
@@ -11782,7 +11925,7 @@ var $author$project$Main$updateMain = F2(
 								}),
 							A2($elm$core$Platform$Cmd$map, $author$project$Main$LoUPageMsg, updatedLoUCmd));
 					} else {
-						break _v0$5;
+						break _v0$6;
 					}
 				case 'LoCPageMsg':
 					if (_v0.b.$ === 'ListOfChallengesPage') {
@@ -11799,7 +11942,7 @@ var $author$project$Main$updateMain = F2(
 								}),
 							A2($elm$core$Platform$Cmd$map, $author$project$Main$LoCPageMsg, updatedLoCCmd));
 					} else {
-						break _v0$5;
+						break _v0$6;
 					}
 				case 'EUPageMsg':
 					if (_v0.b.$ === 'EditUserPage') {
@@ -11816,7 +11959,24 @@ var $author$project$Main$updateMain = F2(
 								}),
 							A2($elm$core$Platform$Cmd$map, $author$project$Main$EUPageMsg, updatedEUCmd));
 					} else {
-						break _v0$5;
+						break _v0$6;
+					}
+				case 'DCPageMsg':
+					if (_v0.b.$ === 'DisplayChallengePage') {
+						var msgDC = _v0.a.a;
+						var modelDC = _v0.b.a;
+						var _v4 = A2($author$project$Page$DisplayChallenge$updateDC, msgDC, modelDC);
+						var updatedDCModel = _v4.a;
+						var updatedDCCmd = _v4.b;
+						return _Utils_Tuple2(
+							_Utils_update(
+								model,
+								{
+									currentPage: $author$project$Main$DisplayChallengePage(updatedDCModel)
+								}),
+							A2($elm$core$Platform$Cmd$map, $author$project$Main$DCPageMsg, updatedDCCmd));
+					} else {
+						break _v0$6;
 					}
 				case 'LinkClicked':
 					var urlRequest = _v0.a.a;
@@ -11855,6 +12015,181 @@ var $author$project$Main$notFoundView = A2(
 		[
 			$elm$html$Html$text('Oops! The page you requested was not found!')
 		]));
+var $author$project$Page$DisplayChallenge$SaveChallenge = {$: 'SaveChallenge'};
+var $elm$html$Html$br = _VirtualDom_node('br');
+var $author$project$Challenge$challengeDescriptionToString = function (_v0) {
+	var descriptionAsString = _v0.a;
+	return descriptionAsString;
+};
+var $author$project$Challenge$challengeTitleToString = function (_v0) {
+	var titleAsString = _v0.a;
+	return titleAsString;
+};
+var $elm$json$Json$Encode$bool = _Json_wrap;
+var $elm$html$Html$Attributes$boolProperty = F2(
+	function (key, bool) {
+		return A2(
+			_VirtualDom_property,
+			key,
+			$elm$json$Json$Encode$bool(bool));
+	});
+var $elm$html$Html$Attributes$checked = $elm$html$Html$Attributes$boolProperty('checked');
+var $elm$html$Html$Attributes$for = $elm$html$Html$Attributes$stringProperty('htmlFor');
+var $elm$html$Html$form = _VirtualDom_node('form');
+var $elm$html$Html$label = _VirtualDom_node('label');
+var $elm$html$Html$Attributes$name = $elm$html$Html$Attributes$stringProperty('name');
+var $author$project$Page$DisplayChallenge$displayChallengeForm = function (challenge) {
+	return A2(
+		$elm$html$Html$form,
+		_List_Nil,
+		_List_fromArray(
+			[
+				A2(
+				$elm$html$Html$div,
+				_List_Nil,
+				_List_fromArray(
+					[
+						A2(
+						$elm$html$Html$h3,
+						_List_Nil,
+						_List_fromArray(
+							[
+								$elm$html$Html$text('Title')
+							])),
+						$elm$html$Html$text(
+						$author$project$Challenge$challengeTitleToString(challenge.title)),
+						A2($elm$html$Html$br, _List_Nil, _List_Nil),
+						A2(
+						$elm$html$Html$h3,
+						_List_Nil,
+						_List_fromArray(
+							[
+								$elm$html$Html$text('Description')
+							])),
+						$elm$html$Html$text(
+						$author$project$Challenge$challengeDescriptionToString(challenge.description)),
+						A2($elm$html$Html$br, _List_Nil, _List_Nil)
+					])),
+				A2(
+				$elm$html$Html$div,
+				_List_Nil,
+				_List_fromArray(
+					[
+						A2(
+						$elm$html$Html$input,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$type_('checkbox'),
+								$elm$html$Html$Attributes$checked(true),
+								$elm$html$Html$Attributes$name('myCB')
+							]),
+						_List_Nil),
+						A2(
+						$elm$html$Html$label,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$for('myCB')
+							]),
+						_List_fromArray(
+							[
+								$elm$html$Html$text('Challenge Completed')
+							]))
+					])),
+				A2(
+				$elm$html$Html$div,
+				_List_Nil,
+				_List_fromArray(
+					[
+						A2(
+						$elm$html$Html$button,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$type_('button'),
+								$elm$html$Html$Events$onClick($author$project$Page$DisplayChallenge$SaveChallenge)
+							]),
+						_List_fromArray(
+							[
+								$elm$html$Html$text('Submit')
+							]))
+					]))
+			]));
+};
+var $author$project$Page$DisplayChallenge$viewFetchError = function (errorMessage) {
+	var errorHeading = 'Couldn\'t fetch post at this time.';
+	return A2(
+		$elm$html$Html$div,
+		_List_Nil,
+		_List_fromArray(
+			[
+				A2(
+				$elm$html$Html$h3,
+				_List_Nil,
+				_List_fromArray(
+					[
+						$elm$html$Html$text(errorHeading)
+					])),
+				$elm$html$Html$text('Error: ' + errorMessage)
+			]));
+};
+var $author$project$Page$DisplayChallenge$viewChallenge = function (challenge) {
+	switch (challenge.$) {
+		case 'NotAsked':
+			return $elm$html$Html$text('');
+		case 'Loading':
+			return A2(
+				$elm$html$Html$h3,
+				_List_Nil,
+				_List_fromArray(
+					[
+						$elm$html$Html$text('Loading Post...')
+					]));
+		case 'Success':
+			var challengeData = challenge.a;
+			return $author$project$Page$DisplayChallenge$displayChallengeForm(challengeData);
+		default:
+			var httpError = challenge.a;
+			return $author$project$Page$DisplayChallenge$viewFetchError(
+				$author$project$ErrorMessages$buildErrorMessage(httpError));
+	}
+};
+var $author$project$ErrorMessages$viewSaveError = function (maybeError) {
+	if (maybeError.$ === 'Just') {
+		var error = maybeError.a;
+		return A2(
+			$elm$html$Html$div,
+			_List_Nil,
+			_List_fromArray(
+				[
+					A2(
+					$elm$html$Html$h3,
+					_List_Nil,
+					_List_fromArray(
+						[
+							$elm$html$Html$text('Couldn\'t save post at this time.')
+						])),
+					$elm$html$Html$text('Error: ' + error)
+				]));
+	} else {
+		return $elm$html$Html$text('');
+	}
+};
+var $author$project$Page$DisplayChallenge$viewDC = function (model) {
+	return A2(
+		$elm$html$Html$div,
+		_List_Nil,
+		_List_fromArray(
+			[
+				A2(
+				$elm$html$Html$h3,
+				_List_Nil,
+				_List_fromArray(
+					[
+						$elm$html$Html$text('Edit Post')
+					])),
+				$author$project$Page$DisplayChallenge$viewChallenge(model.challenge),
+				$author$project$ErrorMessages$viewSaveError(model.saveError)
+			]));
+};
 var $author$project$Page$EditUser$viewSaveError = function (maybeError) {
 	if (maybeError.$ === 'Just') {
 		var error = maybeError.a;
@@ -11880,20 +12215,6 @@ var $author$project$Page$EditUser$SaveUser = {$: 'SaveUser'};
 var $author$project$Page$EditUser$UpdateUserName = function (a) {
 	return {$: 'UpdateUserName', a: a};
 };
-var $elm$html$Html$br = _VirtualDom_node('br');
-var $elm$json$Json$Encode$bool = _Json_wrap;
-var $elm$html$Html$Attributes$boolProperty = F2(
-	function (key, bool) {
-		return A2(
-			_VirtualDom_property,
-			key,
-			$elm$json$Json$Encode$bool(bool));
-	});
-var $elm$html$Html$Attributes$checked = $elm$html$Html$Attributes$boolProperty('checked');
-var $elm$html$Html$Attributes$for = $elm$html$Html$Attributes$stringProperty('htmlFor');
-var $elm$html$Html$form = _VirtualDom_node('form');
-var $elm$html$Html$label = _VirtualDom_node('label');
-var $elm$html$Html$Attributes$name = $elm$html$Html$Attributes$stringProperty('name');
 var $author$project$User$userNameToString = function (_v0) {
 	var titleAsString = _v0.a;
 	return titleAsString;
@@ -12024,21 +12345,10 @@ var $author$project$Page$EditUser$viewEU = function (model) {
 };
 var $author$project$Page$ListOfChallenges$FetchChallenges = {$: 'FetchChallenges'};
 var $elm$html$Html$table = _VirtualDom_node('table');
-var $author$project$Challenge$challengeDescriptionToString = function (_v0) {
-	var descriptionAsString = _v0.a;
-	return descriptionAsString;
-};
-var $author$project$Challenge$challengeIdToString = function (_v0) {
-	var idAsInt = _v0.a;
-	return $elm$core$String$fromInt(idAsInt);
-};
-var $author$project$Challenge$challengeTitleToString = function (_v0) {
-	var titleAsString = _v0.a;
-	return titleAsString;
-};
 var $elm$html$Html$td = _VirtualDom_node('td');
 var $elm$html$Html$tr = _VirtualDom_node('tr');
 var $author$project$Page$ListOfChallenges$viewChallenge = function (challenge) {
+	var challengePath = '/challenges/' + $author$project$Challenge$challengeIdToString(challenge.id);
 	return A2(
 		$elm$html$Html$tr,
 		_List_Nil,
@@ -12067,6 +12377,22 @@ var $author$project$Page$ListOfChallenges$viewChallenge = function (challenge) {
 					[
 						$elm$html$Html$text(
 						$author$project$Challenge$challengeDescriptionToString(challenge.description))
+					])),
+				A2(
+				$elm$html$Html$td,
+				_List_Nil,
+				_List_fromArray(
+					[
+						A2(
+						$elm$html$Html$a,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$href(challengePath)
+							]),
+						_List_fromArray(
+							[
+								$elm$html$Html$text('Display')
+							]))
 					]))
 			]));
 };
@@ -12350,12 +12676,18 @@ var $author$project$Main$currentView = function (model) {
 				$elm$html$Html$map,
 				$author$project$Main$LoCPageMsg,
 				$author$project$Page$ListOfChallenges$viewLoC(modelLoC));
-		default:
+		case 'EditUserPage':
 			var modelEU = _v0.a;
 			return A2(
 				$elm$html$Html$map,
 				$author$project$Main$EUPageMsg,
 				$author$project$Page$EditUser$viewEU(modelEU));
+		default:
+			var modelDC = _v0.a;
+			return A2(
+				$elm$html$Html$map,
+				$author$project$Main$DCPageMsg,
+				$author$project$Page$DisplayChallenge$viewDC(modelDC));
 	}
 };
 var $elm$html$Html$footer = _VirtualDom_node('footer');
@@ -12443,7 +12775,7 @@ var $author$project$Main$main = $elm$browser$Browser$application(
 		view: $author$project$Main$viewMain
 	});
 _Platform_export({'Main':{'init':$author$project$Main$main(
-	$elm$json$Json$Decode$succeed(_Utils_Tuple0))({"versions":{"elm":"0.19.1"},"types":{"message":"Main.Msg","aliases":{"Url.Url":{"args":[],"type":"{ protocol : Url.Protocol, host : String.String, port_ : Maybe.Maybe Basics.Int, path : String.String, query : Maybe.Maybe String.String, fragment : Maybe.Maybe String.String }"},"Challenge.Challenge":{"args":[],"type":"{ id : Challenge.ChallengeId, title : Challenge.ChallengeTitle, description : Challenge.ChallengeDescription }"},"User.User":{"args":[],"type":"{ id : User.UserId, name : User.UserName, completedChallenges : List.List Challenge.ChallengeId }"},"RemoteData.WebData":{"args":["a"],"type":"RemoteData.RemoteData Http.Error a"}},"unions":{"Main.Msg":{"args":[],"tags":{"LoUPageMsg":["Page.ListOfUsers.MsgLoU"],"LoCPageMsg":["Page.ListOfChallenges.MsgLoC"],"EUPageMsg":["Page.EditUser.MsgEU"],"LinkClicked":["Browser.UrlRequest"],"UrlChanged":["Url.Url"]}},"Basics.Int":{"args":[],"tags":{"Int":[]}},"Maybe.Maybe":{"args":["a"],"tags":{"Just":["a"],"Nothing":[]}},"Page.EditUser.MsgEU":{"args":[],"tags":{"UserReceived":["RemoteData.WebData User.User"],"UpdateUserName":["String.String"],"SaveUser":[],"UserSaved":["Result.Result Http.Error User.User"]}},"Page.ListOfChallenges.MsgLoC":{"args":[],"tags":{"FetchChallenges":[],"ChallengesReceived":["RemoteData.WebData (List.List Challenge.Challenge)"]}},"Page.ListOfUsers.MsgLoU":{"args":[],"tags":{"FetchUsers":[],"UsersReceived":["RemoteData.WebData (List.List User.User)"]}},"Url.Protocol":{"args":[],"tags":{"Http":[],"Https":[]}},"String.String":{"args":[],"tags":{"String":[]}},"Browser.UrlRequest":{"args":[],"tags":{"Internal":["Url.Url"],"External":["String.String"]}},"Challenge.ChallengeDescription":{"args":[],"tags":{"ChallengeDescription":["String.String"]}},"Challenge.ChallengeId":{"args":[],"tags":{"ChallengeId":["Basics.Int"]}},"Challenge.ChallengeTitle":{"args":[],"tags":{"ChallengeTitle":["String.String"]}},"Http.Error":{"args":[],"tags":{"BadUrl":["String.String"],"Timeout":[],"NetworkError":[],"BadStatus":["Basics.Int"],"BadBody":["String.String"]}},"List.List":{"args":["a"],"tags":{}},"RemoteData.RemoteData":{"args":["e","a"],"tags":{"NotAsked":[],"Loading":[],"Failure":["e"],"Success":["a"]}},"Result.Result":{"args":["error","value"],"tags":{"Ok":["value"],"Err":["error"]}},"User.UserId":{"args":[],"tags":{"UserId":["Basics.Int"]}},"User.UserName":{"args":[],"tags":{"UserName":["String.String"]}}}}})}});}(this));
+	$elm$json$Json$Decode$succeed(_Utils_Tuple0))({"versions":{"elm":"0.19.1"},"types":{"message":"Main.Msg","aliases":{"Url.Url":{"args":[],"type":"{ protocol : Url.Protocol, host : String.String, port_ : Maybe.Maybe Basics.Int, path : String.String, query : Maybe.Maybe String.String, fragment : Maybe.Maybe String.String }"},"Challenge.Challenge":{"args":[],"type":"{ id : Challenge.ChallengeId, title : Challenge.ChallengeTitle, description : Challenge.ChallengeDescription }"},"User.User":{"args":[],"type":"{ id : User.UserId, name : User.UserName, completedChallenges : List.List Challenge.ChallengeId }"},"RemoteData.WebData":{"args":["a"],"type":"RemoteData.RemoteData Http.Error a"}},"unions":{"Main.Msg":{"args":[],"tags":{"LoUPageMsg":["Page.ListOfUsers.MsgLoU"],"LoCPageMsg":["Page.ListOfChallenges.MsgLoC"],"EUPageMsg":["Page.EditUser.MsgEU"],"DCPageMsg":["Page.DisplayChallenge.MsgDC"],"LinkClicked":["Browser.UrlRequest"],"UrlChanged":["Url.Url"]}},"Basics.Int":{"args":[],"tags":{"Int":[]}},"Maybe.Maybe":{"args":["a"],"tags":{"Just":["a"],"Nothing":[]}},"Page.DisplayChallenge.MsgDC":{"args":[],"tags":{"ChallengeReceived":["RemoteData.WebData Challenge.Challenge"],"SaveChallenge":[],"ChallengeSaved":["Result.Result Http.Error Challenge.Challenge"]}},"Page.EditUser.MsgEU":{"args":[],"tags":{"UserReceived":["RemoteData.WebData User.User"],"UpdateUserName":["String.String"],"SaveUser":[],"UserSaved":["Result.Result Http.Error User.User"]}},"Page.ListOfChallenges.MsgLoC":{"args":[],"tags":{"FetchChallenges":[],"ChallengesReceived":["RemoteData.WebData (List.List Challenge.Challenge)"]}},"Page.ListOfUsers.MsgLoU":{"args":[],"tags":{"FetchUsers":[],"UsersReceived":["RemoteData.WebData (List.List User.User)"]}},"Url.Protocol":{"args":[],"tags":{"Http":[],"Https":[]}},"String.String":{"args":[],"tags":{"String":[]}},"Browser.UrlRequest":{"args":[],"tags":{"Internal":["Url.Url"],"External":["String.String"]}},"Challenge.ChallengeDescription":{"args":[],"tags":{"ChallengeDescription":["String.String"]}},"Challenge.ChallengeId":{"args":[],"tags":{"ChallengeId":["Basics.Int"]}},"Challenge.ChallengeTitle":{"args":[],"tags":{"ChallengeTitle":["String.String"]}},"Http.Error":{"args":[],"tags":{"BadUrl":["String.String"],"Timeout":[],"NetworkError":[],"BadStatus":["Basics.Int"],"BadBody":["String.String"]}},"List.List":{"args":["a"],"tags":{}},"RemoteData.RemoteData":{"args":["e","a"],"tags":{"NotAsked":[],"Loading":[],"Failure":["e"],"Success":["a"]}},"Result.Result":{"args":["error","value"],"tags":{"Ok":["value"],"Err":["error"]}},"User.UserId":{"args":[],"tags":{"UserId":["Basics.Int"]}},"User.UserName":{"args":[],"tags":{"UserName":["String.String"]}}}}})}});}(this));
 
   var app = Elm.Main.init({ node: document.getElementById("elm") });
 }

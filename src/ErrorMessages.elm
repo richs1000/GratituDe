@@ -1,5 +1,7 @@
 module ErrorMessages exposing (..)
 
+import Html exposing (..)
+import Html.Attributes exposing (..)
 import Http
 
 
@@ -20,3 +22,16 @@ buildErrorMessage httpError =
 
         Http.BadBody message ->
             message
+
+
+viewSaveError : Maybe String -> Html msg
+viewSaveError maybeError =
+    case maybeError of
+        Just error ->
+            div []
+                [ h3 [] [ text "Couldn't save post at this time." ]
+                , text ("Error: " ++ error)
+                ]
+
+        Nothing ->
+            text ""

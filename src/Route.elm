@@ -10,6 +10,7 @@ module Route exposing (..)
 -}
 
 import Browser.Navigation as Nav
+import Challenge
 import Url
 import Url.Parser exposing ((</>))
 import User
@@ -20,6 +21,7 @@ type Route
     | ListOfChallengesRoute
     | ListOfUsersRoute
     | UserRoute User.UserId
+    | ChallengeRoute Challenge.ChallengeId
 
 
 parseUrl : Url.Url -> Route
@@ -39,6 +41,7 @@ routeParsers =
         , Url.Parser.map ListOfUsersRoute (Url.Parser.s "users")
         , Url.Parser.map ListOfChallengesRoute (Url.Parser.s "challenges")
         , Url.Parser.map UserRoute (Url.Parser.s "users" </> User.userIdParser)
+        , Url.Parser.map ChallengeRoute (Url.Parser.s "challenges" </> Challenge.challengeIdParser)
         ]
 
 
@@ -62,3 +65,6 @@ routeToString route =
 
         UserRoute userId ->
             "/users/" ++ User.userIdToString userId
+
+        ChallengeRoute challengeId ->
+            "challenges" ++ Challenge.challengeIdToString challengeId

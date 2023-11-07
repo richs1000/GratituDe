@@ -8,6 +8,7 @@ module Challenge exposing (..)
 import Json.Decode as Decode
 import Json.Decode.Pipeline as Pipeline
 import Json.Encode as Encode
+import Url.Parser
 
 
 
@@ -21,6 +22,23 @@ type alias Challenge =
     , title : ChallengeTitle
     , description : ChallengeDescription
     }
+
+
+challengeEncoder : Challenge -> Encode.Value
+challengeEncoder challenge =
+    Encode.object
+        [ ( "id", challengeIdEncoder challenge.id )
+        , ( "title", challengeTitleEncoder challenge.title )
+        , ( "authorName", challengeDescriptionEncoder challenge.description )
+        ]
+
+
+challengeDecoder : Decode.Decoder Challenge
+challengeDecoder =
+    Decode.succeed Challenge
+        |> Pipeline.required "id" challengeIdDecoder
+        |> Pipeline.required "title" challengeTitleDecoder
+        |> Pipeline.required "description" challengeDescriptionDecoder
 
 
 type ChallengeId
@@ -42,6 +60,17 @@ challengeIdToString (ChallengeId idAsInt) =
     String.fromInt idAsInt
 
 
+
+-- Extracts a challenge ID from a URL
+
+
+challengeIdParser : Url.Parser.Parser (ChallengeId -> a) a
+challengeIdParser =
+    Url.Parser.custom "CHALLENGEID" <|
+        \challengeIdAsString ->
+            Maybe.map ChallengeId (String.toInt challengeIdAsString)
+
+
 type ChallengeTitle
     = ChallengeTitle String
 
@@ -49,6 +78,11 @@ type ChallengeTitle
 challengeTitleDecoder : Decode.Decoder ChallengeTitle
 challengeTitleDecoder =
     Decode.map ChallengeTitle Decode.string
+
+
+challengeTitleEncoder : ChallengeTitle -> Encode.Value
+challengeTitleEncoder (ChallengeTitle title) =
+    Encode.string title
 
 
 challengeTitleToString : ChallengeTitle -> String
@@ -63,6 +97,11 @@ type ChallengeDescription
 challengeDescriptionDecoder : Decode.Decoder ChallengeDescription
 challengeDescriptionDecoder =
     Decode.map ChallengeDescription Decode.string
+
+
+challengeDescriptionEncoder : ChallengeDescription -> Encode.Value
+challengeDescriptionEncoder (ChallengeDescription description) =
+    Encode.string description
 
 
 challengeDescriptionToString : ChallengeDescription -> String
@@ -91,11 +130,3 @@ challengeCompletedToString (ChallengeCompleted completedAsBool) =
 listOfChallengesDecoder : Decode.Decoder (List Challenge)
 listOfChallengesDecoder =
     Decode.list challengeDecoder
-
-
-challengeDecoder : Decode.Decoder Challenge
-challengeDecoder =
-    Decode.succeed Challenge
-        |> Pipeline.required "id" challengeIdDecoder
-        |> Pipeline.required "title" challengeTitleDecoder
-        |> Pipeline.required "description" challengeDescriptionDecoder

@@ -99,6 +99,10 @@ viewListOfChallenges challenges =
 
 viewChallenge : Challenge.Challenge -> Html MsgLoC
 viewChallenge challenge =
+    let
+        challengePath =
+            "/challenges/" ++ Challenge.challengeIdToString challenge.id
+    in
     tr []
         [ td []
             [ text (Challenge.challengeIdToString challenge.id) ]
@@ -106,6 +110,8 @@ viewChallenge challenge =
             [ text (Challenge.challengeTitleToString challenge.title) ]
         , td []
             [ text (Challenge.challengeDescriptionToString challenge.description) ]
+        , td []
+            [ a [ href challengePath ] [ text "Display" ] ]
         ]
 
 
@@ -131,22 +137,3 @@ viewFetchError errorMessage =
         [ h3 [] [ text errorHeading ]
         , text ("Error: " ++ errorMessage)
         ]
-
-
-buildErrorMessage : Http.Error -> String
-buildErrorMessage httpError =
-    case httpError of
-        Http.BadUrl message ->
-            message
-
-        Http.Timeout ->
-            "Server is taking too long to respond. Please try again later."
-
-        Http.NetworkError ->
-            "Unable to reach server."
-
-        Http.BadStatus statusCode ->
-            "Request failed with status code: " ++ String.fromInt statusCode
-
-        Http.BadBody message ->
-            message

@@ -10,7 +10,7 @@ import Html exposing (a)
 import Json.Decode as Decode
 import Json.Decode.Pipeline as Pipeline
 import Json.Encode as Encode
-import Url.Parser exposing (Parser)
+import Url.Parser
 
 
 
