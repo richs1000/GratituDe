@@ -100,7 +100,7 @@ saveChallenge challenge =
 viewDC : ModelDC -> Html MsgDC
 viewDC model =
     div []
-        [ h3 [] [ text "Edit Post" ]
+        [ h3 [] [ text "This Week's Challenge" ]
         , viewChallenge model.challenge
         , EM.viewSaveError model.saveError
         ]
@@ -113,7 +113,7 @@ viewChallenge challenge =
             text ""
 
         RD.Loading ->
-            h3 [] [ text "Loading Post..." ]
+            h3 [] [ text "Loading Challenge..." ]
 
         RD.Success challengeData ->
             displayChallengeForm challengeData
@@ -133,6 +133,7 @@ displayChallengeForm challenge =
             , text (Challenge.challengeDescriptionToString challenge.description)
             , br [] []
             ]
+        , br [] []
         , div []
             [ input
                 [ type_ "checkbox"
@@ -143,10 +144,12 @@ displayChallengeForm challenge =
             , label [ for "myCB" ]
                 [ text "Challenge Completed" ]
             ]
+        , br [] []
         , div []
             [ button [ type_ "button", onClick SaveChallenge ]
                 [ text "Submit" ]
             ]
+        , br [] []
         ]
 
 

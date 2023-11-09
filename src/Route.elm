@@ -18,6 +18,7 @@ import User
 
 type Route
     = RouteNotFound
+    | LandingPageRoute
     | ListOfChallengesRoute
     | ListOfUsersRoute
     | UserRoute User.UserId
@@ -38,7 +39,8 @@ parseUrl url =
 routeParsers : Url.Parser.Parser (Route -> a) a
 routeParsers =
     Url.Parser.oneOf
-        [ Url.Parser.map ListOfUsersRoute Url.Parser.top
+        [ Url.Parser.map LandingPageRoute Url.Parser.top
+        , Url.Parser.map LandingPageRoute (Url.Parser.s "home")
         , Url.Parser.map ListOfUsersRoute (Url.Parser.s "users")
         , Url.Parser.map ListOfChallengesRoute (Url.Parser.s "challenges")
         , Url.Parser.map UserRoute (Url.Parser.s "users" </> User.userIdParser)
@@ -73,3 +75,6 @@ routeToString route =
 
         NewUserRoute ->
             "/users/new"
+
+        LandingPageRoute ->
+            "/"

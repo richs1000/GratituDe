@@ -4,6 +4,8 @@ module Main exposing (main)
    https://elmprogramming.com/navigating-to-list-posts-page.html
    https://livebook.manning.com/book/elm-in-action/chapter-8/50
    https://elmprogramming.com/creating-a-new-post.html
+
+   https://github.com/justinmimbs/date
 -}
 {-
    json-server --watch server/gratitude.json -p 5019 --delay 2000
@@ -13,9 +15,13 @@ module Main exposing (main)
    git commit -m "
    git push -u github main
 -}
+{-
+   elm install justinmimbs/date
+-}
 
 import Browser
 import Browser.Navigation as Nav
+import Date
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Page.DisplayChallenge as DC
@@ -24,6 +30,7 @@ import Page.ListOfChallenges as LoC
 import Page.ListOfUsers as LoU
 import Page.NewUser as NU
 import Route
+import Task
 import Url
 
 
@@ -37,11 +44,16 @@ type alias Model =
     -- navKey is used internally by Elm for accessing the browser's
     -- address bar
     , navKey : Nav.Key
+
+    -- I need to know what week of the year it is (1-52) so I can
+    -- display the correct challenge of the week
+    , thisWeeksChallenge : Int
     }
 
 
 type Page
     = NotFoundPage
+    | LandingPage
     | ListOfUsersPage LoU.ModelLoU
     | ListOfChallengesPage LoC.ModelLoC
     | EditUserPage EU.ModelEU
@@ -65,6 +77,8 @@ type
     | LinkClicked Browser.UrlRequest
       -- URL in browser changes
     | UrlChanged Url.Url
+      -- when we start, we need to get the current date
+    | ReceiveDate Date.Date
 
 
 initMain : () -> Url.Url -> Nav.Key -> ( Model, Cmd Msg )
@@ -74,9 +88,13 @@ initMain flags url navKey =
             { route = Route.parseUrl url
             , currentPage = NotFoundPage
             , navKey = navKey
+            , thisWeeksChallenge = 0
             }
     in
-    setCurrentPage ( model, Cmd.none )
+    setCurrentPage
+        ( model
+        , Date.today |> Task.perform ReceiveDate
+        )
 
 
 setCurrentPage : ( Model, Cmd Msg ) -> ( Model, Cmd Msg )
@@ -89,6 +107,10 @@ setCurrentPage ( model, existingCmds ) =
                 Route.RouteNotFound ->
                     -- go to the "not found" page
                     ( NotFoundPage, Cmd.none )
+
+                Route.LandingPageRoute ->
+                    -- display the "home" page
+                    ( LandingPage, Cmd.none )
 
                 -- if the route parsed to our list of users page...
                 Route.ListOfUsersRoute ->
@@ -186,22 +208,39 @@ viewMain model =
 footerView : Html Msg
 footerView =
     footer []
-        [ text "Copyright and other footer stuff..." ]
+        [ br [] []
+        , br [] []
+        , text "Copyright and other footer stuff..."
+        ]
 
 
 headerView : Model -> Html Msg
 headerView model =
     let
         logo =
-            h1 [] [ text "GratituDe" ]
+            a [ href "/home" ]
+                [ h1 [] [ text "GratituDe" ] ]
+
+        lineBreaks =
+            div []
+                [ br [] []
+                , br [] []
+                ]
 
         links =
             ul []
-                [ li [] [ a [ href "/users" ] [ text "Users" ] ]
-                , li [] [ a [ href "/challenges" ] [ text "Challenges" ] ]
+                [ li [] [ a [ href "/home" ] [ text "Home" ] ]
+                , li [] [ a [ href ("/challenges/" ++ String.fromInt model.thisWeeksChallenge) ] [ text "This Week's Challenge" ] ]
+                , li [] [ a [ href "/enhanceYou" ] [ text "Enhance You" ] ]
+                , li [] [ a [ href "/sota" ] [ text "SOTA" ] ]
+                , li [] [ a [ href "/login" ] [ text "Login" ] ]
                 ]
     in
-    nav [] [ logo, links ]
+    nav []
+        [ logo
+        , links
+        , lineBreaks
+        ]
 
 
 currentView : Model -> Html Msg
@@ -209,6 +248,9 @@ currentView model =
     case model.currentPage of
         NotFoundPage ->
             notFoundView
+
+        LandingPage ->
+            landingPageView
 
         ListOfUsersPage modelLoU ->
             LoU.viewLoU modelLoU
@@ -231,9 +273,40 @@ currentView model =
                 |> Html.map NUPageMsg
 
 
-notFoundView : Html msg
+notFoundView : Html Msg
 notFoundView =
     h3 [] [ text "Oops! The page you requested was not found!" ]
+
+
+landingPageView : Html Msg
+landingPageView =
+    let
+        duqLogo =
+            div []
+                [ text "Duquesne University Logo"
+                , br [] []
+                , br [] []
+                ]
+
+        appLogo =
+            div []
+                [ text "GratituDe Logo"
+                , br [] []
+                , br [] []
+                ]
+
+        appMotto =
+            div []
+                [ text "Get in tune with your mind, body and soul"
+                , br [] []
+                , br [] []
+                ]
+    in
+    div []
+        [ duqLogo
+        , appLogo
+        , appMotto
+        ]
 
 
 updateMain : Msg -> Model -> ( Model, Cmd Msg )
@@ -318,6 +391,18 @@ updateMain msg model =
             in
             ( { model | route = newRoute }, Cmd.none )
                 |> setCurrentPage
+
+        ( ReceiveDate theDate, _ ) ->
+            let
+                -- The "ordinal day" (1-366) divided by 7 gives
+                -- me the "ordinal week" (1-52), this lets me know
+                -- what challenge to display
+                oWeek =
+                    (Date.ordinalDay theDate // 7) + 1
+            in
+            ( { model | thisWeeksChallenge = oWeek }
+            , Cmd.none
+            )
 
         ( _, _ ) ->
             ( model, Cmd.none )

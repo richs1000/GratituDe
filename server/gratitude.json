@@ -24,6 +24,246 @@
       "id": 5,
       "title": "Music",
       "description": "Listen to your favorite happy music each day this week"
+    },
+    {
+      "id": 6,
+      "title": "Kindness",
+      "description": "Do one random act of kindness"
+    },
+    {
+      "id": 7,
+      "title": "Sleep",
+      "description": "Get 8 hours of sleep each day this week"
+    },
+    {
+      "id": 8,
+      "title": "Podcast",
+      "description": "Listen to a podcast on mindfulness"
+    },
+    {
+      "id": 9,
+      "title": "Cook",
+      "description": "Make a new recipe"
+    },
+    {
+      "id": 10,
+      "title": "Family",
+      "description": "Call your family and catch up"
+    },
+    {
+      "id": 11,
+      "title": "Water",
+      "description": "Drink 8 cups of water each day this week"
+    },
+    {
+      "id": 12,
+      "title": "Picture",
+      "description": "Draw a picture"
+    },
+    {
+      "id": 13,
+      "title": "Movie",
+      "description": "Watch your favorite movie"
+    },
+    {
+      "id": 14,
+      "title": "Meditate",
+      "description": "Meditate for 15 minutes"
+    },
+    {
+      "id": 15,
+      "title": "Phone Off",
+      "description": "Spend one hour each day with your phone off"
+    },
+    {
+      "id": 16,
+      "title": "Shower",
+      "description": "Take a long shower"
+    },
+    {
+      "id": 17,
+      "title": "Nap",
+      "description": "Take an afternoon nap"
+    },
+    {
+      "id": 18,
+      "title": "Candle",
+      "description": "Light a candle and read a book"
+    },
+    {
+      "id": 19,
+      "title": "Sleep In",
+      "description": "Sleep in at least once this week!"
+    },
+    {
+      "id": 20,
+      "title": "Social Media",
+      "description": "Spend two days without social media"
+    },
+    {
+      "id": 21,
+      "title": "Walk",
+      "description": "Go for a walk or a run"
+    },
+    {
+      "id": 22,
+      "title": "To-do List",
+      "description": "Create a to-do list"
+    },
+    {
+      "id": 23,
+      "title": "Silent",
+      "description": "Spend the week with your phone on silent"
+    },
+    {
+      "id": 24,
+      "title": "Clean",
+      "description": "Clean your work space"
+    },
+    {
+      "id": 25,
+      "title": "Goals",
+      "description": "Create goals for this week and a big goal for this month"
+    },
+    {
+      "id": 26,
+      "title": "Dessert",
+      "description": "Reward yourself with your favorite dessert"
+    },
+    {
+      "id": 28,
+      "title": "Quotes",
+      "description": "Hang up motivational quotes in your workspace"
+    },
+    {
+      "id": 29,
+      "title": "Email",
+      "description": "Check your email only twice"
+    },
+    {
+      "id": 30,
+      "title": "Deadlines",
+      "description": "Set deadlines for your tasks this week"
+    },
+    {
+      "id": 31,
+      "title": "Schedule",
+      "description": "Schedule something fun"
+    },
+    {
+      "id": 32,
+      "title": "Donate",
+      "description": "Donate something you never use"
+    },
+    {
+      "id": 33,
+      "title": "Bedtime",
+      "description": "Go to bed 30 minutes earlier each day this week"
+    },
+    {
+      "id": 34,
+      "title": "Date Night",
+      "description": "Book a date night"
+    },
+    {
+      "id": 35,
+      "title": "Unfollow",
+      "description": "Unfollow negative social media accounts"
+    },
+    {
+      "id": 36,
+      "title": "Friends",
+      "description": "Plan a night with friends"
+    },
+    {
+      "id": 37,
+      "title": "Write",
+      "description": "Write down something good that happened each week "
+    },
+    {
+      "id": 38,
+      "title": "Compliment",
+      "description": "Compliment someone"
+    },
+    {
+      "id": 39,
+      "title": "Kindness",
+      "description": "Perform a random act of kindness"
+    },
+    {
+      "id": 40,
+      "title": "Bake",
+      "description": "Bake or make a gift"
+    },
+    {
+      "id": 41,
+      "title": "Forgive",
+      "description": "Forgive someone"
+    },
+    {
+      "id": 42,
+      "title": "Sunset",
+      "description": "Go watch the sunset"
+    },
+    {
+      "id": 43,
+      "title": "Encourage",
+      "description": "Encourage another person"
+    },
+    {
+      "id": 44,
+      "title": "List",
+      "description": "Make a gratitude list"
+    },
+    {
+      "id": 45,
+      "title": "Chore",
+      "description": "Do someone else's chore"
+    },
+    {
+      "id": 46,
+      "title": "Flowers",
+      "description": "Buy flowers for someone"
+    },
+    {
+      "id": 47,
+      "title": "Shop",
+      "description": "Shop for a new outfit"
+    },
+    {
+      "id": 48,
+      "title": "Outfit",
+      "description": "Wear your favorite outfit"
+    },
+    {
+      "id": 49,
+      "title": "Dance",
+      "description": "Have a dance party"
+    },
+    {
+      "id": 50,
+      "title": "Pride",
+      "description": "Write down what you're proud of"
+    },
+    {
+      "id": 51,
+      "title": "Closet",
+      "description": "Organize your closet"
+    },
+    {
+      "id": 52,
+      "title": "New",
+      "description": "Try something new"
+    },
+    {
+      "id": 53,
+      "title": "Letter",
+      "description": "Write a letter to someone"
+    },
+    {
+      "id": 54,
+      "title": "Journal",
+      "description": "Journal about your week"
     }
   ],
   "users": [
