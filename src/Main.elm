@@ -8,6 +8,8 @@ module Main exposing (main)
    https://github.com/justinmimbs/date
 -}
 {-
+   elm init
+
    json-server --watch server/gratitude.json -p 5019 --delay 2000
    elm-live src/Main.elm --pushstate -- --debug
 
