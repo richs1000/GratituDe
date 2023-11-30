@@ -1,6 +1,11 @@
 module Main exposing (main)
 
 {-
+   To Do:
+   * Login page
+   * Enhance You page
+-}
+{-
    https://elmprogramming.com/navigating-to-list-posts-page.html
    https://livebook.manning.com/book/elm-in-action/chapter-8/50
    https://elmprogramming.com/creating-a-new-post.html
@@ -10,12 +15,22 @@ module Main exposing (main)
 {-
    elm init
 
-   json-server --watch server/gratitude.json -p 5019 --delay 2000
+   json-server --watch server/gratitude.json -p 5019
    elm-live src/Main.elm --pushstate -- --debug
 
    git add .
    git commit -m "
    git push -u github main
+
+   https://www.atlassian.com/git/tutorials/using-branches
+   git branch -> list branches
+   git branch <branch name> -> create a branch
+   git checkout <branch name> -> switch to a branch
+
+   git checkout main
+   git merge <branch name>
+   git branch -d <branch name>
+
 -}
 {-
    elm install justinmimbs/date

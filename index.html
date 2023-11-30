@@ -11508,29 +11508,45 @@ var $author$project$Page$DisplayChallenge$initDC = F2(
 var $author$project$Page$EditUser$UserReceived = function (a) {
 	return {$: 'UserReceived', a: a};
 };
-var $author$project$User$User = F3(
-	function (id, name, completedChallenges) {
-		return {completedChallenges: completedChallenges, id: id, name: name};
+var $author$project$User$User = F5(
+	function (id, name, email, password, completedChallenges) {
+		return {completedChallenges: completedChallenges, email: email, id: id, name: name, password: password};
 	});
 var $author$project$User$completedChallengesDecoder = $elm$json$Json$Decode$list($author$project$Challenge$challengeIdDecoder);
+var $author$project$User$UserEmail = function (a) {
+	return {$: 'UserEmail', a: a};
+};
+var $author$project$User$userEmailDecoder = A2($elm$json$Json$Decode$map, $author$project$User$UserEmail, $elm$json$Json$Decode$string);
 var $author$project$User$userIdDecoder = A2($elm$json$Json$Decode$map, $author$project$User$UserId, $elm$json$Json$Decode$int);
 var $author$project$User$UserName = function (a) {
 	return {$: 'UserName', a: a};
 };
 var $author$project$User$userNameDecoder = A2($elm$json$Json$Decode$map, $author$project$User$UserName, $elm$json$Json$Decode$string);
+var $author$project$User$UserPassword = function (a) {
+	return {$: 'UserPassword', a: a};
+};
+var $author$project$User$userPasswordDecoder = A2($elm$json$Json$Decode$map, $author$project$User$UserPassword, $elm$json$Json$Decode$string);
 var $author$project$User$userDecoder = A3(
 	$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
 	'completedChallenges',
 	$author$project$User$completedChallengesDecoder,
 	A3(
 		$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
-		'name',
-		$author$project$User$userNameDecoder,
+		'password',
+		$author$project$User$userPasswordDecoder,
 		A3(
 			$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
-			'id',
-			$author$project$User$userIdDecoder,
-			$elm$json$Json$Decode$succeed($author$project$User$User))));
+			'email',
+			$author$project$User$userEmailDecoder,
+			A3(
+				$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
+				'name',
+				$author$project$User$userNameDecoder,
+				A3(
+					$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
+					'id',
+					$author$project$User$userIdDecoder,
+					$elm$json$Json$Decode$succeed($author$project$User$User))))));
 var $author$project$User$userIdToString = function (_v0) {
 	var idAsInt = _v0.a;
 	return $elm$core$String$fromInt(idAsInt);
@@ -11583,9 +11599,11 @@ var $author$project$Page$ListOfUsers$fetchUsers = $elm$http$Http$get(
 var $author$project$Page$ListOfUsers$initModelLoU = {users: $krisajenkins$remotedata$RemoteData$Loading};
 var $author$project$Page$ListOfUsers$initLoU = _Utils_Tuple2($author$project$Page$ListOfUsers$initModelLoU, $author$project$Page$ListOfUsers$fetchUsers);
 var $author$project$User$emptyCompletedChallenges = _List_Nil;
+var $author$project$User$emptyUserEmail = $author$project$User$UserEmail('');
 var $author$project$User$emptyUserId = $author$project$User$UserId(-1);
 var $author$project$User$emptyUserName = $author$project$User$UserName('');
-var $author$project$User$emptyUser = {completedChallenges: $author$project$User$emptyCompletedChallenges, id: $author$project$User$emptyUserId, name: $author$project$User$emptyUserName};
+var $author$project$User$emptyUserPassword = $author$project$User$UserPassword('');
+var $author$project$User$emptyUser = {completedChallenges: $author$project$User$emptyCompletedChallenges, email: $author$project$User$emptyUserEmail, id: $author$project$User$emptyUserId, name: $author$project$User$emptyUserName, password: $author$project$User$emptyUserPassword};
 var $author$project$Page$NewUser$initialModelNU = function (navKeyParam) {
 	return {createError: $elm$core$Maybe$Nothing, navKey: navKeyParam, newUser: $author$project$User$emptyUser};
 };
@@ -12205,6 +12223,40 @@ var $author$project$Page$EditUser$updateEU = F2(
 						model,
 						{user: updatedUserRecord}),
 					$elm$core$Platform$Cmd$none);
+			case 'UpdateUserEmail':
+				var newUserEmail = msg.a;
+				var updatedUserRecord = A2(
+					$krisajenkins$remotedata$RemoteData$map,
+					function (userData) {
+						return _Utils_update(
+							userData,
+							{
+								email: $author$project$User$UserEmail(newUserEmail)
+							});
+					},
+					model.user);
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{user: updatedUserRecord}),
+					$elm$core$Platform$Cmd$none);
+			case 'UpdateUserPassword':
+				var newUserPassword = msg.a;
+				var updatedUserRecord = A2(
+					$krisajenkins$remotedata$RemoteData$map,
+					function (userData) {
+						return _Utils_update(
+							userData,
+							{
+								password: $author$project$User$UserPassword(newUserPassword)
+							});
+					},
+					model.user);
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{user: updatedUserRecord}),
+					$elm$core$Platform$Cmd$none);
 			case 'SaveUser':
 				return _Utils_Tuple2(
 					model,
@@ -12303,6 +12355,32 @@ var $author$project$Page$NewUser$updateNU = F2(
 					oldUserData,
 					{
 						name: $author$project$User$UserName(newName)
+					});
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{newUser: updatedUser}),
+					$elm$core$Platform$Cmd$none);
+			case 'StoreEmail':
+				var newEmail = msg.a;
+				var oldUserData = model.newUser;
+				var updatedUser = _Utils_update(
+					oldUserData,
+					{
+						email: $author$project$User$UserEmail(newEmail)
+					});
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{newUser: updatedUser}),
+					$elm$core$Platform$Cmd$none);
+			case 'StorePassword':
+				var newPassword = msg.a;
+				var oldUserData = model.newUser;
+				var updatedUser = _Utils_update(
+					oldUserData,
+					{
+						password: $author$project$User$UserPassword(newPassword)
 					});
 				return _Utils_Tuple2(
 					_Utils_update(
@@ -12704,12 +12782,26 @@ var $author$project$Page$EditUser$viewSaveError = function (maybeError) {
 	}
 };
 var $author$project$Page$EditUser$SaveUser = {$: 'SaveUser'};
+var $author$project$Page$EditUser$UpdateUserEmail = function (a) {
+	return {$: 'UpdateUserEmail', a: a};
+};
 var $author$project$Page$EditUser$UpdateUserName = function (a) {
 	return {$: 'UpdateUserName', a: a};
 };
+var $author$project$Page$EditUser$UpdateUserPassword = function (a) {
+	return {$: 'UpdateUserPassword', a: a};
+};
+var $author$project$User$userEmailToString = function (_v0) {
+	var emailAsString = _v0.a;
+	return emailAsString;
+};
 var $author$project$User$userNameToString = function (_v0) {
-	var titleAsString = _v0.a;
-	return titleAsString;
+	var nameAsString = _v0.a;
+	return nameAsString;
+};
+var $author$project$User$userPasswordToString = function (_v0) {
+	var passwordAsString = _v0.a;
+	return passwordAsString;
 };
 var $author$project$Page$EditUser$editUserForm = function (user) {
 	return A2(
@@ -12735,30 +12827,43 @@ var $author$project$Page$EditUser$editUserForm = function (user) {
 							]),
 						_List_Nil)
 					])),
+				A2($elm$html$Html$br, _List_Nil, _List_Nil),
 				A2(
 				$elm$html$Html$div,
 				_List_Nil,
 				_List_fromArray(
 					[
+						$elm$html$Html$text('Email'),
+						A2($elm$html$Html$br, _List_Nil, _List_Nil),
 						A2(
 						$elm$html$Html$input,
 						_List_fromArray(
 							[
-								$elm$html$Html$Attributes$type_('checkbox'),
-								$elm$html$Html$Attributes$checked(true),
-								$elm$html$Html$Attributes$name('myCB')
+								$elm$html$Html$Attributes$type_('text'),
+								$elm$html$Html$Attributes$value(
+								$author$project$User$userEmailToString(user.email)),
+								$elm$html$Html$Events$onInput($author$project$Page$EditUser$UpdateUserEmail)
 							]),
-						_List_Nil),
+						_List_Nil)
+					])),
+				A2($elm$html$Html$br, _List_Nil, _List_Nil),
+				A2(
+				$elm$html$Html$div,
+				_List_Nil,
+				_List_fromArray(
+					[
+						$elm$html$Html$text('Password'),
+						A2($elm$html$Html$br, _List_Nil, _List_Nil),
 						A2(
-						$elm$html$Html$label,
+						$elm$html$Html$input,
 						_List_fromArray(
 							[
-								$elm$html$Html$Attributes$for('myCB')
+								$elm$html$Html$Attributes$type_('text'),
+								$elm$html$Html$Attributes$value(
+								$author$project$User$userPasswordToString(user.password)),
+								$elm$html$Html$Events$onInput($author$project$Page$EditUser$UpdateUserPassword)
 							]),
-						_List_fromArray(
-							[
-								$elm$html$Html$text('My first checkbox')
-							]))
+						_List_Nil)
 					])),
 				A2($elm$html$Html$br, _List_Nil, _List_Nil),
 				A2(
@@ -13152,6 +13257,9 @@ var $author$project$Page$ListOfUsers$viewLoU = function (model) {
 			]));
 };
 var $author$project$Page$NewUser$CreateNewUser = {$: 'CreateNewUser'};
+var $author$project$Page$NewUser$StoreEmail = function (a) {
+	return {$: 'StoreEmail', a: a};
+};
 var $author$project$Page$NewUser$StoreName = function (a) {
 	return {$: 'StoreName', a: a};
 };
@@ -13173,6 +13281,40 @@ var $author$project$Page$NewUser$newUserForm = A2(
 						[
 							$elm$html$Html$Attributes$type_('text'),
 							$elm$html$Html$Events$onInput($author$project$Page$NewUser$StoreName)
+						]),
+					_List_Nil)
+				])),
+			A2($elm$html$Html$br, _List_Nil, _List_Nil),
+			A2(
+			$elm$html$Html$div,
+			_List_Nil,
+			_List_fromArray(
+				[
+					$elm$html$Html$text('Email'),
+					A2($elm$html$Html$br, _List_Nil, _List_Nil),
+					A2(
+					$elm$html$Html$input,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$type_('text'),
+							$elm$html$Html$Events$onInput($author$project$Page$NewUser$StoreEmail)
+						]),
+					_List_Nil)
+				])),
+			A2($elm$html$Html$br, _List_Nil, _List_Nil),
+			A2(
+			$elm$html$Html$div,
+			_List_Nil,
+			_List_fromArray(
+				[
+					$elm$html$Html$text('Password'),
+					A2($elm$html$Html$br, _List_Nil, _List_Nil),
+					A2(
+					$elm$html$Html$input,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$type_('password'),
+							$elm$html$Html$Events$onInput($author$project$Page$NewUser$StoreEmail)
 						]),
 					_List_Nil)
 				])),
@@ -13425,7 +13567,7 @@ var $author$project$Main$main = $elm$browser$Browser$application(
 		view: $author$project$Main$viewMain
 	});
 _Platform_export({'Main':{'init':$author$project$Main$main(
-	$elm$json$Json$Decode$succeed(_Utils_Tuple0))({"versions":{"elm":"0.19.1"},"types":{"message":"Main.Msg","aliases":{"Url.Url":{"args":[],"type":"{ protocol : Url.Protocol, host : String.String, port_ : Maybe.Maybe Basics.Int, path : String.String, query : Maybe.Maybe String.String, fragment : Maybe.Maybe String.String }"},"Challenge.Challenge":{"args":[],"type":"{ id : Challenge.ChallengeId, title : Challenge.ChallengeTitle, description : Challenge.ChallengeDescription }"},"Date.RataDie":{"args":[],"type":"Basics.Int"},"User.User":{"args":[],"type":"{ id : User.UserId, name : User.UserName, completedChallenges : List.List Challenge.ChallengeId }"},"RemoteData.WebData":{"args":["a"],"type":"RemoteData.RemoteData Http.Error a"}},"unions":{"Main.Msg":{"args":[],"tags":{"LoUPageMsg":["Page.ListOfUsers.MsgLoU"],"LoCPageMsg":["Page.ListOfChallenges.MsgLoC"],"EUPageMsg":["Page.EditUser.MsgEU"],"DCPageMsg":["Page.DisplayChallenge.MsgDC"],"NUPageMsg":["Page.NewUser.MsgNU"],"LinkClicked":["Browser.UrlRequest"],"UrlChanged":["Url.Url"],"ReceiveDate":["Date.Date"]}},"Date.Date":{"args":[],"tags":{"RD":["Date.RataDie"]}},"Basics.Int":{"args":[],"tags":{"Int":[]}},"Maybe.Maybe":{"args":["a"],"tags":{"Just":["a"],"Nothing":[]}},"Page.DisplayChallenge.MsgDC":{"args":[],"tags":{"ChallengeReceived":["RemoteData.WebData Challenge.Challenge"],"SaveChallenge":[],"ChallengeSaved":["Result.Result Http.Error Challenge.Challenge"]}},"Page.EditUser.MsgEU":{"args":[],"tags":{"UserReceived":["RemoteData.WebData User.User"],"UpdateUserName":["String.String"],"SaveUser":[],"UserSaved":["Result.Result Http.Error User.User"]}},"Page.ListOfChallenges.MsgLoC":{"args":[],"tags":{"FetchChallenges":[],"ChallengesReceived":["RemoteData.WebData (List.List Challenge.Challenge)"]}},"Page.ListOfUsers.MsgLoU":{"args":[],"tags":{"FetchUsers":[],"UsersReceived":["RemoteData.WebData (List.List User.User)"]}},"Page.NewUser.MsgNU":{"args":[],"tags":{"StoreName":["String.String"],"CreateNewUser":[],"NewUserCreated":["Result.Result Http.Error User.User"]}},"Url.Protocol":{"args":[],"tags":{"Http":[],"Https":[]}},"String.String":{"args":[],"tags":{"String":[]}},"Browser.UrlRequest":{"args":[],"tags":{"Internal":["Url.Url"],"External":["String.String"]}},"Challenge.ChallengeDescription":{"args":[],"tags":{"ChallengeDescription":["String.String"]}},"Challenge.ChallengeId":{"args":[],"tags":{"ChallengeId":["Basics.Int"]}},"Challenge.ChallengeTitle":{"args":[],"tags":{"ChallengeTitle":["String.String"]}},"Http.Error":{"args":[],"tags":{"BadUrl":["String.String"],"Timeout":[],"NetworkError":[],"BadStatus":["Basics.Int"],"BadBody":["String.String"]}},"List.List":{"args":["a"],"tags":{}},"RemoteData.RemoteData":{"args":["e","a"],"tags":{"NotAsked":[],"Loading":[],"Failure":["e"],"Success":["a"]}},"Result.Result":{"args":["error","value"],"tags":{"Ok":["value"],"Err":["error"]}},"User.UserId":{"args":[],"tags":{"UserId":["Basics.Int"]}},"User.UserName":{"args":[],"tags":{"UserName":["String.String"]}}}}})}});}(this));
+	$elm$json$Json$Decode$succeed(_Utils_Tuple0))({"versions":{"elm":"0.19.1"},"types":{"message":"Main.Msg","aliases":{"Url.Url":{"args":[],"type":"{ protocol : Url.Protocol, host : String.String, port_ : Maybe.Maybe Basics.Int, path : String.String, query : Maybe.Maybe String.String, fragment : Maybe.Maybe String.String }"},"Challenge.Challenge":{"args":[],"type":"{ id : Challenge.ChallengeId, title : Challenge.ChallengeTitle, description : Challenge.ChallengeDescription }"},"Date.RataDie":{"args":[],"type":"Basics.Int"},"User.User":{"args":[],"type":"{ id : User.UserId, name : User.UserName, email : User.UserEmail, password : User.UserPassword, completedChallenges : List.List Challenge.ChallengeId }"},"RemoteData.WebData":{"args":["a"],"type":"RemoteData.RemoteData Http.Error a"}},"unions":{"Main.Msg":{"args":[],"tags":{"LoUPageMsg":["Page.ListOfUsers.MsgLoU"],"LoCPageMsg":["Page.ListOfChallenges.MsgLoC"],"EUPageMsg":["Page.EditUser.MsgEU"],"DCPageMsg":["Page.DisplayChallenge.MsgDC"],"NUPageMsg":["Page.NewUser.MsgNU"],"LinkClicked":["Browser.UrlRequest"],"UrlChanged":["Url.Url"],"ReceiveDate":["Date.Date"]}},"Date.Date":{"args":[],"tags":{"RD":["Date.RataDie"]}},"Basics.Int":{"args":[],"tags":{"Int":[]}},"Maybe.Maybe":{"args":["a"],"tags":{"Just":["a"],"Nothing":[]}},"Page.DisplayChallenge.MsgDC":{"args":[],"tags":{"ChallengeReceived":["RemoteData.WebData Challenge.Challenge"],"SaveChallenge":[],"ChallengeSaved":["Result.Result Http.Error Challenge.Challenge"]}},"Page.EditUser.MsgEU":{"args":[],"tags":{"UserReceived":["RemoteData.WebData User.User"],"UpdateUserName":["String.String"],"UpdateUserEmail":["String.String"],"UpdateUserPassword":["String.String"],"SaveUser":[],"UserSaved":["Result.Result Http.Error User.User"]}},"Page.ListOfChallenges.MsgLoC":{"args":[],"tags":{"FetchChallenges":[],"ChallengesReceived":["RemoteData.WebData (List.List Challenge.Challenge)"]}},"Page.ListOfUsers.MsgLoU":{"args":[],"tags":{"FetchUsers":[],"UsersReceived":["RemoteData.WebData (List.List User.User)"]}},"Page.NewUser.MsgNU":{"args":[],"tags":{"StoreName":["String.String"],"StoreEmail":["String.String"],"StorePassword":["String.String"],"CreateNewUser":[],"NewUserCreated":["Result.Result Http.Error User.User"]}},"Url.Protocol":{"args":[],"tags":{"Http":[],"Https":[]}},"String.String":{"args":[],"tags":{"String":[]}},"Browser.UrlRequest":{"args":[],"tags":{"Internal":["Url.Url"],"External":["String.String"]}},"Challenge.ChallengeDescription":{"args":[],"tags":{"ChallengeDescription":["String.String"]}},"Challenge.ChallengeId":{"args":[],"tags":{"ChallengeId":["Basics.Int"]}},"Challenge.ChallengeTitle":{"args":[],"tags":{"ChallengeTitle":["String.String"]}},"Http.Error":{"args":[],"tags":{"BadUrl":["String.String"],"Timeout":[],"NetworkError":[],"BadStatus":["Basics.Int"],"BadBody":["String.String"]}},"List.List":{"args":["a"],"tags":{}},"RemoteData.RemoteData":{"args":["e","a"],"tags":{"NotAsked":[],"Loading":[],"Failure":["e"],"Success":["a"]}},"Result.Result":{"args":["error","value"],"tags":{"Ok":["value"],"Err":["error"]}},"User.UserEmail":{"args":[],"tags":{"UserEmail":["String.String"]}},"User.UserId":{"args":[],"tags":{"UserId":["Basics.Int"]}},"User.UserName":{"args":[],"tags":{"UserName":["String.String"]}},"User.UserPassword":{"args":[],"tags":{"UserPassword":["String.String"]}}}}})}});}(this));
 
   var app = Elm.Main.init({ node: document.getElementById("elm") });
 }

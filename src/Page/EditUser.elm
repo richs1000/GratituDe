@@ -1,6 +1,13 @@
 module Page.EditUser exposing (..)
 
 {-
+   To Do:
+   * edit completed challenges
+   * Validate user input
+   https://package.elm-lang.org/packages/rtfeldman/elm-validate/latest/
+
+-}
+{-
    https://elmprogramming.com/editing-a-post.html
 -}
 
@@ -50,6 +57,8 @@ fetchUser userId =
 type MsgEU
     = UserReceived (RD.WebData User.User)
     | UpdateUserName String
+    | UpdateUserEmail String
+    | UpdateUserPassword String
     | SaveUser
       -- UserSaved payload doesn’t need to be of type WebData because we aren’t interested
       -- in tracking all the states our PATCH request goes through
@@ -73,6 +82,40 @@ updateEU msg model =
                     RD.map
                         -- (a -> b) ==> User.User -> User.User
                         (\userData -> { userData | name = User.UserName newUserName })
+                        -- RD.RemoteData e User.User
+                        model.user
+            in
+            -- Replace the old model with the new model (with updated name)
+            ( { model | user = updatedUserRecord }
+            , Cmd.none
+            )
+
+        UpdateUserEmail newUserEmail ->
+            let
+                -- Create a new user record
+                updatedUserRecord =
+                    -- The user record is stored within a RemoteData type
+                    -- RD.map : (a -> b) -> RemoteData e a -> RemoteData e b
+                    RD.map
+                        -- (a -> b) ==> User.User -> User.User
+                        (\userData -> { userData | email = User.UserEmail newUserEmail })
+                        -- RD.RemoteData e User.User
+                        model.user
+            in
+            -- Replace the old model with the new model (with updated name)
+            ( { model | user = updatedUserRecord }
+            , Cmd.none
+            )
+
+        UpdateUserPassword newUserPassword ->
+            let
+                -- Create a new user record
+                updatedUserRecord =
+                    -- The user record is stored within a RemoteData type
+                    -- RD.map : (a -> b) -> RemoteData e a -> RemoteData e b
+                    RD.map
+                        -- (a -> b) ==> User.User -> User.User
+                        (\userData -> { userData | password = User.UserPassword newUserPassword })
                         -- RD.RemoteData e User.User
                         model.user
             in
@@ -176,39 +219,39 @@ editUserForm user =
                 ]
                 []
             ]
+        , br [] []
+
+        -- , div []
+        --     [ input
+        --         [ type_ "checkbox"
+        --         , checked True
+        --         , name "myCB"
+        --         ]
+        --         []
+        --     , label [ for "myCB" ]
+        --         [ text "My first checkbox" ]
+        --     ]
         , div []
-            [ input
-                [ type_ "checkbox"
-                , checked True
-                , name "myCB"
+            [ text "Email"
+            , br [] []
+            , input
+                [ type_ "text"
+                , value (User.userEmailToString user.email)
+                , onInput UpdateUserEmail
                 ]
                 []
-            , label [ for "myCB" ]
-                [ text "My first checkbox" ]
             ]
-
-        -- , br [] []
-        -- , div []
-        --     [ text "Author Name"
-        --     , br [] []
-        --     , input
-        --         [ type_ "text"
-        --         , value post.authorName
-        --         , onInput UpdateAuthorName
-        --         ]
-        --         []
-        --     ]
-        -- , br [] []
-        -- , div []
-        --     [ text "Author URL"
-        --     , br [] []
-        --     , input
-        --         [ type_ "text"
-        --         , value post.authorUrl
-        --         , onInput UpdateAuthorUrl
-        --         ]
-        --         []
-        --     ]
+        , br [] []
+        , div []
+            [ text "Password"
+            , br [] []
+            , input
+                [ type_ "text"
+                , value (User.userPasswordToString user.password)
+                , onInput UpdateUserPassword
+                ]
+                []
+            ]
         , br [] []
         , div []
             [ button [ type_ "button", onClick SaveUser ]

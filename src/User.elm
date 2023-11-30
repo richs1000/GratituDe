@@ -26,6 +26,8 @@ import Url.Parser
 type alias User =
     { id : UserId
     , name : UserName
+    , email : UserEmail
+    , password : UserPassword
     , completedChallenges : List Challenge.ChallengeId
     }
 
@@ -34,6 +36,8 @@ emptyUser : User
 emptyUser =
     { id = emptyUserId
     , name = emptyUserName
+    , email = emptyUserEmail
+    , password = emptyUserPassword
     , completedChallenges = emptyCompletedChallenges
     }
 
@@ -43,6 +47,8 @@ userDecoder =
     Decode.succeed User
         |> Pipeline.required "id" userIdDecoder
         |> Pipeline.required "name" userNameDecoder
+        |> Pipeline.required "email" userEmailDecoder
+        |> Pipeline.required "password" userPasswordDecoder
         |> Pipeline.required "completedChallenges" completedChallengesDecoder
 
 
@@ -137,8 +143,68 @@ userNameEncoder (UserName name) =
 
 
 userNameToString : UserName -> String
-userNameToString (UserName titleAsString) =
-    titleAsString
+userNameToString (UserName nameAsString) =
+    nameAsString
+
+
+
+{-
+   The email of the user.
+-}
+
+
+type UserEmail
+    = UserEmail String
+
+
+emptyUserEmail : UserEmail
+emptyUserEmail =
+    UserEmail ""
+
+
+userEmailDecoder : Decode.Decoder UserEmail
+userEmailDecoder =
+    Decode.map UserEmail Decode.string
+
+
+userEmailEncoder : UserEmail -> Encode.Value
+userEmailEncoder (UserEmail email) =
+    Encode.string email
+
+
+userEmailToString : UserEmail -> String
+userEmailToString (UserEmail emailAsString) =
+    emailAsString
+
+
+
+{-
+   The password of the user.
+-}
+
+
+type UserPassword
+    = UserPassword String
+
+
+emptyUserPassword : UserPassword
+emptyUserPassword =
+    UserPassword ""
+
+
+userPasswordDecoder : Decode.Decoder UserPassword
+userPasswordDecoder =
+    Decode.map UserPassword Decode.string
+
+
+userPasswordEncoder : UserPassword -> Encode.Value
+userPasswordEncoder (UserPassword password) =
+    Encode.string password
+
+
+userPasswordToString : UserPassword -> String
+userPasswordToString (UserPassword passwordAsString) =
+    passwordAsString
 
 
 

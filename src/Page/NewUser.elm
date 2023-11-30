@@ -2,6 +2,10 @@ module Page.NewUser exposing (..)
 
 {-
    https://elmprogramming.com/creating-a-new-post.html
+
+   To Do:
+   Validate user input
+   https://package.elm-lang.org/packages/rtfeldman/elm-validate/latest/
 -}
 
 import Browser.Navigation as Nav
@@ -21,17 +25,17 @@ type alias ModelNU =
     }
 
 
-initNU : Nav.Key -> ( ModelNU, Cmd MsgNU )
-initNU navKey =
-    ( initialModelNU navKey, Cmd.none )
-
-
 initialModelNU : Nav.Key -> ModelNU
 initialModelNU navKeyParam =
     { navKey = navKeyParam
     , newUser = User.emptyUser
     , createError = Nothing
     }
+
+
+initNU : Nav.Key -> ( ModelNU, Cmd MsgNU )
+initNU navKey =
+    ( initialModelNU navKey, Cmd.none )
 
 
 viewNU : ModelNU -> Html MsgNU
@@ -50,6 +54,18 @@ newUserForm =
             [ text "Name"
             , br [] []
             , input [ type_ "text", onInput StoreName ] []
+            ]
+        , br [] []
+        , div []
+            [ text "Email"
+            , br [] []
+            , input [ type_ "text", onInput StoreEmail ] []
+            ]
+        , br [] []
+        , div []
+            [ text "Password"
+            , br [] []
+            , input [ type_ "password", onInput StoreEmail ] []
             ]
         , br [] []
         , div []
@@ -74,6 +90,8 @@ viewError maybeError =
 
 type MsgNU
     = StoreName String
+    | StoreEmail String
+    | StorePassword String
     | CreateNewUser
     | NewUserCreated (Result Http.Error User.User)
 
@@ -88,6 +106,26 @@ updateNU msg model =
 
                 updatedUser =
                     { oldUserData | name = User.UserName newName }
+            in
+            ( { model | newUser = updatedUser }, Cmd.none )
+
+        StoreEmail newEmail ->
+            let
+                oldUserData =
+                    model.newUser
+
+                updatedUser =
+                    { oldUserData | email = User.UserEmail newEmail }
+            in
+            ( { model | newUser = updatedUser }, Cmd.none )
+
+        StorePassword newPassword ->
+            let
+                oldUserData =
+                    model.newUser
+
+                updatedUser =
+                    { oldUserData | password = User.UserPassword newPassword }
             in
             ( { model | newUser = updatedUser }, Cmd.none )
 

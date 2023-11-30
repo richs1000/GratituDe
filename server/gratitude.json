@@ -270,6 +270,8 @@
     {
       "id": 1,
       "name": "updated name",
+      "email": "user1@email.com",
+      "password": "password",
       "completedChallenges": [
         1,
         2,
@@ -280,6 +282,8 @@
     {
       "id": 2,
       "name": "some other name",
+      "email": "user2@email.com",
+      "password": "password",
       "completedChallenges": [
         2,
         5
@@ -288,15 +292,16 @@
     {
       "id": 3,
       "name": "a new name",
+      "email": "user3@email.com",
+      "password": "password",
       "completedChallenges": []
     },
     {
+      "id": 4,
       "name": "brand new user",
       "completedChallenges": [],
-      "id": 4
+      "email": "user3@email.com",
+      "password": "password"
     }
-  ],
-  "profile": {
-    "name": "typicode"
-  }
+  ]
 }
