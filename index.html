@@ -11885,7 +11885,8 @@ var $author$project$Main$initMain = F3(
 			currentPage: $author$project$Main$NotFoundPage,
 			navKey: navKey,
 			route: $author$project$Route$parseUrl(url),
-			thisWeeksChallenge: 0
+			thisWeeksChallenge: 0,
+			user: $elm$core$Maybe$Nothing
 		};
 		return $author$project$Main$setCurrentPage(
 			_Utils_Tuple2(
@@ -11895,6 +11896,7 @@ var $author$project$Main$initMain = F3(
 var $elm$core$Platform$Sub$batch = _Platform_batch;
 var $elm$core$Platform$Sub$none = $elm$core$Platform$Sub$batch(_List_Nil);
 var $elm$browser$Browser$Navigation$load = _Browser_load;
+var $elm$core$Debug$log = _Debug_log;
 var $justinmimbs$date$Date$divWithRemainder = F2(
 	function (a, b) {
 		return _Utils_Tuple2(
@@ -12443,7 +12445,8 @@ var $author$project$Main$updateMain = F2(
 					}
 				case 'UrlChanged':
 					var url = _v0.a.a;
-					var newRoute = $author$project$Route$parseUrl(url);
+					var newRoute = $author$project$Route$parseUrl(
+						A2($elm$core$Debug$log, 'in Main.update, URL = ', url));
 					return $author$project$Main$setCurrentPage(
 						_Utils_Tuple2(
 							_Utils_update(
@@ -13385,6 +13388,22 @@ var $author$project$Main$headerView = function (model) {
 						_List_fromArray(
 							[
 								$elm$html$Html$text('Login')
+							]))
+					])),
+				A2(
+				$elm$html$Html$li,
+				_List_Nil,
+				_List_fromArray(
+					[
+						A2(
+						$elm$html$Html$a,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$href('/users/new')
+							]),
+						_List_fromArray(
+							[
+								$elm$html$Html$text('New User')
 							]))
 					]))
 			]));

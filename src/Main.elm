@@ -10,7 +10,7 @@ module Main exposing (main)
 {-
    elm init
 
-   json-server --watch server/gratitude.json -p 5019 --delay 2000
+   json-server --watch server/gratitude.json -p 5019
    elm-live src/Main.elm --pushstate -- --debug
 
    git add .
@@ -34,6 +34,7 @@ import Page.NewUser as NU
 import Route
 import Task
 import Url
+import User
 
 
 type alias Model =
@@ -50,6 +51,10 @@ type alias Model =
     -- I need to know what week of the year it is (1-52) so I can
     -- display the correct challenge of the week
     , thisWeeksChallenge : Int
+
+    -- this stores the information about the user who is logged in
+    -- If a user is not logged in, then user = Nothing
+    , user : Maybe User.User
     }
 
 
@@ -91,6 +96,7 @@ initMain flags url navKey =
             , currentPage = NotFoundPage
             , navKey = navKey
             , thisWeeksChallenge = 0
+            , user = Nothing
             }
     in
     setCurrentPage
@@ -236,6 +242,7 @@ headerView model =
                 , li [] [ a [ href "/enhanceYou" ] [ text "Enhance You" ] ]
                 , li [] [ a [ href "/sota" ] [ text "SOTA" ] ]
                 , li [] [ a [ href "/login" ] [ text "Login" ] ]
+                , li [] [ a [ href "/users/new" ] [ text "New User" ] ]
                 ]
     in
     nav []
@@ -389,7 +396,7 @@ updateMain msg model =
         ( UrlChanged url, _ ) ->
             let
                 newRoute =
-                    Route.parseUrl url
+                    Route.parseUrl (Debug.log "in Main.update, URL = " url)
             in
             ( { model | route = newRoute }, Cmd.none )
                 |> setCurrentPage

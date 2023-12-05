@@ -294,9 +294,16 @@
       "name": "brand new user",
       "completedChallenges": [],
       "id": 4
+    },
+    {
+      "name": "Bob Jones",
+      "completedChallenges": [],
+      "id": 5
+    },
+    {
+      "name": "Sam Smith",
+      "completedChallenges": [],
+      "id": 6
     }
-  ],
-  "profile": {
-    "name": "typicode"
-  }
+  ]
 }
