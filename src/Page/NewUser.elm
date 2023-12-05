@@ -16,7 +16,7 @@ import User
 
 type alias ModelNU =
     { navKey : Nav.Key
-    , newUser : User.User
+    , newUser : Maybe User.User
     , createError : Maybe String
     }
 
@@ -29,7 +29,7 @@ initNU navKey =
 initialModelNU : Nav.Key -> ModelNU
 initialModelNU navKeyParam =
     { navKey = navKeyParam
-    , newUser = User.emptyUser
+    , newUser = Nothing
     , createError = Nothing
     }
 
@@ -84,23 +84,23 @@ updateNU msg model =
         StoreName newName ->
             let
                 oldUserData =
-                    model.newUser
+                    Maybe.withDefault User.emptyUser model.newUser
 
                 updatedUser =
                     { oldUserData | name = User.UserName newName }
             in
-            ( { model | newUser = updatedUser }, Cmd.none )
+            ( { model | newUser = Just updatedUser }, Cmd.none )
 
         CreateNewUser ->
-            ( model, createNewUser model.newUser )
+            ( model, createNewUser (Maybe.withDefault User.emptyUser model.newUser) )
 
         NewUserCreated (Ok serverResponse) ->
-            ( { model | newUser = serverResponse, createError = Nothing }
+            ( { model | newUser = Just serverResponse, createError = Nothing }
             , Route.pushUrl Route.ListOfUsersRoute model.navKey
             )
 
         NewUserCreated (Err error) ->
-            ( { model | createError = Just (EM.buildErrorMessage error) }
+            ( { model | newUser = Nothing, createError = Just (EM.buildErrorMessage error) }
             , Cmd.none
             )
 

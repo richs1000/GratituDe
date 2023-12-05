@@ -235,15 +235,28 @@ headerView model =
                 , br [] []
                 ]
 
+        user =
+            Maybe.withDefault User.emptyUser model.user
+
         links =
-            ul []
-                [ li [] [ a [ href "/home" ] [ text "Home" ] ]
-                , li [] [ a [ href ("/challenges/" ++ String.fromInt model.thisWeeksChallenge) ] [ text "This Week's Challenge" ] ]
-                , li [] [ a [ href "/enhanceYou" ] [ text "Enhance You" ] ]
-                , li [] [ a [ href "/sota" ] [ text "SOTA" ] ]
-                , li [] [ a [ href "/login" ] [ text "Login" ] ]
-                , li [] [ a [ href "/users/new" ] [ text "New User" ] ]
-                ]
+            if user.id == User.emptyUserId then
+                ul []
+                    [ li [] [ a [ href "/home" ] [ text "Home" ] ]
+                    , li [] [ a [ href ("/challenges/" ++ String.fromInt model.thisWeeksChallenge) ] [ text "This Week's Challenge" ] ]
+                    , li [] [ a [ href "/enhanceYou" ] [ text "Enhance You" ] ]
+                    , li [] [ a [ href "/sota" ] [ text "SOTA" ] ]
+                    , li [] [ a [ href "/login" ] [ text "Log In" ] ]
+                    , li [] [ a [ href "/users/new" ] [ text "New User" ] ]
+                    ]
+
+            else
+                ul []
+                    [ li [] [ a [ href "/home" ] [ text "Home" ] ]
+                    , li [] [ a [ href ("/challenges/" ++ String.fromInt model.thisWeeksChallenge) ] [ text "This Week's Challenge" ] ]
+                    , li [] [ a [ href "/enhanceYou" ] [ text "Enhance You" ] ]
+                    , li [] [ a [ href "/sota" ] [ text "SOTA" ] ]
+                    , li [] [ a [ href "/login" ] [ text "Log Out" ] ]
+                    ]
     in
     nav []
         [ logo
@@ -378,7 +391,7 @@ updateMain msg model =
             -- update current page to have the new model
             ( { model
                 | currentPage = NewUserPage (Debug.log "In updateMain, NUModel = " updatedNUModel)
-                , user = Just updatedNUModel.newUser
+                , user = updatedNUModel.newUser
               }
               -- update the current command to be the command from the NU init function
             , Cmd.map NUPageMsg updatedNUCmd

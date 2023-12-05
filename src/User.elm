@@ -26,6 +26,7 @@ import Url.Parser
 type alias User =
     { id : UserId
     , name : UserName
+    , email : UserEmail
     , completedChallenges : List Challenge.ChallengeId
     }
 
@@ -34,6 +35,7 @@ emptyUser : User
 emptyUser =
     { id = emptyUserId
     , name = emptyUserName
+    , email = emptyUserEmail
     , completedChallenges = emptyCompletedChallenges
     }
 
@@ -43,6 +45,7 @@ userDecoder =
     Decode.succeed User
         |> Pipeline.required "id" userIdDecoder
         |> Pipeline.required "name" userNameDecoder
+        |> Pipeline.required "email" userEmailDecoder
         |> Pipeline.required "completedChallenges" completedChallengesDecoder
 
 
@@ -51,6 +54,7 @@ userEncoder user =
     Encode.object
         [ ( "id", userIdEncoder user.id )
         , ( "name", userNameEncoder user.name )
+        , ( "email", userEmailEncoder user.email )
         , ( "completedChallenges", completedChallengesEncoder user.completedChallenges )
         ]
 
@@ -59,6 +63,7 @@ newUserEncoder : User -> Encode.Value
 newUserEncoder user =
     Encode.object
         [ ( "name", userNameEncoder user.name )
+        , ( "email", userEmailEncoder user.email )
         , ( "completedChallenges", completedChallengesEncoder user.completedChallenges )
         ]
 
@@ -137,8 +142,38 @@ userNameEncoder (UserName name) =
 
 
 userNameToString : UserName -> String
-userNameToString (UserName titleAsString) =
-    titleAsString
+userNameToString (UserName nameAsString) =
+    nameAsString
+
+
+
+{-
+   The email of the user.
+-}
+
+
+type UserEmail
+    = UserEmail String
+
+
+emptyUserEmail : UserEmail
+emptyUserEmail =
+    UserEmail ""
+
+
+userEmailDecoder : Decode.Decoder UserEmail
+userEmailDecoder =
+    Decode.map UserEmail Decode.string
+
+
+userEmailEncoder : UserEmail -> Encode.Value
+userEmailEncoder (UserEmail email) =
+    Encode.string email
+
+
+userEmailToString : UserEmail -> String
+userEmailToString (UserEmail emailAsString) =
+    emailAsString
 
 
 
