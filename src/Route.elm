@@ -24,6 +24,7 @@ type Route
     | UserRoute User.UserId
     | ChallengeRoute Challenge.ChallengeId
     | NewUserRoute
+    | LogInRoute
 
 
 parseUrl : Url.Url -> Route
@@ -46,6 +47,7 @@ routeParsers =
         , Url.Parser.map UserRoute (Url.Parser.s "users" </> User.userIdParser)
         , Url.Parser.map ChallengeRoute (Url.Parser.s "challenges" </> Challenge.challengeIdParser)
         , Url.Parser.map NewUserRoute (Url.Parser.s "users" </> Url.Parser.s "new")
+        , Url.Parser.map LogInRoute (Url.Parser.s "login")
         ]
 
 
@@ -75,6 +77,9 @@ routeToString route =
 
         NewUserRoute ->
             "/users/new"
+
+        LogInRoute ->
+            "/login"
 
         LandingPageRoute ->
             "/"

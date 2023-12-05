@@ -49,7 +49,13 @@ newUserForm =
         [ div []
             [ text "Name"
             , br [] []
-            , input [ type_ "text", onInput StoreName ] []
+            , input [ type_ "text", onInput UpdateName ] []
+            ]
+        , br [] []
+        , div []
+            [ text "Email"
+            , br [] []
+            , input [ type_ "text", onInput UpdateEmail ] []
             ]
         , br [] []
         , div []
@@ -73,7 +79,8 @@ viewError maybeError =
 
 
 type MsgNU
-    = StoreName String
+    = UpdateName String
+    | UpdateEmail String
     | CreateNewUser
     | NewUserCreated (Result Http.Error User.User)
 
@@ -81,13 +88,23 @@ type MsgNU
 updateNU : MsgNU -> ModelNU -> ( ModelNU, Cmd MsgNU )
 updateNU msg model =
     case msg of
-        StoreName newName ->
+        UpdateName newName ->
             let
                 oldUserData =
                     Maybe.withDefault User.emptyUser model.newUser
 
                 updatedUser =
                     { oldUserData | name = User.UserName newName }
+            in
+            ( { model | newUser = Just updatedUser }, Cmd.none )
+
+        UpdateEmail newEmail ->
+            let
+                oldUserData =
+                    Maybe.withDefault User.emptyUser model.newUser
+
+                updatedUser =
+                    { oldUserData | email = User.UserEmail newEmail }
             in
             ( { model | newUser = Just updatedUser }, Cmd.none )
 

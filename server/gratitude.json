@@ -270,6 +270,8 @@
     {
       "id": 1,
       "name": "updated name",
+      "email": "email1@email.com",
+      "password": "DuqOT2024!",
       "completedChallenges": [
         1,
         2,
@@ -280,6 +282,8 @@
     {
       "id": 2,
       "name": "some other name",
+      "email": "email2@email.com",
+      "password": "DuqOT2024!",
       "completedChallenges": [
         2,
         5
@@ -288,49 +292,16 @@
     {
       "id": 3,
       "name": "a new name",
+      "email": "email3@email.com",
+      "password": "DuqOT2024!",
       "completedChallenges": []
     },
     {
       "name": "brand new user",
       "completedChallenges": [],
+      "email": "email4@email.com",
+      "password": "DuqOT2024!",
       "id": 4
-    },
-    {
-      "name": "Bob Jones",
-      "completedChallenges": [],
-      "id": 5
-    },
-    {
-      "name": "Sam Smith",
-      "completedChallenges": [],
-      "id": 6
-    },
-    {
-      "name": "Bill Smith",
-      "completedChallenges": [],
-      "id": 7
-    },
-    {
-      "name": "Harry Jones",
-      "completedChallenges": [],
-      "id": 8
-    },
-    {
-      "name": "Billy Bob",
-      "completedChallenges": [],
-      "id": 9
-    },
-    {
-      "name": "Sally Bowles",
-      "email": "",
-      "completedChallenges": [],
-      "id": 10
-    },
-    {
-      "name": "Sally Bowles",
-      "email": "",
-      "completedChallenges": [],
-      "id": 11
     }
   ]
 }

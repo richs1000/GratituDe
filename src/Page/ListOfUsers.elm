@@ -110,6 +110,8 @@ viewUser user =
         , td []
             [ text (User.userNameToString user.name) ]
         , td []
+            [ text (User.userEmailToString user.email) ]
+        , td []
             [ text (User.completedChallengesToString user.completedChallenges) ]
         , td []
             [ a [ href userPath ] [ text "Edit" ] ]
@@ -124,6 +126,8 @@ viewTableHeader =
         , th []
             [ text "Name" ]
         , th []
+            [ text "Email" ]
+        , th []
             [ text "Completed Challenges" ]
         ]
 
@@ -132,7 +136,7 @@ viewFetchError : String -> Html MsgLoU
 viewFetchError errorMessage =
     let
         errorHeading =
-            "Couldn't fetch challenges at this time."
+            "Couldn't fetch users at this time."
     in
     div []
         [ h3 [] [ text errorHeading ]

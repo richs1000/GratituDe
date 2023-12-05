@@ -27,6 +27,7 @@ type alias User =
     { id : UserId
     , name : UserName
     , email : UserEmail
+    , password : UserPassword
     , completedChallenges : List Challenge.ChallengeId
     }
 
@@ -36,6 +37,7 @@ emptyUser =
     { id = emptyUserId
     , name = emptyUserName
     , email = emptyUserEmail
+    , password = emptyUserPassword
     , completedChallenges = emptyCompletedChallenges
     }
 
@@ -46,6 +48,7 @@ userDecoder =
         |> Pipeline.required "id" userIdDecoder
         |> Pipeline.required "name" userNameDecoder
         |> Pipeline.required "email" userEmailDecoder
+        |> Pipeline.required "password" userPasswordDecoder
         |> Pipeline.required "completedChallenges" completedChallengesDecoder
 
 
@@ -55,6 +58,7 @@ userEncoder user =
         [ ( "id", userIdEncoder user.id )
         , ( "name", userNameEncoder user.name )
         , ( "email", userEmailEncoder user.email )
+        , ( "password", userPasswordEncoder user.password )
         , ( "completedChallenges", completedChallengesEncoder user.completedChallenges )
         ]
 
@@ -64,6 +68,7 @@ newUserEncoder user =
     Encode.object
         [ ( "name", userNameEncoder user.name )
         , ( "email", userEmailEncoder user.email )
+        , ( "password", userPasswordEncoder user.password )
         , ( "completedChallenges", completedChallengesEncoder user.completedChallenges )
         ]
 
@@ -174,6 +179,36 @@ userEmailEncoder (UserEmail email) =
 userEmailToString : UserEmail -> String
 userEmailToString (UserEmail emailAsString) =
     emailAsString
+
+
+
+{-
+   The password of the user.
+-}
+
+
+type UserPassword
+    = UserPassword String
+
+
+emptyUserPassword : UserPassword
+emptyUserPassword =
+    UserPassword "DuqOT2024!"
+
+
+userPasswordDecoder : Decode.Decoder UserPassword
+userPasswordDecoder =
+    Decode.map UserPassword Decode.string
+
+
+userPasswordEncoder : UserPassword -> Encode.Value
+userPasswordEncoder (UserPassword password) =
+    Encode.string password
+
+
+userPasswordToString : UserPassword -> String
+userPasswordToString (UserPassword passwordAsString) =
+    passwordAsString
 
 
 
