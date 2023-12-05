@@ -12421,7 +12421,9 @@ var $author$project$Main$updateMain = F2(
 							_Utils_update(
 								model,
 								{
-									currentPage: $author$project$Main$NewUserPage(updatedNUModel)
+									currentPage: $author$project$Main$NewUserPage(
+										A2($elm$core$Debug$log, 'In updateMain, NUModel = ', updatedNUModel)),
+									user: $elm$core$Maybe$Just(updatedNUModel.newUser)
 								}),
 							A2($elm$core$Platform$Cmd$map, $author$project$Main$NUPageMsg, updatedNUCmd));
 					} else {
@@ -12445,8 +12447,7 @@ var $author$project$Main$updateMain = F2(
 					}
 				case 'UrlChanged':
 					var url = _v0.a.a;
-					var newRoute = $author$project$Route$parseUrl(
-						A2($elm$core$Debug$log, 'in Main.update, URL = ', url));
+					var newRoute = $author$project$Route$parseUrl(url);
 					return $author$project$Main$setCurrentPage(
 						_Utils_Tuple2(
 							_Utils_update(

@@ -376,7 +376,10 @@ updateMain msg model =
                     NU.updateNU msgNU modelNU
             in
             -- update current page to have the new model
-            ( { model | currentPage = NewUserPage updatedNUModel }
+            ( { model
+                | currentPage = NewUserPage (Debug.log "In updateMain, NUModel = " updatedNUModel)
+                , user = Just updatedNUModel.newUser
+              }
               -- update the current command to be the command from the NU init function
             , Cmd.map NUPageMsg updatedNUCmd
             )
@@ -396,7 +399,7 @@ updateMain msg model =
         ( UrlChanged url, _ ) ->
             let
                 newRoute =
-                    Route.parseUrl (Debug.log "in Main.update, URL = " url)
+                    Route.parseUrl url
             in
             ( { model | route = newRoute }, Cmd.none )
                 |> setCurrentPage

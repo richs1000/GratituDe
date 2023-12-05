@@ -304,6 +304,21 @@
       "name": "Sam Smith",
       "completedChallenges": [],
       "id": 6
+    },
+    {
+      "name": "Bill Smith",
+      "completedChallenges": [],
+      "id": 7
+    },
+    {
+      "name": "Harry Jones",
+      "completedChallenges": [],
+      "id": 8
+    },
+    {
+      "name": "Billy Bob",
+      "completedChallenges": [],
+      "id": 9
     }
   ]
 }
