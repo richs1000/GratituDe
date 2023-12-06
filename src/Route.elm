@@ -25,6 +25,7 @@ type Route
     | ChallengeRoute Challenge.ChallengeId
     | NewUserRoute
     | LogInRoute
+    | EnhanceYouRoute
 
 
 parseUrl : Url.Url -> Route
@@ -48,6 +49,7 @@ routeParsers =
         , Url.Parser.map ChallengeRoute (Url.Parser.s "challenges" </> Challenge.challengeIdParser)
         , Url.Parser.map NewUserRoute (Url.Parser.s "users" </> Url.Parser.s "new")
         , Url.Parser.map LogInRoute (Url.Parser.s "login")
+        , Url.Parser.map EnhanceYouRoute (Url.Parser.s "enhanceyou")
         ]
 
 
@@ -83,3 +85,6 @@ routeToString route =
 
         LandingPageRoute ->
             "/"
+
+        EnhanceYouRoute ->
+            "/enhanceyou"

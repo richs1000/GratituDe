@@ -10939,6 +10939,7 @@ var $elm$url$Url$Parser$parse = F2(
 var $author$project$Route$ChallengeRoute = function (a) {
 	return {$: 'ChallengeRoute', a: a};
 };
+var $author$project$Route$EnhanceYouRoute = {$: 'EnhanceYouRoute'};
 var $author$project$Route$LandingPageRoute = {$: 'LandingPageRoute'};
 var $author$project$Route$ListOfChallengesRoute = {$: 'ListOfChallengesRoute'};
 var $author$project$Route$ListOfUsersRoute = {$: 'ListOfUsersRoute'};
@@ -11144,7 +11145,11 @@ var $author$project$Route$routeParsers = $elm$url$Url$Parser$oneOf(
 			A2(
 			$elm$url$Url$Parser$map,
 			$author$project$Route$LogInRoute,
-			$elm$url$Url$Parser$s('login'))
+			$elm$url$Url$Parser$s('login')),
+			A2(
+			$elm$url$Url$Parser$map,
+			$author$project$Route$EnhanceYouRoute,
+			$elm$url$Url$Parser$s('enhanceyou'))
 		]));
 var $author$project$Route$parseUrl = function (url) {
 	var _v0 = A2($elm$url$Url$Parser$parse, $author$project$Route$routeParsers, url);
@@ -11164,8 +11169,14 @@ var $author$project$Main$DisplayChallengePage = function (a) {
 var $author$project$Main$EUPageMsg = function (a) {
 	return {$: 'EUPageMsg', a: a};
 };
+var $author$project$Main$EYPageMsg = function (a) {
+	return {$: 'EYPageMsg', a: a};
+};
 var $author$project$Main$EditUserPage = function (a) {
 	return {$: 'EditUserPage', a: a};
+};
+var $author$project$Main$EnhanceYouPage = function (a) {
+	return {$: 'EnhanceYouPage', a: a};
 };
 var $author$project$Main$LIPageMsg = function (a) {
 	return {$: 'LIPageMsg', a: a};
@@ -11581,6 +11592,8 @@ var $author$project$Page$EditUser$initEU = F2(
 			$author$project$Page$EditUser$initialModelEU(navKey),
 			$author$project$Page$EditUser$fetchUser(userId));
 	});
+var $author$project$Page$EnhanceYou$initModelEY = {};
+var $author$project$Page$EnhanceYou$initEY = _Utils_Tuple2($author$project$Page$EnhanceYou$initModelEY, $elm$core$Platform$Cmd$none);
 var $author$project$Page$LogIn$UsersReceived = function (a) {
 	return {$: 'UsersReceived', a: a};
 };
@@ -11683,13 +11696,20 @@ var $author$project$Main$setCurrentPage = function (_v0) {
 				return _Utils_Tuple2(
 					$author$project$Main$NewUserPage(modelForNU),
 					A2($elm$core$Platform$Cmd$map, $author$project$Main$NUPageMsg, commandsFromNU));
-			default:
+			case 'LogInRoute':
 				var _v8 = $author$project$Page$LogIn$initLI(model.navKey);
 				var modelForLI = _v8.a;
 				var commandsFromLI = _v8.b;
 				return _Utils_Tuple2(
 					$author$project$Main$LogInPage(modelForLI),
 					A2($elm$core$Platform$Cmd$map, $author$project$Main$LIPageMsg, commandsFromLI));
+			default:
+				var _v9 = $author$project$Page$EnhanceYou$initEY;
+				var modelForEY = _v9.a;
+				var commandsFromEY = _v9.b;
+				return _Utils_Tuple2(
+					$author$project$Main$EnhanceYouPage(modelForEY),
+					A2($elm$core$Platform$Cmd$map, $author$project$Main$EYPageMsg, commandsFromEY));
 		}
 	}();
 	var currentPage = _v1.a;
@@ -12174,8 +12194,10 @@ var $author$project$Route$routeToString = function (route) {
 			return '/users/new';
 		case 'LogInRoute':
 			return '/login';
-		default:
+		case 'LandingPageRoute':
 			return '/';
+		default:
+			return '/enhanceyou';
 	}
 };
 var $author$project$Route$pushUrl = F2(
@@ -12297,6 +12319,10 @@ var $author$project$Page$EditUser$updateEU = F2(
 						$elm$core$Platform$Cmd$none);
 				}
 		}
+	});
+var $author$project$Page$EnhanceYou$updateEY = F2(
+	function (msg, model) {
+		return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 	});
 var $author$project$Page$LogIn$extractUsers = function (responseFromServer) {
 	switch (responseFromServer.$) {
@@ -12539,7 +12565,7 @@ var $author$project$Page$NewUser$updateNU = F2(
 var $author$project$Main$updateMain = F2(
 	function (msg, model) {
 		var _v0 = _Utils_Tuple2(msg, model.currentPage);
-		_v0$9:
+		_v0$10:
 		while (true) {
 			switch (_v0.a.$) {
 				case 'LoUPageMsg':
@@ -12557,7 +12583,7 @@ var $author$project$Main$updateMain = F2(
 								}),
 							A2($elm$core$Platform$Cmd$map, $author$project$Main$LoUPageMsg, updatedLoUCmd));
 					} else {
-						break _v0$9;
+						break _v0$10;
 					}
 				case 'LoCPageMsg':
 					if (_v0.b.$ === 'ListOfChallengesPage') {
@@ -12574,7 +12600,7 @@ var $author$project$Main$updateMain = F2(
 								}),
 							A2($elm$core$Platform$Cmd$map, $author$project$Main$LoCPageMsg, updatedLoCCmd));
 					} else {
-						break _v0$9;
+						break _v0$10;
 					}
 				case 'EUPageMsg':
 					if (_v0.b.$ === 'EditUserPage') {
@@ -12591,7 +12617,7 @@ var $author$project$Main$updateMain = F2(
 								}),
 							A2($elm$core$Platform$Cmd$map, $author$project$Main$EUPageMsg, updatedEUCmd));
 					} else {
-						break _v0$9;
+						break _v0$10;
 					}
 				case 'DCPageMsg':
 					if (_v0.b.$ === 'DisplayChallengePage') {
@@ -12608,7 +12634,7 @@ var $author$project$Main$updateMain = F2(
 								}),
 							A2($elm$core$Platform$Cmd$map, $author$project$Main$DCPageMsg, updatedDCCmd));
 					} else {
-						break _v0$9;
+						break _v0$10;
 					}
 				case 'NUPageMsg':
 					if (_v0.b.$ === 'NewUserPage') {
@@ -12626,7 +12652,7 @@ var $author$project$Main$updateMain = F2(
 								}),
 							A2($elm$core$Platform$Cmd$map, $author$project$Main$NUPageMsg, updatedNUCmd));
 					} else {
-						break _v0$9;
+						break _v0$10;
 					}
 				case 'LIPageMsg':
 					if (_v0.b.$ === 'LogInPage') {
@@ -12645,7 +12671,24 @@ var $author$project$Main$updateMain = F2(
 								}),
 							A2($elm$core$Platform$Cmd$map, $author$project$Main$LIPageMsg, updatedLICmd));
 					} else {
-						break _v0$9;
+						break _v0$10;
+					}
+				case 'EYPageMsg':
+					if (_v0.b.$ === 'EnhanceYouPage') {
+						var msgEY = _v0.a.a;
+						var modelEY = _v0.b.a;
+						var _v7 = A2($author$project$Page$EnhanceYou$updateEY, msgEY, modelEY);
+						var updatedEYModel = _v7.a;
+						var updatedEYCmd = _v7.b;
+						return _Utils_Tuple2(
+							_Utils_update(
+								model,
+								{
+									currentPage: $author$project$Main$EnhanceYouPage(updatedEYModel)
+								}),
+							A2($elm$core$Platform$Cmd$map, $author$project$Main$EYPageMsg, updatedEYCmd));
+					} else {
+						break _v0$10;
 					}
 				case 'LinkClicked':
 					var urlRequest = _v0.a.a;
@@ -13055,6 +13098,53 @@ var $author$project$Page$EditUser$viewEU = function (model) {
 					])),
 				$author$project$Page$EditUser$viewUser(model.user),
 				$author$project$Page$EditUser$viewSaveError(model.saveError)
+			]));
+};
+var $author$project$Page$EnhanceYou$viewEY = function (model) {
+	return A2(
+		$elm$html$Html$div,
+		_List_Nil,
+		_List_fromArray(
+			[
+				A2(
+				$elm$html$Html$div,
+				_List_Nil,
+				_List_fromArray(
+					[
+						A2(
+						$elm$html$Html$h3,
+						_List_Nil,
+						_List_fromArray(
+							[
+								$elm$html$Html$text('Podcasts')
+							]))
+					])),
+				A2(
+				$elm$html$Html$div,
+				_List_Nil,
+				_List_fromArray(
+					[
+						A2(
+						$elm$html$Html$h3,
+						_List_Nil,
+						_List_fromArray(
+							[
+								$elm$html$Html$text('Social Media Accounts')
+							]))
+					])),
+				A2(
+				$elm$html$Html$div,
+				_List_Nil,
+				_List_fromArray(
+					[
+						A2(
+						$elm$html$Html$h3,
+						_List_Nil,
+						_List_fromArray(
+							[
+								$elm$html$Html$text('Inspirational Text')
+							]))
+					]))
 			]));
 };
 var $author$project$Page$LogIn$LogInUser = {$: 'LogInUser'};
@@ -13629,6 +13719,12 @@ var $author$project$Main$currentView = function (model) {
 				$elm$html$Html$map,
 				$author$project$Main$NUPageMsg,
 				$author$project$Page$NewUser$viewNU(modelNU));
+		case 'EnhanceYouPage':
+			var modelEY = _v0.a;
+			return A2(
+				$elm$html$Html$map,
+				$author$project$Main$EYPageMsg,
+				$author$project$Page$EnhanceYou$viewEY(modelEY));
 		default:
 			var modelLI = _v0.a;
 			return A2(
@@ -13714,7 +13810,7 @@ var $author$project$Main$headerView = function (model) {
 						$elm$html$Html$a,
 						_List_fromArray(
 							[
-								$elm$html$Html$Attributes$href('/enhanceYou')
+								$elm$html$Html$Attributes$href('/enhanceyou')
 							]),
 						_List_fromArray(
 							[
@@ -13816,7 +13912,7 @@ var $author$project$Main$headerView = function (model) {
 						$elm$html$Html$a,
 						_List_fromArray(
 							[
-								$elm$html$Html$Attributes$href('/enhanceYou')
+								$elm$html$Html$Attributes$href('/enhanceyou')
 							]),
 						_List_fromArray(
 							[
@@ -13893,7 +13989,7 @@ var $author$project$Main$main = $elm$browser$Browser$application(
 		view: $author$project$Main$viewMain
 	});
 _Platform_export({'Main':{'init':$author$project$Main$main(
-	$elm$json$Json$Decode$succeed(_Utils_Tuple0))({"versions":{"elm":"0.19.1"},"types":{"message":"Main.Msg","aliases":{"Url.Url":{"args":[],"type":"{ protocol : Url.Protocol, host : String.String, port_ : Maybe.Maybe Basics.Int, path : String.String, query : Maybe.Maybe String.String, fragment : Maybe.Maybe String.String }"},"Challenge.Challenge":{"args":[],"type":"{ id : Challenge.ChallengeId, title : Challenge.ChallengeTitle, description : Challenge.ChallengeDescription }"},"Date.RataDie":{"args":[],"type":"Basics.Int"},"User.User":{"args":[],"type":"{ id : User.UserId, name : User.UserName, email : User.UserEmail, password : User.UserPassword, completedChallenges : List.List Challenge.ChallengeId }"},"RemoteData.WebData":{"args":["a"],"type":"RemoteData.RemoteData Http.Error a"}},"unions":{"Main.Msg":{"args":[],"tags":{"LoUPageMsg":["Page.ListOfUsers.MsgLoU"],"LoCPageMsg":["Page.ListOfChallenges.MsgLoC"],"EUPageMsg":["Page.EditUser.MsgEU"],"DCPageMsg":["Page.DisplayChallenge.MsgDC"],"NUPageMsg":["Page.NewUser.MsgNU"],"LIPageMsg":["Page.LogIn.MsgLI"],"LinkClicked":["Browser.UrlRequest"],"UrlChanged":["Url.Url"],"ReceiveDate":["Date.Date"]}},"Date.Date":{"args":[],"tags":{"RD":["Date.RataDie"]}},"Basics.Int":{"args":[],"tags":{"Int":[]}},"Maybe.Maybe":{"args":["a"],"tags":{"Just":["a"],"Nothing":[]}},"Page.DisplayChallenge.MsgDC":{"args":[],"tags":{"ChallengeReceived":["RemoteData.WebData Challenge.Challenge"],"SaveChallenge":[],"ChallengeSaved":["Result.Result Http.Error Challenge.Challenge"]}},"Page.EditUser.MsgEU":{"args":[],"tags":{"UserReceived":["RemoteData.WebData User.User"],"UpdateUserName":["String.String"],"SaveUser":[],"UserSaved":["Result.Result Http.Error User.User"]}},"Page.LogIn.MsgLI":{"args":[],"tags":{"FetchUsers":[],"UsersReceived":["RemoteData.WebData (List.List User.User)"],"UpdatePassword":["String.String"],"UpdateEmail":["String.String"],"LogInUser":[]}},"Page.ListOfChallenges.MsgLoC":{"args":[],"tags":{"FetchChallenges":[],"ChallengesReceived":["RemoteData.WebData (List.List Challenge.Challenge)"]}},"Page.ListOfUsers.MsgLoU":{"args":[],"tags":{"FetchUsers":[],"UsersReceived":["RemoteData.WebData (List.List User.User)"]}},"Page.NewUser.MsgNU":{"args":[],"tags":{"UpdateName":["String.String"],"UpdateEmail":["String.String"],"CreateNewUser":[],"NewUserCreated":["Result.Result Http.Error User.User"]}},"Url.Protocol":{"args":[],"tags":{"Http":[],"Https":[]}},"String.String":{"args":[],"tags":{"String":[]}},"Browser.UrlRequest":{"args":[],"tags":{"Internal":["Url.Url"],"External":["String.String"]}},"Challenge.ChallengeDescription":{"args":[],"tags":{"ChallengeDescription":["String.String"]}},"Challenge.ChallengeId":{"args":[],"tags":{"ChallengeId":["Basics.Int"]}},"Challenge.ChallengeTitle":{"args":[],"tags":{"ChallengeTitle":["String.String"]}},"Http.Error":{"args":[],"tags":{"BadUrl":["String.String"],"Timeout":[],"NetworkError":[],"BadStatus":["Basics.Int"],"BadBody":["String.String"]}},"List.List":{"args":["a"],"tags":{}},"RemoteData.RemoteData":{"args":["e","a"],"tags":{"NotAsked":[],"Loading":[],"Failure":["e"],"Success":["a"]}},"Result.Result":{"args":["error","value"],"tags":{"Ok":["value"],"Err":["error"]}},"User.UserEmail":{"args":[],"tags":{"UserEmail":["String.String"]}},"User.UserId":{"args":[],"tags":{"UserId":["Basics.Int"]}},"User.UserName":{"args":[],"tags":{"UserName":["String.String"]}},"User.UserPassword":{"args":[],"tags":{"UserPassword":["String.String"]}}}}})}});}(this));
+	$elm$json$Json$Decode$succeed(_Utils_Tuple0))({"versions":{"elm":"0.19.1"},"types":{"message":"Main.Msg","aliases":{"Url.Url":{"args":[],"type":"{ protocol : Url.Protocol, host : String.String, port_ : Maybe.Maybe Basics.Int, path : String.String, query : Maybe.Maybe String.String, fragment : Maybe.Maybe String.String }"},"Challenge.Challenge":{"args":[],"type":"{ id : Challenge.ChallengeId, title : Challenge.ChallengeTitle, description : Challenge.ChallengeDescription }"},"Date.RataDie":{"args":[],"type":"Basics.Int"},"User.User":{"args":[],"type":"{ id : User.UserId, name : User.UserName, email : User.UserEmail, password : User.UserPassword, completedChallenges : List.List Challenge.ChallengeId }"},"RemoteData.WebData":{"args":["a"],"type":"RemoteData.RemoteData Http.Error a"}},"unions":{"Main.Msg":{"args":[],"tags":{"LoUPageMsg":["Page.ListOfUsers.MsgLoU"],"LoCPageMsg":["Page.ListOfChallenges.MsgLoC"],"EUPageMsg":["Page.EditUser.MsgEU"],"DCPageMsg":["Page.DisplayChallenge.MsgDC"],"NUPageMsg":["Page.NewUser.MsgNU"],"LIPageMsg":["Page.LogIn.MsgLI"],"EYPageMsg":["Page.EnhanceYou.MsgEY"],"LinkClicked":["Browser.UrlRequest"],"UrlChanged":["Url.Url"],"ReceiveDate":["Date.Date"]}},"Date.Date":{"args":[],"tags":{"RD":["Date.RataDie"]}},"Basics.Int":{"args":[],"tags":{"Int":[]}},"Maybe.Maybe":{"args":["a"],"tags":{"Just":["a"],"Nothing":[]}},"Page.DisplayChallenge.MsgDC":{"args":[],"tags":{"ChallengeReceived":["RemoteData.WebData Challenge.Challenge"],"SaveChallenge":[],"ChallengeSaved":["Result.Result Http.Error Challenge.Challenge"]}},"Page.EditUser.MsgEU":{"args":[],"tags":{"UserReceived":["RemoteData.WebData User.User"],"UpdateUserName":["String.String"],"SaveUser":[],"UserSaved":["Result.Result Http.Error User.User"]}},"Page.EnhanceYou.MsgEY":{"args":[],"tags":{"NoOp":[]}},"Page.LogIn.MsgLI":{"args":[],"tags":{"FetchUsers":[],"UsersReceived":["RemoteData.WebData (List.List User.User)"],"UpdatePassword":["String.String"],"UpdateEmail":["String.String"],"LogInUser":[]}},"Page.ListOfChallenges.MsgLoC":{"args":[],"tags":{"FetchChallenges":[],"ChallengesReceived":["RemoteData.WebData (List.List Challenge.Challenge)"]}},"Page.ListOfUsers.MsgLoU":{"args":[],"tags":{"FetchUsers":[],"UsersReceived":["RemoteData.WebData (List.List User.User)"]}},"Page.NewUser.MsgNU":{"args":[],"tags":{"UpdateName":["String.String"],"UpdateEmail":["String.String"],"CreateNewUser":[],"NewUserCreated":["Result.Result Http.Error User.User"]}},"Url.Protocol":{"args":[],"tags":{"Http":[],"Https":[]}},"String.String":{"args":[],"tags":{"String":[]}},"Browser.UrlRequest":{"args":[],"tags":{"Internal":["Url.Url"],"External":["String.String"]}},"Challenge.ChallengeDescription":{"args":[],"tags":{"ChallengeDescription":["String.String"]}},"Challenge.ChallengeId":{"args":[],"tags":{"ChallengeId":["Basics.Int"]}},"Challenge.ChallengeTitle":{"args":[],"tags":{"ChallengeTitle":["String.String"]}},"Http.Error":{"args":[],"tags":{"BadUrl":["String.String"],"Timeout":[],"NetworkError":[],"BadStatus":["Basics.Int"],"BadBody":["String.String"]}},"List.List":{"args":["a"],"tags":{}},"RemoteData.RemoteData":{"args":["e","a"],"tags":{"NotAsked":[],"Loading":[],"Failure":["e"],"Success":["a"]}},"Result.Result":{"args":["error","value"],"tags":{"Ok":["value"],"Err":["error"]}},"User.UserEmail":{"args":[],"tags":{"UserEmail":["String.String"]}},"User.UserId":{"args":[],"tags":{"UserId":["Basics.Int"]}},"User.UserName":{"args":[],"tags":{"UserName":["String.String"]}},"User.UserPassword":{"args":[],"tags":{"UserPassword":["String.String"]}}}}})}});}(this));
 
   var app = Elm.Main.init({ node: document.getElementById("elm") });
 }
