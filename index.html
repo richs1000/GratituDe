@@ -11169,15 +11169,10 @@ var $author$project$Main$DisplayChallengePage = function (a) {
 var $author$project$Main$EUPageMsg = function (a) {
 	return {$: 'EUPageMsg', a: a};
 };
-var $author$project$Main$EYPageMsg = function (a) {
-	return {$: 'EYPageMsg', a: a};
-};
 var $author$project$Main$EditUserPage = function (a) {
 	return {$: 'EditUserPage', a: a};
 };
-var $author$project$Main$EnhanceYouPage = function (a) {
-	return {$: 'EnhanceYouPage', a: a};
-};
+var $author$project$Main$EnhanceYouPage = {$: 'EnhanceYouPage'};
 var $author$project$Main$LIPageMsg = function (a) {
 	return {$: 'LIPageMsg', a: a};
 };
@@ -11592,8 +11587,6 @@ var $author$project$Page$EditUser$initEU = F2(
 			$author$project$Page$EditUser$initialModelEU(navKey),
 			$author$project$Page$EditUser$fetchUser(userId));
 	});
-var $author$project$Page$EnhanceYou$initModelEY = {};
-var $author$project$Page$EnhanceYou$initEY = _Utils_Tuple2($author$project$Page$EnhanceYou$initModelEY, $elm$core$Platform$Cmd$none);
 var $author$project$Page$LogIn$UsersReceived = function (a) {
 	return {$: 'UsersReceived', a: a};
 };
@@ -11704,12 +11697,7 @@ var $author$project$Main$setCurrentPage = function (_v0) {
 					$author$project$Main$LogInPage(modelForLI),
 					A2($elm$core$Platform$Cmd$map, $author$project$Main$LIPageMsg, commandsFromLI));
 			default:
-				var _v9 = $author$project$Page$EnhanceYou$initEY;
-				var modelForEY = _v9.a;
-				var commandsFromEY = _v9.b;
-				return _Utils_Tuple2(
-					$author$project$Main$EnhanceYouPage(modelForEY),
-					A2($elm$core$Platform$Cmd$map, $author$project$Main$EYPageMsg, commandsFromEY));
+				return _Utils_Tuple2($author$project$Main$EnhanceYouPage, $elm$core$Platform$Cmd$none);
 		}
 	}();
 	var currentPage = _v1.a;
@@ -12320,10 +12308,6 @@ var $author$project$Page$EditUser$updateEU = F2(
 				}
 		}
 	});
-var $author$project$Page$EnhanceYou$updateEY = F2(
-	function (msg, model) {
-		return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
-	});
 var $author$project$Page$LogIn$extractUsers = function (responseFromServer) {
 	switch (responseFromServer.$) {
 		case 'NotAsked':
@@ -12565,7 +12549,7 @@ var $author$project$Page$NewUser$updateNU = F2(
 var $author$project$Main$updateMain = F2(
 	function (msg, model) {
 		var _v0 = _Utils_Tuple2(msg, model.currentPage);
-		_v0$10:
+		_v0$9:
 		while (true) {
 			switch (_v0.a.$) {
 				case 'LoUPageMsg':
@@ -12583,7 +12567,7 @@ var $author$project$Main$updateMain = F2(
 								}),
 							A2($elm$core$Platform$Cmd$map, $author$project$Main$LoUPageMsg, updatedLoUCmd));
 					} else {
-						break _v0$10;
+						break _v0$9;
 					}
 				case 'LoCPageMsg':
 					if (_v0.b.$ === 'ListOfChallengesPage') {
@@ -12600,7 +12584,7 @@ var $author$project$Main$updateMain = F2(
 								}),
 							A2($elm$core$Platform$Cmd$map, $author$project$Main$LoCPageMsg, updatedLoCCmd));
 					} else {
-						break _v0$10;
+						break _v0$9;
 					}
 				case 'EUPageMsg':
 					if (_v0.b.$ === 'EditUserPage') {
@@ -12617,7 +12601,7 @@ var $author$project$Main$updateMain = F2(
 								}),
 							A2($elm$core$Platform$Cmd$map, $author$project$Main$EUPageMsg, updatedEUCmd));
 					} else {
-						break _v0$10;
+						break _v0$9;
 					}
 				case 'DCPageMsg':
 					if (_v0.b.$ === 'DisplayChallengePage') {
@@ -12634,7 +12618,7 @@ var $author$project$Main$updateMain = F2(
 								}),
 							A2($elm$core$Platform$Cmd$map, $author$project$Main$DCPageMsg, updatedDCCmd));
 					} else {
-						break _v0$10;
+						break _v0$9;
 					}
 				case 'NUPageMsg':
 					if (_v0.b.$ === 'NewUserPage') {
@@ -12652,7 +12636,7 @@ var $author$project$Main$updateMain = F2(
 								}),
 							A2($elm$core$Platform$Cmd$map, $author$project$Main$NUPageMsg, updatedNUCmd));
 					} else {
-						break _v0$10;
+						break _v0$9;
 					}
 				case 'LIPageMsg':
 					if (_v0.b.$ === 'LogInPage') {
@@ -12671,24 +12655,7 @@ var $author$project$Main$updateMain = F2(
 								}),
 							A2($elm$core$Platform$Cmd$map, $author$project$Main$LIPageMsg, updatedLICmd));
 					} else {
-						break _v0$10;
-					}
-				case 'EYPageMsg':
-					if (_v0.b.$ === 'EnhanceYouPage') {
-						var msgEY = _v0.a.a;
-						var modelEY = _v0.b.a;
-						var _v7 = A2($author$project$Page$EnhanceYou$updateEY, msgEY, modelEY);
-						var updatedEYModel = _v7.a;
-						var updatedEYCmd = _v7.b;
-						return _Utils_Tuple2(
-							_Utils_update(
-								model,
-								{
-									currentPage: $author$project$Main$EnhanceYouPage(updatedEYModel)
-								}),
-							A2($elm$core$Platform$Cmd$map, $author$project$Main$EYPageMsg, updatedEYCmd));
-					} else {
-						break _v0$10;
+						break _v0$9;
 					}
 				case 'LinkClicked':
 					var urlRequest = _v0.a.a;
@@ -13100,53 +13067,430 @@ var $author$project$Page$EditUser$viewEU = function (model) {
 				$author$project$Page$EditUser$viewSaveError(model.saveError)
 			]));
 };
-var $author$project$Page$EnhanceYou$viewEY = function (model) {
+var $elm$html$Html$Attributes$alt = $elm$html$Html$Attributes$stringProperty('alt');
+var $elm$html$Html$h4 = _VirtualDom_node('h4');
+var $elm$html$Html$Attributes$height = function (n) {
 	return A2(
-		$elm$html$Html$div,
-		_List_Nil,
-		_List_fromArray(
-			[
-				A2(
-				$elm$html$Html$div,
-				_List_Nil,
-				_List_fromArray(
-					[
-						A2(
-						$elm$html$Html$h3,
-						_List_Nil,
-						_List_fromArray(
-							[
-								$elm$html$Html$text('Podcasts')
-							]))
-					])),
-				A2(
-				$elm$html$Html$div,
-				_List_Nil,
-				_List_fromArray(
-					[
-						A2(
-						$elm$html$Html$h3,
-						_List_Nil,
-						_List_fromArray(
-							[
-								$elm$html$Html$text('Social Media Accounts')
-							]))
-					])),
-				A2(
-				$elm$html$Html$div,
-				_List_Nil,
-				_List_fromArray(
-					[
-						A2(
-						$elm$html$Html$h3,
-						_List_Nil,
-						_List_fromArray(
-							[
-								$elm$html$Html$text('Inspirational Text')
-							]))
-					]))
-			]));
+		_VirtualDom_attribute,
+		'height',
+		$elm$core$String$fromInt(n));
 };
+var $elm$html$Html$img = _VirtualDom_node('img');
+var $elm$html$Html$Attributes$src = function (url) {
+	return A2(
+		$elm$html$Html$Attributes$stringProperty,
+		'src',
+		_VirtualDom_noJavaScriptOrHtmlUri(url));
+};
+var $elm$html$Html$Attributes$target = $elm$html$Html$Attributes$stringProperty('target');
+var $elm$html$Html$Attributes$width = function (n) {
+	return A2(
+		_VirtualDom_attribute,
+		'width',
+		$elm$core$String$fromInt(n));
+};
+var $author$project$Page$EnhanceYou$viewEY = A2(
+	$elm$html$Html$div,
+	_List_Nil,
+	_List_fromArray(
+		[
+			A2(
+			$elm$html$Html$div,
+			_List_Nil,
+			_List_fromArray(
+				[
+					A2(
+					$elm$html$Html$h3,
+					_List_Nil,
+					_List_fromArray(
+						[
+							$elm$html$Html$text('Podcasts')
+						])),
+					A2(
+					$elm$html$Html$ul,
+					_List_Nil,
+					_List_fromArray(
+						[
+							A2(
+							$elm$html$Html$li,
+							_List_Nil,
+							_List_fromArray(
+								[
+									A2(
+									$elm$html$Html$a,
+									_List_fromArray(
+										[
+											$elm$html$Html$Attributes$href('https://youtube.com/playlist?list=PLnFaMy9CvPK6bWz9qqXz0L3KEPoz0cvCA&si=Yja_o3e6TseF7qRp'),
+											$elm$html$Html$Attributes$target('blank')
+										]),
+									_List_fromArray(
+										[
+											$elm$html$Html$text('The Wellness Cafe by Trinity Tondelier')
+										]))
+								])),
+							A2(
+							$elm$html$Html$li,
+							_List_Nil,
+							_List_fromArray(
+								[
+									A2(
+									$elm$html$Html$a,
+									_List_fromArray(
+										[
+											$elm$html$Html$Attributes$href('https://open.spotify.com/show/0xKOhJLfnQTGkWqFSodeCA?si=8ff1d91583954bce'),
+											$elm$html$Html$Attributes$target('blank')
+										]),
+									_List_fromArray(
+										[
+											$elm$html$Html$text('Pursuit of Wellness by Dear Media')
+										]))
+								])),
+							A2(
+							$elm$html$Html$li,
+							_List_Nil,
+							_List_fromArray(
+								[
+									A2(
+									$elm$html$Html$a,
+									_List_fromArray(
+										[
+											$elm$html$Html$Attributes$href('https://open.spotify.com/show/2AlwVzVu5uFO2xvY10Fyq3?si=68ce2ec6c33b4f88'),
+											$elm$html$Html$Attributes$target('blank')
+										]),
+									_List_fromArray(
+										[
+											$elm$html$Html$text('Mindful Gratitude by Leslie D Riopel')
+										]))
+								])),
+							A2(
+							$elm$html$Html$li,
+							_List_Nil,
+							_List_fromArray(
+								[
+									A2(
+									$elm$html$Html$a,
+									_List_fromArray(
+										[
+											$elm$html$Html$Attributes$href('https://www.ted.com/podcasts/how-to-be-a-better-human'),
+											$elm$html$Html$Attributes$target('blank')
+										]),
+									_List_fromArray(
+										[
+											$elm$html$Html$text('How to Be a Better Human by TED and PRX')
+										]))
+								])),
+							A2(
+							$elm$html$Html$li,
+							_List_Nil,
+							_List_fromArray(
+								[
+									A2(
+									$elm$html$Html$a,
+									_List_fromArray(
+										[
+											$elm$html$Html$Attributes$href('https://open.spotify.com/show/4cExBr7Wsyl9UlXOalMmX3?si=ea30f73e46864551'),
+											$elm$html$Html$Attributes$target('blank')
+										]),
+									_List_fromArray(
+										[
+											$elm$html$Html$text('The Daily Gratitude Minute by Scott Colby')
+										]))
+								]))
+						])),
+					A2(
+					$elm$html$Html$img,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$src('../../images/headphones.png'),
+							$elm$html$Html$Attributes$alt('A pair of headphones'),
+							$elm$html$Html$Attributes$width(100),
+							$elm$html$Html$Attributes$height(100)
+						]),
+					_List_Nil)
+				])),
+			A2(
+			$elm$html$Html$div,
+			_List_Nil,
+			_List_fromArray(
+				[
+					A2(
+					$elm$html$Html$h3,
+					_List_Nil,
+					_List_fromArray(
+						[
+							$elm$html$Html$text('Social Media Accounts')
+						])),
+					A2(
+					$elm$html$Html$h4,
+					_List_Nil,
+					_List_fromArray(
+						[
+							$elm$html$Html$text('Instagram')
+						])),
+					A2(
+					$elm$html$Html$ul,
+					_List_Nil,
+					_List_fromArray(
+						[
+							A2(
+							$elm$html$Html$li,
+							_List_Nil,
+							_List_fromArray(
+								[
+									A2(
+									$elm$html$Html$a,
+									_List_fromArray(
+										[
+											$elm$html$Html$Attributes$href('https://www.instagram.com/opentalk__/'),
+											$elm$html$Html$Attributes$target('blank')
+										]),
+									_List_fromArray(
+										[
+											$elm$html$Html$text('@opentalk_')
+										]))
+								])),
+							A2(
+							$elm$html$Html$li,
+							_List_Nil,
+							_List_fromArray(
+								[
+									A2(
+									$elm$html$Html$a,
+									_List_fromArray(
+										[
+											$elm$html$Html$Attributes$href('https://www.instagram.com/wetheurban/'),
+											$elm$html$Html$Attributes$target('blank')
+										]),
+									_List_fromArray(
+										[
+											$elm$html$Html$text('@wetheurban')
+										]))
+								])),
+							A2(
+							$elm$html$Html$li,
+							_List_Nil,
+							_List_fromArray(
+								[
+									A2(
+									$elm$html$Html$a,
+									_List_fromArray(
+										[
+											$elm$html$Html$Attributes$href('https://www.instagram.com/collectiveworld/'),
+											$elm$html$Html$Attributes$target('blank')
+										]),
+									_List_fromArray(
+										[
+											$elm$html$Html$text('@collectiveworld')
+										]))
+								]))
+						])),
+					A2(
+					$elm$html$Html$h4,
+					_List_Nil,
+					_List_fromArray(
+						[
+							$elm$html$Html$text('X')
+						])),
+					A2(
+					$elm$html$Html$ul,
+					_List_Nil,
+					_List_fromArray(
+						[
+							A2(
+							$elm$html$Html$li,
+							_List_Nil,
+							_List_fromArray(
+								[
+									A2(
+									$elm$html$Html$a,
+									_List_fromArray(
+										[
+											$elm$html$Html$Attributes$href('https://x.com/GratitudeSoup'),
+											$elm$html$Html$Attributes$target('blank')
+										]),
+									_List_fromArray(
+										[
+											$elm$html$Html$text('@GratitudeSoup')
+										]))
+								])),
+							A2(
+							$elm$html$Html$li,
+							_List_Nil,
+							_List_fromArray(
+								[
+									A2(
+									$elm$html$Html$a,
+									_List_fromArray(
+										[
+											$elm$html$Html$Attributes$href('https://x.com/WomensHealthMag'),
+											$elm$html$Html$Attributes$target('blank')
+										]),
+									_List_fromArray(
+										[
+											$elm$html$Html$text('@WomensHealthMag')
+										]))
+								])),
+							A2(
+							$elm$html$Html$li,
+							_List_Nil,
+							_List_fromArray(
+								[
+									A2(
+									$elm$html$Html$a,
+									_List_fromArray(
+										[
+											$elm$html$Html$Attributes$href('https://x.com/MensHealthMag'),
+											$elm$html$Html$Attributes$target('blank')
+										]),
+									_List_fromArray(
+										[
+											$elm$html$Html$text('@MensHealthMag')
+										]))
+								])),
+							A2(
+							$elm$html$Html$li,
+							_List_Nil,
+							_List_fromArray(
+								[
+									A2(
+									$elm$html$Html$a,
+									_List_fromArray(
+										[
+											$elm$html$Html$Attributes$href('https://x.com/optmlhlthnwllns'),
+											$elm$html$Html$Attributes$target('blank')
+										]),
+									_List_fromArray(
+										[
+											$elm$html$Html$text('@optmlhlthnwllns')
+										]))
+								]))
+						])),
+					A2(
+					$elm$html$Html$img,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$src('../../images/social-media.png'),
+							$elm$html$Html$Attributes$alt('Social media messages'),
+							$elm$html$Html$Attributes$width(100),
+							$elm$html$Html$Attributes$height(100)
+						]),
+					_List_Nil)
+				])),
+			A2(
+			$elm$html$Html$div,
+			_List_Nil,
+			_List_fromArray(
+				[
+					A2(
+					$elm$html$Html$h3,
+					_List_Nil,
+					_List_fromArray(
+						[
+							$elm$html$Html$text('Inspirational Text')
+						])),
+					A2(
+					$elm$html$Html$ul,
+					_List_Nil,
+					_List_fromArray(
+						[
+							A2(
+							$elm$html$Html$li,
+							_List_Nil,
+							_List_fromArray(
+								[
+									A2(
+									$elm$html$Html$a,
+									_List_fromArray(
+										[
+											$elm$html$Html$Attributes$href('https://www.amazon.com/Power-Letting-Go-John-Purkiss/dp/1783253630/'),
+											$elm$html$Html$Attributes$target('blank')
+										]),
+									_List_fromArray(
+										[
+											$elm$html$Html$text('The Power of Letting Go by John Purkiss')
+										]))
+								])),
+							A2(
+							$elm$html$Html$li,
+							_List_Nil,
+							_List_fromArray(
+								[
+									A2(
+									$elm$html$Html$a,
+									_List_fromArray(
+										[
+											$elm$html$Html$Attributes$href('https://www.amazon.com/Happiness-Project-Tenth-Anniversary-Aristotle/dp/0062888749/'),
+											$elm$html$Html$Attributes$target('blank')
+										]),
+									_List_fromArray(
+										[
+											$elm$html$Html$text('The Happiness Project by Gretchen Rubin')
+										]))
+								])),
+							A2(
+							$elm$html$Html$li,
+							_List_Nil,
+							_List_fromArray(
+								[
+									A2(
+									$elm$html$Html$a,
+									_List_fromArray(
+										[
+											$elm$html$Html$Attributes$href('https://www.amazon.com/Never-Finished-Unshackle-Your-Within/dp/1544534078/'),
+											$elm$html$Html$Attributes$target('blank')
+										]),
+									_List_fromArray(
+										[
+											$elm$html$Html$text('Never Finished by David Goggins')
+										]))
+								])),
+							A2(
+							$elm$html$Html$li,
+							_List_Nil,
+							_List_fromArray(
+								[
+									A2(
+									$elm$html$Html$a,
+									_List_fromArray(
+										[
+											$elm$html$Html$Attributes$href('https://www.amazon.com/Mountain-You-Transforming-Self-Sabotage-Self-Mastery/dp/1949759229/'),
+											$elm$html$Html$Attributes$target('blank')
+										]),
+									_List_fromArray(
+										[
+											$elm$html$Html$text('The Mountain is You by Brianna Wiest')
+										]))
+								])),
+							A2(
+							$elm$html$Html$li,
+							_List_Nil,
+							_List_fromArray(
+								[
+									A2(
+									$elm$html$Html$a,
+									_List_fromArray(
+										[
+											$elm$html$Html$Attributes$href('https://www.amazon.com/Strength-Our-Scars-Bianca-Sparacino/dp/0996487190/'),
+											$elm$html$Html$Attributes$target('blank')
+										]),
+									_List_fromArray(
+										[
+											$elm$html$Html$text('The Strength in Our Scars by Bianca Sparacino')
+										]))
+								]))
+						])),
+					A2(
+					$elm$html$Html$img,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$src('../../images/books.png'),
+							$elm$html$Html$Attributes$alt('A collection of books'),
+							$elm$html$Html$Attributes$width(100),
+							$elm$html$Html$Attributes$height(100)
+						]),
+					_List_Nil)
+				]))
+		]));
 var $author$project$Page$LogIn$LogInUser = {$: 'LogInUser'};
 var $author$project$Page$LogIn$UpdateEmail = function (a) {
 	return {$: 'UpdateEmail', a: a};
@@ -13720,11 +14064,7 @@ var $author$project$Main$currentView = function (model) {
 				$author$project$Main$NUPageMsg,
 				$author$project$Page$NewUser$viewNU(modelNU));
 		case 'EnhanceYouPage':
-			var modelEY = _v0.a;
-			return A2(
-				$elm$html$Html$map,
-				$author$project$Main$EYPageMsg,
-				$author$project$Page$EnhanceYou$viewEY(modelEY));
+			return $author$project$Page$EnhanceYou$viewEY;
 		default:
 			var modelLI = _v0.a;
 			return A2(
@@ -13989,7 +14329,7 @@ var $author$project$Main$main = $elm$browser$Browser$application(
 		view: $author$project$Main$viewMain
 	});
 _Platform_export({'Main':{'init':$author$project$Main$main(
-	$elm$json$Json$Decode$succeed(_Utils_Tuple0))({"versions":{"elm":"0.19.1"},"types":{"message":"Main.Msg","aliases":{"Url.Url":{"args":[],"type":"{ protocol : Url.Protocol, host : String.String, port_ : Maybe.Maybe Basics.Int, path : String.String, query : Maybe.Maybe String.String, fragment : Maybe.Maybe String.String }"},"Challenge.Challenge":{"args":[],"type":"{ id : Challenge.ChallengeId, title : Challenge.ChallengeTitle, description : Challenge.ChallengeDescription }"},"Date.RataDie":{"args":[],"type":"Basics.Int"},"User.User":{"args":[],"type":"{ id : User.UserId, name : User.UserName, email : User.UserEmail, password : User.UserPassword, completedChallenges : List.List Challenge.ChallengeId }"},"RemoteData.WebData":{"args":["a"],"type":"RemoteData.RemoteData Http.Error a"}},"unions":{"Main.Msg":{"args":[],"tags":{"LoUPageMsg":["Page.ListOfUsers.MsgLoU"],"LoCPageMsg":["Page.ListOfChallenges.MsgLoC"],"EUPageMsg":["Page.EditUser.MsgEU"],"DCPageMsg":["Page.DisplayChallenge.MsgDC"],"NUPageMsg":["Page.NewUser.MsgNU"],"LIPageMsg":["Page.LogIn.MsgLI"],"EYPageMsg":["Page.EnhanceYou.MsgEY"],"LinkClicked":["Browser.UrlRequest"],"UrlChanged":["Url.Url"],"ReceiveDate":["Date.Date"]}},"Date.Date":{"args":[],"tags":{"RD":["Date.RataDie"]}},"Basics.Int":{"args":[],"tags":{"Int":[]}},"Maybe.Maybe":{"args":["a"],"tags":{"Just":["a"],"Nothing":[]}},"Page.DisplayChallenge.MsgDC":{"args":[],"tags":{"ChallengeReceived":["RemoteData.WebData Challenge.Challenge"],"SaveChallenge":[],"ChallengeSaved":["Result.Result Http.Error Challenge.Challenge"]}},"Page.EditUser.MsgEU":{"args":[],"tags":{"UserReceived":["RemoteData.WebData User.User"],"UpdateUserName":["String.String"],"SaveUser":[],"UserSaved":["Result.Result Http.Error User.User"]}},"Page.EnhanceYou.MsgEY":{"args":[],"tags":{"NoOp":[]}},"Page.LogIn.MsgLI":{"args":[],"tags":{"FetchUsers":[],"UsersReceived":["RemoteData.WebData (List.List User.User)"],"UpdatePassword":["String.String"],"UpdateEmail":["String.String"],"LogInUser":[]}},"Page.ListOfChallenges.MsgLoC":{"args":[],"tags":{"FetchChallenges":[],"ChallengesReceived":["RemoteData.WebData (List.List Challenge.Challenge)"]}},"Page.ListOfUsers.MsgLoU":{"args":[],"tags":{"FetchUsers":[],"UsersReceived":["RemoteData.WebData (List.List User.User)"]}},"Page.NewUser.MsgNU":{"args":[],"tags":{"UpdateName":["String.String"],"UpdateEmail":["String.String"],"CreateNewUser":[],"NewUserCreated":["Result.Result Http.Error User.User"]}},"Url.Protocol":{"args":[],"tags":{"Http":[],"Https":[]}},"String.String":{"args":[],"tags":{"String":[]}},"Browser.UrlRequest":{"args":[],"tags":{"Internal":["Url.Url"],"External":["String.String"]}},"Challenge.ChallengeDescription":{"args":[],"tags":{"ChallengeDescription":["String.String"]}},"Challenge.ChallengeId":{"args":[],"tags":{"ChallengeId":["Basics.Int"]}},"Challenge.ChallengeTitle":{"args":[],"tags":{"ChallengeTitle":["String.String"]}},"Http.Error":{"args":[],"tags":{"BadUrl":["String.String"],"Timeout":[],"NetworkError":[],"BadStatus":["Basics.Int"],"BadBody":["String.String"]}},"List.List":{"args":["a"],"tags":{}},"RemoteData.RemoteData":{"args":["e","a"],"tags":{"NotAsked":[],"Loading":[],"Failure":["e"],"Success":["a"]}},"Result.Result":{"args":["error","value"],"tags":{"Ok":["value"],"Err":["error"]}},"User.UserEmail":{"args":[],"tags":{"UserEmail":["String.String"]}},"User.UserId":{"args":[],"tags":{"UserId":["Basics.Int"]}},"User.UserName":{"args":[],"tags":{"UserName":["String.String"]}},"User.UserPassword":{"args":[],"tags":{"UserPassword":["String.String"]}}}}})}});}(this));
+	$elm$json$Json$Decode$succeed(_Utils_Tuple0))({"versions":{"elm":"0.19.1"},"types":{"message":"Main.Msg","aliases":{"Url.Url":{"args":[],"type":"{ protocol : Url.Protocol, host : String.String, port_ : Maybe.Maybe Basics.Int, path : String.String, query : Maybe.Maybe String.String, fragment : Maybe.Maybe String.String }"},"Challenge.Challenge":{"args":[],"type":"{ id : Challenge.ChallengeId, title : Challenge.ChallengeTitle, description : Challenge.ChallengeDescription }"},"Date.RataDie":{"args":[],"type":"Basics.Int"},"User.User":{"args":[],"type":"{ id : User.UserId, name : User.UserName, email : User.UserEmail, password : User.UserPassword, completedChallenges : List.List Challenge.ChallengeId }"},"RemoteData.WebData":{"args":["a"],"type":"RemoteData.RemoteData Http.Error a"}},"unions":{"Main.Msg":{"args":[],"tags":{"LoUPageMsg":["Page.ListOfUsers.MsgLoU"],"LoCPageMsg":["Page.ListOfChallenges.MsgLoC"],"EUPageMsg":["Page.EditUser.MsgEU"],"DCPageMsg":["Page.DisplayChallenge.MsgDC"],"NUPageMsg":["Page.NewUser.MsgNU"],"LIPageMsg":["Page.LogIn.MsgLI"],"LinkClicked":["Browser.UrlRequest"],"UrlChanged":["Url.Url"],"ReceiveDate":["Date.Date"]}},"Date.Date":{"args":[],"tags":{"RD":["Date.RataDie"]}},"Basics.Int":{"args":[],"tags":{"Int":[]}},"Maybe.Maybe":{"args":["a"],"tags":{"Just":["a"],"Nothing":[]}},"Page.DisplayChallenge.MsgDC":{"args":[],"tags":{"ChallengeReceived":["RemoteData.WebData Challenge.Challenge"],"SaveChallenge":[],"ChallengeSaved":["Result.Result Http.Error Challenge.Challenge"]}},"Page.EditUser.MsgEU":{"args":[],"tags":{"UserReceived":["RemoteData.WebData User.User"],"UpdateUserName":["String.String"],"SaveUser":[],"UserSaved":["Result.Result Http.Error User.User"]}},"Page.LogIn.MsgLI":{"args":[],"tags":{"FetchUsers":[],"UsersReceived":["RemoteData.WebData (List.List User.User)"],"UpdatePassword":["String.String"],"UpdateEmail":["String.String"],"LogInUser":[]}},"Page.ListOfChallenges.MsgLoC":{"args":[],"tags":{"FetchChallenges":[],"ChallengesReceived":["RemoteData.WebData (List.List Challenge.Challenge)"]}},"Page.ListOfUsers.MsgLoU":{"args":[],"tags":{"FetchUsers":[],"UsersReceived":["RemoteData.WebData (List.List User.User)"]}},"Page.NewUser.MsgNU":{"args":[],"tags":{"UpdateName":["String.String"],"UpdateEmail":["String.String"],"CreateNewUser":[],"NewUserCreated":["Result.Result Http.Error User.User"]}},"Url.Protocol":{"args":[],"tags":{"Http":[],"Https":[]}},"String.String":{"args":[],"tags":{"String":[]}},"Browser.UrlRequest":{"args":[],"tags":{"Internal":["Url.Url"],"External":["String.String"]}},"Challenge.ChallengeDescription":{"args":[],"tags":{"ChallengeDescription":["String.String"]}},"Challenge.ChallengeId":{"args":[],"tags":{"ChallengeId":["Basics.Int"]}},"Challenge.ChallengeTitle":{"args":[],"tags":{"ChallengeTitle":["String.String"]}},"Http.Error":{"args":[],"tags":{"BadUrl":["String.String"],"Timeout":[],"NetworkError":[],"BadStatus":["Basics.Int"],"BadBody":["String.String"]}},"List.List":{"args":["a"],"tags":{}},"RemoteData.RemoteData":{"args":["e","a"],"tags":{"NotAsked":[],"Loading":[],"Failure":["e"],"Success":["a"]}},"Result.Result":{"args":["error","value"],"tags":{"Ok":["value"],"Err":["error"]}},"User.UserEmail":{"args":[],"tags":{"UserEmail":["String.String"]}},"User.UserId":{"args":[],"tags":{"UserId":["Basics.Int"]}},"User.UserName":{"args":[],"tags":{"UserName":["String.String"]}},"User.UserPassword":{"args":[],"tags":{"UserPassword":["String.String"]}}}}})}});}(this));
 
   var app = Elm.Main.init({ node: document.getElementById("elm") });
 }
