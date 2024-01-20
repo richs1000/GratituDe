@@ -17,7 +17,6 @@ module Main exposing (main)
    elm init
 
    json-server --watch server/gratitude.json -p 5019
-   elm-live src/Main.elm --pushstate -- --debug
 
    http-server-spa: https://livebook.manning.com/book/elm-in-action/chapter-8/175
    http-server-spa .
@@ -293,13 +292,17 @@ headerView model =
         user =
             Maybe.withDefault User.emptyUser model.user
 
+        userPath =
+            "/users/" ++ User.userIdToString user.id
+
         links =
             if user.id == User.emptyUserId then
                 ul []
                     [ li [] [ a [ href "/home" ] [ text "Home" ] ]
                     , li [] [ a [ href ("/challenges/" ++ String.fromInt model.thisWeeksChallenge) ] [ text "This Week's Challenge" ] ]
                     , li [] [ a [ href "/enhanceyou" ] [ text "Enhance You" ] ]
-                    , li [] [ a [ href "/sota" ] [ text "SOTA" ] ]
+
+                    -- , li [] [ a [ href "/sota" ] [ text "SOTA" ] ]
                     , li [] [ a [ href "/login" ] [ text "Log In" ] ]
                     , li [] [ a [ href "/users/new" ] [ text "New User" ] ]
                     ]
@@ -309,7 +312,9 @@ headerView model =
                     [ li [] [ a [ href "/home" ] [ text "Home" ] ]
                     , li [] [ a [ href ("/challenges/" ++ String.fromInt model.thisWeeksChallenge) ] [ text "This Week's Challenge" ] ]
                     , li [] [ a [ href "/enhanceyou" ] [ text "Enhance You" ] ]
-                    , li [] [ a [ href "/sota" ] [ text "SOTA" ] ]
+
+                    -- , li [] [ a [ href "/sota" ] [ text "SOTA" ] ]
+                    , li [] [ a [ href userPath ] [ text (User.userNameToString user.name) ] ]
                     , li [] [ a [ href "/login" ] [ text "Log Out" ] ]
                     ]
     in

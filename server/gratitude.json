@@ -273,6 +273,7 @@
       "email": "email1@email.com",
       "password": "DuqOT2024!",
       "completedChallenges": [
+        21,
         1,
         2,
         3,
@@ -298,7 +299,10 @@
     },
     {
       "name": "brand new user",
-      "completedChallenges": [],
+      "completedChallenges": [
+        30,
+        16
+      ],
       "email": "email4@email.com",
       "password": "DuqOT2024!",
       "id": 4

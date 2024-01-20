@@ -25,13 +25,6 @@ type alias ModelLI =
     }
 
 
-
--- type alias EmailsAndPasswords =
---     { email : String
---     , password : String
---     }
-
-
 initLI : Nav.Key -> ( ModelLI, Cmd MsgLI )
 initLI navKey =
     ( initialModelLI navKey, fetchUsers )
@@ -105,7 +98,7 @@ updateLI msg model =
     case msg of
         --
         -- First thing we do, ask the server for all the email/password
-        -- data for all the users. Yes, this is stupid.alias
+        -- data for all the users. Yes, this is stupid.
         --
         FetchUsers ->
             ( model
