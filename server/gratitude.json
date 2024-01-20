@@ -13,7 +13,8 @@
     {
       "id": 3,
       "title": "Friend",
-      "description": "Catch up with a friend"
+      "description": "Catch up with a friend",
+      "authorName": "Catch up with a friend"
     },
     {
       "id": 4,
@@ -273,10 +274,10 @@
       "email": "email1@email.com",
       "password": "DuqOT2024!",
       "completedChallenges": [
+        3,
         21,
         1,
         2,
-        3,
         4
       ]
     },

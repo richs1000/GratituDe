@@ -113,7 +113,7 @@ updateNU msg model =
 
         NewUserCreated (Ok serverResponse) ->
             ( { model | newUser = Just serverResponse, createError = Nothing }
-            , Route.pushUrl Route.ListOfUsersRoute model.navKey
+            , Route.pushUrl Route.LandingPageRoute model.navKey
             )
 
         NewUserCreated (Err error) ->
