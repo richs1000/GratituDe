@@ -5,6 +5,11 @@ module Main exposing (main)
    https://livebook.manning.com/book/elm-in-action/chapter-8/50
    https://elmprogramming.com/creating-a-new-post.html
 
+   css:
+   https://elmprogramming.com/model-view-update-part-2.html
+   elm install rtfeldman/elm-css
+   elm install elm/virtual-dom
+
    https://github.com/justinmimbs/date
 
 -}
@@ -16,6 +21,8 @@ module Main exposing (main)
 
    http-server-spa: https://livebook.manning.com/book/elm-in-action/chapter-8/175
    http-server-spa .
+
+   elm make src/Main.elm --output app.js --debug
 
    git branch <branch name>
    git checkout <branch name>
