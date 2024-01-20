@@ -4,6 +4,7 @@ module Route exposing (..)
    https://elmprogramming.com/navigating-to-list-posts-page.html
    https://elmprogramming.com/editing-a-post.html
    https://elmprogramming.com/creating-a-new-post.html
+   https://livebook.manning.com/book/elm-in-action/chapter-8/271
 -}
 {-
    elm install elm/url
@@ -26,6 +27,18 @@ type Route
     | NewUserRoute
     | LogInRoute
     | EnhanceYouRoute
+
+
+
+{-
+   Consider this design instead
+   https://livebook.manning.com/book/elm-in-action/chapter-8/279
+
+   urlToPage : Url -> Page
+   urlToPage url =
+       Parser.parse parser url
+           |> Maybe.withDefault NotFound
+-}
 
 
 parseUrl : Url.Url -> Route

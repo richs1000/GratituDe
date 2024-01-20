@@ -6,12 +6,16 @@ module Main exposing (main)
    https://elmprogramming.com/creating-a-new-post.html
 
    https://github.com/justinmimbs/date
+
 -}
 {-
    elm init
 
    json-server --watch server/gratitude.json -p 5019
    elm-live src/Main.elm --pushstate -- --debug
+
+   http-server-spa: https://livebook.manning.com/book/elm-in-action/chapter-8/175
+   http-server-spa .
 
    git branch <branch name>
    git checkout <branch name>
@@ -21,6 +25,8 @@ module Main exposing (main)
    git merge <branch name>
    git push -u github main
 
+    debug.log : https://livebook.manning.com/book/elm-in-action/chapter-8/133
+    debug.todo: https://livebook.manning.com/book/elm-in-action/chapter-8/192
 
 -}
 {-
@@ -255,6 +261,13 @@ footerView =
         , br [] []
         , text "Copyright and other footer stuff..."
         ]
+
+
+
+{-
+   https://livebook.manning.com/book/elm-in-action/chapter-8/50
+   https://livebook.manning.com/book/elm-in-action/chapter-8/89
+-}
 
 
 headerView : Model -> Html Msg
