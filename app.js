@@ -10927,6 +10927,7 @@ var $author$project$Route$ChallengeRoute = function (a) {
 };
 var $author$project$Route$EnhanceYouRoute = {$: 'EnhanceYouRoute'};
 var $author$project$Route$LandingPageRoute = {$: 'LandingPageRoute'};
+var $author$project$Route$ListOfChallengesRoute = {$: 'ListOfChallengesRoute'};
 var $author$project$Route$LogInRoute = {$: 'LogInRoute'};
 var $author$project$Route$NewUserRoute = {$: 'NewUserRoute'};
 var $author$project$Route$UserRoute = function (a) {
@@ -11099,6 +11100,10 @@ var $author$project$Route$routeParsers = $elm$url$Url$Parser$oneOf(
 			$elm$url$Url$Parser$s('home')),
 			A2(
 			$elm$url$Url$Parser$map,
+			$author$project$Route$ListOfChallengesRoute,
+			$elm$url$Url$Parser$s('challenges')),
+			A2(
+			$elm$url$Url$Parser$map,
 			$author$project$Route$UserRoute,
 			A2(
 				$elm$url$Url$Parser$slash,
@@ -11153,6 +11158,12 @@ var $author$project$Main$LIPageMsg = function (a) {
 	return {$: 'LIPageMsg', a: a};
 };
 var $author$project$Main$LandingPage = {$: 'LandingPage'};
+var $author$project$Main$ListOfChallengesPage = function (a) {
+	return {$: 'ListOfChallengesPage', a: a};
+};
+var $author$project$Main$LoCPageMsg = function (a) {
+	return {$: 'LoCPageMsg', a: a};
+};
 var $author$project$Main$LogInPage = function (a) {
 	return {$: 'LogInPage', a: a};
 };
@@ -11580,6 +11591,20 @@ var $author$project$Page$LogIn$initLI = function (navKey) {
 		$author$project$Page$LogIn$initialModelLI(navKey),
 		$author$project$Page$LogIn$fetchUsers);
 };
+var $author$project$Page$ListOfChallenges$ChallengesReceived = function (a) {
+	return {$: 'ChallengesReceived', a: a};
+};
+var $author$project$Challenge$listOfChallengesDecoder = $elm$json$Json$Decode$list($author$project$Challenge$challengeDecoder);
+var $author$project$Page$ListOfChallenges$fetchChallenges = $elm$http$Http$get(
+	{
+		expect: A2(
+			$elm$http$Http$expectJson,
+			A2($elm$core$Basics$composeR, $krisajenkins$remotedata$RemoteData$fromResult, $author$project$Page$ListOfChallenges$ChallengesReceived),
+			$author$project$Challenge$listOfChallengesDecoder),
+		url: 'http://localhost:5019/challenges'
+	});
+var $author$project$Page$ListOfChallenges$initModelLoC = {challenges: $krisajenkins$remotedata$RemoteData$Loading};
+var $author$project$Page$ListOfChallenges$initLoC = _Utils_Tuple2($author$project$Page$ListOfChallenges$initModelLoC, $author$project$Page$ListOfChallenges$fetchChallenges);
 var $author$project$Page$NewUser$initialModelNU = function (navKeyParam) {
 	return {createError: $elm$core$Maybe$Nothing, navKey: navKeyParam, newUser: $elm$core$Maybe$Nothing};
 };
@@ -11598,33 +11623,40 @@ var $author$project$Main$setCurrentPage = function (_v0) {
 				return _Utils_Tuple2($author$project$Main$NotFoundPage, $elm$core$Platform$Cmd$none);
 			case 'LandingPageRoute':
 				return _Utils_Tuple2($author$project$Main$LandingPage, $elm$core$Platform$Cmd$none);
+			case 'ListOfChallengesRoute':
+				var _v3 = $author$project$Page$ListOfChallenges$initLoC;
+				var modelForLoC = _v3.a;
+				var commandsFromLoC = _v3.b;
+				return _Utils_Tuple2(
+					$author$project$Main$ListOfChallengesPage(modelForLoC),
+					A2($elm$core$Platform$Cmd$map, $author$project$Main$LoCPageMsg, commandsFromLoC));
 			case 'UserRoute':
 				var userId = _v2.a;
-				var _v3 = A2($author$project$Page$EditUser$initEU, userId, model.navKey);
-				var modelForEU = _v3.a;
-				var commandsFromEU = _v3.b;
+				var _v4 = A2($author$project$Page$EditUser$initEU, userId, model.navKey);
+				var modelForEU = _v4.a;
+				var commandsFromEU = _v4.b;
 				return _Utils_Tuple2(
 					$author$project$Main$EditUserPage(modelForEU),
 					A2($elm$core$Platform$Cmd$map, $author$project$Main$EUPageMsg, commandsFromEU));
 			case 'ChallengeRoute':
 				var challengeId = _v2.a;
-				var _v4 = A3($author$project$Page$DisplayChallenge$initDC, model.user, challengeId, model.navKey);
-				var modelForDC = _v4.a;
-				var commandsFromDC = _v4.b;
+				var _v5 = A3($author$project$Page$DisplayChallenge$initDC, model.user, challengeId, model.navKey);
+				var modelForDC = _v5.a;
+				var commandsFromDC = _v5.b;
 				return _Utils_Tuple2(
 					$author$project$Main$DisplayChallengePage(modelForDC),
 					A2($elm$core$Platform$Cmd$map, $author$project$Main$DCPageMsg, commandsFromDC));
 			case 'NewUserRoute':
-				var _v5 = $author$project$Page$NewUser$initNU(model.navKey);
-				var modelForNU = _v5.a;
-				var commandsFromNU = _v5.b;
+				var _v6 = $author$project$Page$NewUser$initNU(model.navKey);
+				var modelForNU = _v6.a;
+				var commandsFromNU = _v6.b;
 				return _Utils_Tuple2(
 					$author$project$Main$NewUserPage(modelForNU),
 					A2($elm$core$Platform$Cmd$map, $author$project$Main$NUPageMsg, commandsFromNU));
 			case 'LogInRoute':
-				var _v6 = $author$project$Page$LogIn$initLI(model.navKey);
-				var modelForLI = _v6.a;
-				var commandsFromLI = _v6.b;
+				var _v7 = $author$project$Page$LogIn$initLI(model.navKey);
+				var modelForLI = _v7.a;
+				var commandsFromLI = _v7.b;
 				return _Utils_Tuple2(
 					$author$project$Main$LogInPage(modelForLI),
 					A2($elm$core$Platform$Cmd$map, $author$project$Main$LIPageMsg, commandsFromLI));
@@ -12003,6 +12035,8 @@ var $author$project$Route$routeToString = function (route) {
 	switch (route.$) {
 		case 'RouteNotFound':
 			return '/not-found';
+		case 'ListOfChallengesRoute':
+			return '/challenges';
 		case 'UserRoute':
 			var userId = route.a;
 			return '/users/' + $author$project$User$userIdToString(userId);
@@ -12218,7 +12252,6 @@ var $author$project$Page$DisplayChallenge$updateDC = F2(
 var $author$project$Page$EditUser$ChallengesReceived = function (a) {
 	return {$: 'ChallengesReceived', a: a};
 };
-var $author$project$Challenge$listOfChallengesDecoder = $elm$json$Json$Decode$list($author$project$Challenge$challengeDecoder);
 var $author$project$Page$EditUser$fetchChallenges = $elm$http$Http$get(
 	{
 		expect: A2(
@@ -12449,6 +12482,23 @@ var $author$project$Page$LogIn$updateLI = F2(
 				}
 		}
 	});
+var $author$project$Page$ListOfChallenges$updateLoC = F2(
+	function (msg, model) {
+		if (msg.$ === 'FetchChallenges') {
+			return _Utils_Tuple2(
+				_Utils_update(
+					model,
+					{challenges: $krisajenkins$remotedata$RemoteData$Loading}),
+				$author$project$Page$ListOfChallenges$fetchChallenges);
+		} else {
+			var responseFromServer = msg.a;
+			return _Utils_Tuple2(
+				_Utils_update(
+					model,
+					{challenges: responseFromServer}),
+				$elm$core$Platform$Cmd$none);
+		}
+	});
 var $author$project$Page$NewUser$NewUserCreated = function (a) {
 	return {$: 'NewUserCreated', a: a};
 };
@@ -12554,19 +12604,36 @@ var $author$project$Page$NewUser$updateNU = F2(
 var $author$project$Main$updateMain = F2(
 	function (msg, model) {
 		var _v0 = _Utils_Tuple2(msg, model.currentPage);
-		_v0$7:
+		_v0$8:
 		while (true) {
 			switch (_v0.a.$) {
+				case 'LoCPageMsg':
+					if (_v0.b.$ === 'ListOfChallengesPage') {
+						var msgLoC = _v0.a.a;
+						var modelLoC = _v0.b.a;
+						var _v1 = A2($author$project$Page$ListOfChallenges$updateLoC, msgLoC, modelLoC);
+						var updatedLoCModel = _v1.a;
+						var updatedLoCCmd = _v1.b;
+						return _Utils_Tuple2(
+							_Utils_update(
+								model,
+								{
+									currentPage: $author$project$Main$ListOfChallengesPage(updatedLoCModel)
+								}),
+							A2($elm$core$Platform$Cmd$map, $author$project$Main$LoCPageMsg, updatedLoCCmd));
+					} else {
+						break _v0$8;
+					}
 				case 'EUPageMsg':
 					if (_v0.b.$ === 'EditUserPage') {
 						var msgEU = _v0.a.a;
 						var modelEU = _v0.b.a;
-						var _v1 = A2($author$project$Page$EditUser$updateEU, msgEU, modelEU);
-						var updatedEUModel = _v1.a;
-						var updatedEUCmd = _v1.b;
-						var _v2 = updatedEUModel.user;
-						if (_v2.$ === 'Success') {
-							var newUser = _v2.a;
+						var _v2 = A2($author$project$Page$EditUser$updateEU, msgEU, modelEU);
+						var updatedEUModel = _v2.a;
+						var updatedEUCmd = _v2.b;
+						var _v3 = updatedEUModel.user;
+						if (_v3.$ === 'Success') {
+							var newUser = _v3.a;
 							return _Utils_Tuple2(
 								_Utils_update(
 									model,
@@ -12585,18 +12652,18 @@ var $author$project$Main$updateMain = F2(
 								A2($elm$core$Platform$Cmd$map, $author$project$Main$EUPageMsg, updatedEUCmd));
 						}
 					} else {
-						break _v0$7;
+						break _v0$8;
 					}
 				case 'DCPageMsg':
 					if (_v0.b.$ === 'DisplayChallengePage') {
 						var msgDC = _v0.a.a;
 						var modelDC = _v0.b.a;
-						var _v3 = A2($author$project$Page$DisplayChallenge$updateDC, msgDC, modelDC);
-						var updatedDCModel = _v3.a;
-						var updatedDCCmd = _v3.b;
-						var _v4 = updatedDCModel.user;
-						if (_v4.$ === 'Success') {
-							var newUser = _v4.a;
+						var _v4 = A2($author$project$Page$DisplayChallenge$updateDC, msgDC, modelDC);
+						var updatedDCModel = _v4.a;
+						var updatedDCCmd = _v4.b;
+						var _v5 = updatedDCModel.user;
+						if (_v5.$ === 'Success') {
+							var newUser = _v5.a;
 							return _Utils_Tuple2(
 								_Utils_update(
 									model,
@@ -12615,15 +12682,15 @@ var $author$project$Main$updateMain = F2(
 								A2($elm$core$Platform$Cmd$map, $author$project$Main$DCPageMsg, updatedDCCmd));
 						}
 					} else {
-						break _v0$7;
+						break _v0$8;
 					}
 				case 'NUPageMsg':
 					if (_v0.b.$ === 'NewUserPage') {
 						var msgNU = _v0.a.a;
 						var modelNU = _v0.b.a;
-						var _v5 = A2($author$project$Page$NewUser$updateNU, msgNU, modelNU);
-						var updatedNUModel = _v5.a;
-						var updatedNUCmd = _v5.b;
+						var _v6 = A2($author$project$Page$NewUser$updateNU, msgNU, modelNU);
+						var updatedNUModel = _v6.a;
+						var updatedNUCmd = _v6.b;
 						return _Utils_Tuple2(
 							_Utils_update(
 								model,
@@ -12633,15 +12700,15 @@ var $author$project$Main$updateMain = F2(
 								}),
 							A2($elm$core$Platform$Cmd$map, $author$project$Main$NUPageMsg, updatedNUCmd));
 					} else {
-						break _v0$7;
+						break _v0$8;
 					}
 				case 'LIPageMsg':
 					if (_v0.b.$ === 'LogInPage') {
 						var msgLI = _v0.a.a;
 						var modelLI = _v0.b.a;
-						var _v6 = A2($author$project$Page$LogIn$updateLI, msgLI, modelLI);
-						var updatedLIModel = _v6.a;
-						var updatedLICmd = _v6.b;
+						var _v7 = A2($author$project$Page$LogIn$updateLI, msgLI, modelLI);
+						var updatedLIModel = _v7.a;
+						var updatedLICmd = _v7.b;
 						return _Utils_Tuple2(
 							_Utils_update(
 								model,
@@ -12652,7 +12719,7 @@ var $author$project$Main$updateMain = F2(
 								}),
 							A2($elm$core$Platform$Cmd$map, $author$project$Main$LIPageMsg, updatedLICmd));
 					} else {
-						break _v0$7;
+						break _v0$8;
 					}
 				case 'LinkClicked':
 					var urlRequest = _v0.a.a;
@@ -13565,6 +13632,163 @@ var $author$project$Page$LogIn$viewLI = function (model) {
 				$author$project$Page$LogIn$viewError(model.logInError)
 			]));
 };
+var $author$project$Page$ListOfChallenges$FetchChallenges = {$: 'FetchChallenges'};
+var $elm$html$Html$table = _VirtualDom_node('table');
+var $elm$html$Html$td = _VirtualDom_node('td');
+var $elm$html$Html$tr = _VirtualDom_node('tr');
+var $author$project$Page$ListOfChallenges$viewChallenge = function (challenge) {
+	var challengePath = '/challenges/' + $author$project$Challenge$challengeIdToString(challenge.id);
+	return A2(
+		$elm$html$Html$tr,
+		_List_Nil,
+		_List_fromArray(
+			[
+				A2(
+				$elm$html$Html$td,
+				_List_Nil,
+				_List_fromArray(
+					[
+						$elm$html$Html$text(
+						$author$project$Challenge$challengeIdToString(challenge.id))
+					])),
+				A2(
+				$elm$html$Html$td,
+				_List_Nil,
+				_List_fromArray(
+					[
+						$elm$html$Html$text(
+						$author$project$Challenge$challengeTitleToString(challenge.title))
+					])),
+				A2(
+				$elm$html$Html$td,
+				_List_Nil,
+				_List_fromArray(
+					[
+						$elm$html$Html$text(
+						$author$project$Challenge$challengeDescriptionToString(challenge.description))
+					])),
+				A2(
+				$elm$html$Html$td,
+				_List_Nil,
+				_List_fromArray(
+					[
+						A2(
+						$elm$html$Html$a,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$href(challengePath)
+							]),
+						_List_fromArray(
+							[
+								$elm$html$Html$text('Display')
+							]))
+					]))
+			]));
+};
+var $author$project$Page$ListOfChallenges$viewFetchError = function (errorMessage) {
+	var errorHeading = 'Couldn\'t fetch challenges at this time.';
+	return A2(
+		$elm$html$Html$div,
+		_List_Nil,
+		_List_fromArray(
+			[
+				A2(
+				$elm$html$Html$h3,
+				_List_Nil,
+				_List_fromArray(
+					[
+						$elm$html$Html$text(errorHeading)
+					])),
+				$elm$html$Html$text('Error: ' + errorMessage)
+			]));
+};
+var $elm$html$Html$th = _VirtualDom_node('th');
+var $author$project$Page$ListOfChallenges$viewTableHeader = A2(
+	$elm$html$Html$tr,
+	_List_Nil,
+	_List_fromArray(
+		[
+			A2(
+			$elm$html$Html$th,
+			_List_Nil,
+			_List_fromArray(
+				[
+					$elm$html$Html$text('ID')
+				])),
+			A2(
+			$elm$html$Html$th,
+			_List_Nil,
+			_List_fromArray(
+				[
+					$elm$html$Html$text('Title')
+				])),
+			A2(
+			$elm$html$Html$th,
+			_List_Nil,
+			_List_fromArray(
+				[
+					$elm$html$Html$text('Description')
+				]))
+		]));
+var $author$project$Page$ListOfChallenges$viewListOfChallenges = function (challenges) {
+	switch (challenges.$) {
+		case 'NotAsked':
+			return $elm$html$Html$text('');
+		case 'Loading':
+			return A2(
+				$elm$html$Html$h3,
+				_List_Nil,
+				_List_fromArray(
+					[
+						$elm$html$Html$text('Loading...')
+					]));
+		case 'Success':
+			var listOfChallenges = challenges.a;
+			return A2(
+				$elm$html$Html$div,
+				_List_Nil,
+				_List_fromArray(
+					[
+						A2(
+						$elm$html$Html$h3,
+						_List_Nil,
+						_List_fromArray(
+							[
+								$elm$html$Html$text('Gratitude Challenges')
+							])),
+						A2(
+						$elm$html$Html$table,
+						_List_Nil,
+						A2(
+							$elm$core$List$cons,
+							$author$project$Page$ListOfChallenges$viewTableHeader,
+							A2($elm$core$List$map, $author$project$Page$ListOfChallenges$viewChallenge, listOfChallenges)))
+					]));
+		default:
+			var httpError = challenges.a;
+			return $author$project$Page$ListOfChallenges$viewFetchError(
+				$author$project$ErrorMessages$buildErrorMessage(httpError));
+	}
+};
+var $author$project$Page$ListOfChallenges$viewLoC = function (model) {
+	return A2(
+		$elm$html$Html$div,
+		_List_Nil,
+		_List_fromArray(
+			[
+				A2(
+				$elm$html$Html$button,
+				_List_fromArray(
+					[
+						$elm$html$Html$Events$onClick($author$project$Page$ListOfChallenges$FetchChallenges)
+					]),
+				_List_fromArray(
+					[
+						$elm$html$Html$text('Refresh Challenges')
+					])),
+				$author$project$Page$ListOfChallenges$viewListOfChallenges(model.challenges)
+			]));
+};
 var $author$project$Page$NewUser$CreateNewUser = {$: 'CreateNewUser'};
 var $author$project$Page$NewUser$UpdateEmail = function (a) {
 	return {$: 'UpdateEmail', a: a};
@@ -13674,6 +13898,12 @@ var $author$project$Main$currentView = function (model) {
 			return $author$project$Main$notFoundView;
 		case 'LandingPage':
 			return $author$project$Main$landingPageView;
+		case 'ListOfChallengesPage':
+			var modelLoC = _v0.a;
+			return A2(
+				$elm$html$Html$map,
+				$author$project$Main$LoCPageMsg,
+				$author$project$Page$ListOfChallenges$viewLoC(modelLoC));
 		case 'EditUserPage':
 			var modelEU = _v0.a;
 			return A2(
@@ -13710,7 +13940,18 @@ var $author$project$Main$footerView = A2(
 		[
 			A2($elm$html$Html$br, _List_Nil, _List_Nil),
 			A2($elm$html$Html$br, _List_Nil, _List_Nil),
-			$elm$html$Html$text('Copyright and other footer stuff...')
+			$elm$html$Html$text('Copyright and other footer stuff...'),
+			A2($elm$html$Html$br, _List_Nil, _List_Nil),
+			A2(
+			$elm$html$Html$a,
+			_List_fromArray(
+				[
+					$elm$html$Html$Attributes$href('/challenges')
+				]),
+			_List_fromArray(
+				[
+					$elm$html$Html$text('Challenges')
+				]))
 		]));
 var $elm$html$Html$h1 = _VirtualDom_node('h1');
 var $elm$html$Html$nav = _VirtualDom_node('nav');
@@ -13944,4 +14185,4 @@ var $author$project$Main$main = $elm$browser$Browser$application(
 		view: $author$project$Main$viewMain
 	});
 _Platform_export({'Main':{'init':$author$project$Main$main(
-	$elm$json$Json$Decode$succeed(_Utils_Tuple0))({"versions":{"elm":"0.19.1"},"types":{"message":"Main.Msg","aliases":{"Url.Url":{"args":[],"type":"{ protocol : Url.Protocol, host : String.String, port_ : Maybe.Maybe Basics.Int, path : String.String, query : Maybe.Maybe String.String, fragment : Maybe.Maybe String.String }"},"Challenge.Challenge":{"args":[],"type":"{ id : Challenge.ChallengeId, title : Challenge.ChallengeTitle, description : Challenge.ChallengeDescription }"},"Date.RataDie":{"args":[],"type":"Basics.Int"},"User.User":{"args":[],"type":"{ id : User.UserId, name : User.UserName, email : User.UserEmail, password : User.UserPassword, completedChallenges : List.List Challenge.ChallengeId }"},"RemoteData.WebData":{"args":["a"],"type":"RemoteData.RemoteData Http.Error a"}},"unions":{"Main.Msg":{"args":[],"tags":{"EUPageMsg":["Page.EditUser.MsgEU"],"DCPageMsg":["Page.DisplayChallenge.MsgDC"],"NUPageMsg":["Page.NewUser.MsgNU"],"LIPageMsg":["Page.LogIn.MsgLI"],"LinkClicked":["Browser.UrlRequest"],"UrlChanged":["Url.Url"],"ReceiveDate":["Date.Date"]}},"Date.Date":{"args":[],"tags":{"RD":["Date.RataDie"]}},"Basics.Int":{"args":[],"tags":{"Int":[]}},"Maybe.Maybe":{"args":["a"],"tags":{"Just":["a"],"Nothing":[]}},"Page.DisplayChallenge.MsgDC":{"args":[],"tags":{"ChallengeReceived":["RemoteData.WebData Challenge.Challenge"],"UserReceived":["RemoteData.WebData User.User"],"ToggleChallenge":["Challenge.ChallengeId"],"SaveUser":[],"UserSaved":["Result.Result Http.Error User.User"]}},"Page.EditUser.MsgEU":{"args":[],"tags":{"UserReceived":["RemoteData.WebData User.User"],"ChallengesReceived":["RemoteData.WebData (List.List Challenge.Challenge)"],"UpdateUserName":["String.String"],"ToggleChallenge":["Challenge.ChallengeId"],"SaveUser":[],"UserSaved":["Result.Result Http.Error User.User"]}},"Page.LogIn.MsgLI":{"args":[],"tags":{"FetchUsers":[],"UsersReceived":["RemoteData.WebData (List.List User.User)"],"UpdatePassword":["String.String"],"UpdateEmail":["String.String"],"LogInUser":[]}},"Page.NewUser.MsgNU":{"args":[],"tags":{"UpdateName":["String.String"],"UpdateEmail":["String.String"],"CreateNewUser":[],"NewUserCreated":["Result.Result Http.Error User.User"]}},"Url.Protocol":{"args":[],"tags":{"Http":[],"Https":[]}},"String.String":{"args":[],"tags":{"String":[]}},"Browser.UrlRequest":{"args":[],"tags":{"Internal":["Url.Url"],"External":["String.String"]}},"Challenge.ChallengeDescription":{"args":[],"tags":{"ChallengeDescription":["String.String"]}},"Challenge.ChallengeId":{"args":[],"tags":{"ChallengeId":["Basics.Int"]}},"Challenge.ChallengeTitle":{"args":[],"tags":{"ChallengeTitle":["String.String"]}},"Http.Error":{"args":[],"tags":{"BadUrl":["String.String"],"Timeout":[],"NetworkError":[],"BadStatus":["Basics.Int"],"BadBody":["String.String"]}},"List.List":{"args":["a"],"tags":{}},"RemoteData.RemoteData":{"args":["e","a"],"tags":{"NotAsked":[],"Loading":[],"Failure":["e"],"Success":["a"]}},"Result.Result":{"args":["error","value"],"tags":{"Ok":["value"],"Err":["error"]}},"User.UserEmail":{"args":[],"tags":{"UserEmail":["String.String"]}},"User.UserId":{"args":[],"tags":{"UserId":["Basics.Int"]}},"User.UserName":{"args":[],"tags":{"UserName":["String.String"]}},"User.UserPassword":{"args":[],"tags":{"UserPassword":["String.String"]}}}}})}});}(this));
+	$elm$json$Json$Decode$succeed(_Utils_Tuple0))({"versions":{"elm":"0.19.1"},"types":{"message":"Main.Msg","aliases":{"Url.Url":{"args":[],"type":"{ protocol : Url.Protocol, host : String.String, port_ : Maybe.Maybe Basics.Int, path : String.String, query : Maybe.Maybe String.String, fragment : Maybe.Maybe String.String }"},"Challenge.Challenge":{"args":[],"type":"{ id : Challenge.ChallengeId, title : Challenge.ChallengeTitle, description : Challenge.ChallengeDescription }"},"Date.RataDie":{"args":[],"type":"Basics.Int"},"User.User":{"args":[],"type":"{ id : User.UserId, name : User.UserName, email : User.UserEmail, password : User.UserPassword, completedChallenges : List.List Challenge.ChallengeId }"},"RemoteData.WebData":{"args":["a"],"type":"RemoteData.RemoteData Http.Error a"}},"unions":{"Main.Msg":{"args":[],"tags":{"EUPageMsg":["Page.EditUser.MsgEU"],"DCPageMsg":["Page.DisplayChallenge.MsgDC"],"NUPageMsg":["Page.NewUser.MsgNU"],"LIPageMsg":["Page.LogIn.MsgLI"],"LinkClicked":["Browser.UrlRequest"],"UrlChanged":["Url.Url"],"ReceiveDate":["Date.Date"],"LoCPageMsg":["Page.ListOfChallenges.MsgLoC"]}},"Date.Date":{"args":[],"tags":{"RD":["Date.RataDie"]}},"Basics.Int":{"args":[],"tags":{"Int":[]}},"Maybe.Maybe":{"args":["a"],"tags":{"Just":["a"],"Nothing":[]}},"Page.DisplayChallenge.MsgDC":{"args":[],"tags":{"ChallengeReceived":["RemoteData.WebData Challenge.Challenge"],"UserReceived":["RemoteData.WebData User.User"],"ToggleChallenge":["Challenge.ChallengeId"],"SaveUser":[],"UserSaved":["Result.Result Http.Error User.User"]}},"Page.EditUser.MsgEU":{"args":[],"tags":{"UserReceived":["RemoteData.WebData User.User"],"ChallengesReceived":["RemoteData.WebData (List.List Challenge.Challenge)"],"UpdateUserName":["String.String"],"ToggleChallenge":["Challenge.ChallengeId"],"SaveUser":[],"UserSaved":["Result.Result Http.Error User.User"]}},"Page.LogIn.MsgLI":{"args":[],"tags":{"FetchUsers":[],"UsersReceived":["RemoteData.WebData (List.List User.User)"],"UpdatePassword":["String.String"],"UpdateEmail":["String.String"],"LogInUser":[]}},"Page.ListOfChallenges.MsgLoC":{"args":[],"tags":{"FetchChallenges":[],"ChallengesReceived":["RemoteData.WebData (List.List Challenge.Challenge)"]}},"Page.NewUser.MsgNU":{"args":[],"tags":{"UpdateName":["String.String"],"UpdateEmail":["String.String"],"CreateNewUser":[],"NewUserCreated":["Result.Result Http.Error User.User"]}},"Url.Protocol":{"args":[],"tags":{"Http":[],"Https":[]}},"String.String":{"args":[],"tags":{"String":[]}},"Browser.UrlRequest":{"args":[],"tags":{"Internal":["Url.Url"],"External":["String.String"]}},"Challenge.ChallengeDescription":{"args":[],"tags":{"ChallengeDescription":["String.String"]}},"Challenge.ChallengeId":{"args":[],"tags":{"ChallengeId":["Basics.Int"]}},"Challenge.ChallengeTitle":{"args":[],"tags":{"ChallengeTitle":["String.String"]}},"Http.Error":{"args":[],"tags":{"BadUrl":["String.String"],"Timeout":[],"NetworkError":[],"BadStatus":["Basics.Int"],"BadBody":["String.String"]}},"List.List":{"args":["a"],"tags":{}},"RemoteData.RemoteData":{"args":["e","a"],"tags":{"NotAsked":[],"Loading":[],"Failure":["e"],"Success":["a"]}},"Result.Result":{"args":["error","value"],"tags":{"Ok":["value"],"Err":["error"]}},"User.UserEmail":{"args":[],"tags":{"UserEmail":["String.String"]}},"User.UserId":{"args":[],"tags":{"UserId":["Basics.Int"]}},"User.UserName":{"args":[],"tags":{"UserName":["String.String"]}},"User.UserPassword":{"args":[],"tags":{"UserPassword":["String.String"]}}}}})}});}(this));

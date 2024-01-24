@@ -20,7 +20,7 @@ import User
 type Route
     = RouteNotFound
     | LandingPageRoute
-      -- | ListOfChallengesRoute
+    | ListOfChallengesRoute
       -- | ListOfUsersRoute
     | UserRoute User.UserId
     | ChallengeRoute Challenge.ChallengeId
@@ -58,7 +58,7 @@ routeParsers =
         , Url.Parser.map LandingPageRoute (Url.Parser.s "home")
 
         -- , Url.Parser.map ListOfUsersRoute (Url.Parser.s "users")
-        -- , Url.Parser.map ListOfChallengesRoute (Url.Parser.s "challenges")
+        , Url.Parser.map ListOfChallengesRoute (Url.Parser.s "challenges")
         , Url.Parser.map UserRoute (Url.Parser.s "users" </> User.userIdParser)
         , Url.Parser.map ChallengeRoute (Url.Parser.s "challenges" </> Challenge.challengeIdParser)
         , Url.Parser.map NewUserRoute (Url.Parser.s "users" </> Url.Parser.s "new")
@@ -79,8 +79,9 @@ routeToString route =
         RouteNotFound ->
             "/not-found"
 
-        -- ListOfChallengesRoute ->
-        --     "/challenges"
+        ListOfChallengesRoute ->
+            "/challenges"
+
         -- ListOfUsersRoute ->
         --     "/users"
         UserRoute userId ->
