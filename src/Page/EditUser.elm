@@ -38,22 +38,52 @@ initEU userId navKey =
     ( initialModelEU navKey, fetchUser userId )
 
 
+
+-- fetchUser : User.UserId -> Cmd MsgEU
+-- fetchUser userId =
+--     Http.get
+--         { url = "http://localhost:5019/users/" ++ User.userIdToString userId
+--         , expect =
+--             User.userDecoder
+--                 -- func1 >> func2 == \param -> func2 (fun1 param)
+--                 -- RD.fromResult >> UserReceived = \p -> UserReceived (RD.fromResult p)
+--                 |> Http.expectJson (RD.fromResult >> UserReceived)
+--         }
+{-
+   curl "https://teemingtooth.backendless.app/api/data/people/first?props=id,completedChallenges,name,password,objectId&where=id&3D1"
+-}
+-- When this works, I get back a list with one user. I get back a list because I'm asking for
+-- "all the entries with id=<x>" where <x> is the user id.
+
+
 fetchUser : User.UserId -> Cmd MsgEU
 fetchUser userId =
     Http.get
-        { url = "http://localhost:5019/users/" ++ User.userIdToString userId
+        { url =
+            "https://teemingtooth.backendless.app/api/data/people?where=id%3D" ++ User.userIdToString userId
         , expect =
-            User.userDecoder
+            User.listOfUsersDecoder
                 -- func1 >> func2 == \param -> func2 (fun1 param)
                 -- RD.fromResult >> UserReceived = \p -> UserReceived (RD.fromResult p)
                 |> Http.expectJson (RD.fromResult >> UserReceived)
         }
 
 
+
+-- fetchChallenges : Cmd MsgEU
+-- fetchChallenges =
+--     Http.get
+--         { url = "http://localhost:5019/challenges"
+--         , expect =
+--             Challenge.listOfChallengesDecoder
+--                 |> Http.expectJson (RD.fromResult >> ChallengesReceived)
+--         }
+
+
 fetchChallenges : Cmd MsgEU
 fetchChallenges =
     Http.get
-        { url = "http://localhost:5019/challenges"
+        { url = "https://teemingtooth.backendless.app/api/data/challenges"
         , expect =
             Challenge.listOfChallengesDecoder
                 |> Http.expectJson (RD.fromResult >> ChallengesReceived)
@@ -61,7 +91,7 @@ fetchChallenges =
 
 
 type MsgEU
-    = UserReceived (RD.WebData User.User)
+    = UserReceived (RD.WebData (List User.User))
     | ChallengesReceived (RD.WebData (List Challenge.Challenge))
     | UpdateUserName String
     | ToggleChallenge Challenge.ChallengeId
@@ -71,12 +101,31 @@ type MsgEU
     | UserSaved (Result Http.Error User.User)
 
 
+extractUser : RD.WebData (List User.User) -> RD.WebData User.User
+extractUser responseFromServer =
+    case responseFromServer of
+        RD.NotAsked ->
+            RD.NotAsked
+
+        RD.Loading ->
+            RD.Loading
+
+        RD.Success (firstUser :: otherUsers) ->
+            RD.Success firstUser
+
+        RD.Success _ ->
+            RD.Failure (Http.BadBody "1")
+
+        RD.Failure e ->
+            RD.Failure e
+
+
 updateEU : MsgEU -> ModelEU -> ( ModelEU, Cmd MsgEU )
 updateEU msg model =
     case msg of
         -- Get the user's record from the server
         UserReceived serverResponse ->
-            ( { model | user = serverResponse }
+            ( { model | user = extractUser serverResponse }
             , fetchChallenges
             )
 
@@ -145,43 +194,81 @@ toggleChallenge user challengeId =
         { user | completedChallenges = challengeId :: user.completedChallenges }
 
 
+
+{-
+   createNewUser : User.User -> Cmd MsgNU
+   createNewUser newUser =
+       Http.post
+           { url = "https://teemingtooth.backendless.app/api/data/people"
+           , body = Http.jsonBody (User.newUserEncoder newUser)
+           , expect = Http.expectJson NewUserCreated User.userDecoder
+           }
+
+-}
+{-
+   curl -v \
+   -H "Content-Type: application/json" \
+   --request PUT \
+   --data '{"name": "sam"}' \
+   https://teemingtooth.backendless.app/api/data/people/3FC0C9BF-5BDC-4BE2-8C83-F5F879AC8392
+
+-}
+
+
 saveUser : RD.WebData User.User -> Cmd MsgEU
 saveUser user =
     case user of
-        RD.Success userData ->
-            let
-                userUrl =
-                    "http://localhost:5019/users/"
-                        ++ User.userIdToString userData.id
-            in
-            Http.request
-                -- PATCH means update a resource already on the server
-                { method = "PATCH"
-
-                -- No additional information to the server
-                , headers = []
-
-                -- Location of the resource we want to modify
-                , url = userUrl
-
-                -- Updated user data (that has been converted to JSON)
-                -- This will add the Content-Type: application/json header
-                -- to our HTTP request behind the scenes. That is how the
-                -- server knows the body of a request is in JSON format.
-                , body = Http.jsonBody (User.userEncoder userData)
-
-                -- we expect the response body to be JSON as well
+        RD.Success newUser ->
+            Http.post
+                { url = "https://teemingtooth.backendless.app/api/data/people"
+                , body = Http.jsonBody (User.newUserEncoder newUser)
                 , expect = Http.expectJson UserSaved User.userDecoder
-
-                -- Wait for the server forever
-                , timeout = Nothing
-
-                -- Do not track the progress of the request
-                , tracker = Nothing
                 }
 
         _ ->
             Cmd.none
+
+
+
+{-
+   saveUser : RD.WebData User.User -> Cmd MsgEU
+   saveUser user =
+       case user of
+           RD.Success userData ->
+               let
+                   userUrl =
+                       "http://localhost:5019/users/"
+                           ++ User.userIdToString userData.id
+               in
+               Http.request
+                   -- PATCH means update a resource already on the server
+                   { method = "PATCH"
+
+                   -- No additional information to the server
+                   , headers = []
+
+                   -- Location of the resource we want to modify
+                   , url = userUrl
+
+                   -- Updated user data (that has been converted to JSON)
+                   -- This will add the Content-Type: application/json header
+                   -- to our HTTP request behind the scenes. That is how the
+                   -- server knows the body of a request is in JSON format.
+                   , body = Http.jsonBody (User.userEncoder userData)
+
+                   -- we expect the response body to be JSON as well
+                   , expect = Http.expectJson UserSaved User.userDecoder
+
+                   -- Wait for the server forever
+                   , timeout = Nothing
+
+                   -- Do not track the progress of the request
+                   , tracker = Nothing
+                   }
+
+           _ ->
+               Cmd.none
+-}
 
 
 viewEU : ModelEU -> Html MsgEU
@@ -206,7 +293,7 @@ viewUser user challenges =
             editUserForm userData challenges
 
         RD.Failure httpError ->
-            viewFetchError (EM.buildErrorMessage httpError)
+            viewFetchUserError (EM.buildErrorMessage httpError)
 
 
 editUserForm : User.User -> RD.WebData (List Challenge.Challenge) -> Html MsgEU
@@ -244,11 +331,11 @@ viewSaveError maybeError =
             text ""
 
 
-viewFetchError : String -> Html MsgEU
-viewFetchError errorMessage =
+viewFetchUserError : String -> Html MsgEU
+viewFetchUserError errorMessage =
     let
         errorHeading =
-            "Couldn't fetch post at this time."
+            "Couldn't fetch user at this time."
     in
     div []
         [ h3 [] [ text errorHeading ]

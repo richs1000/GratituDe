@@ -44,10 +44,24 @@ initLoC =
     )
 
 
+
+-- fetchChallenges : Cmd MsgLoC
+-- fetchChallenges =
+--     Http.get
+--         { url = "http://localhost:5019/challenges"
+--         , expect =
+--             Challenge.listOfChallengesDecoder
+--                 |> Http.expectJson (RD.fromResult >> ChallengesReceived)
+--         }
+{-
+   curl "https://teemingtooth.backendless.app/api/data/challenges?props=title,description"
+-}
+
+
 fetchChallenges : Cmd MsgLoC
 fetchChallenges =
     Http.get
-        { url = "http://localhost:5019/challenges"
+        { url = "https://teemingtooth.backendless.app/api/data/challenges"
         , expect =
             Challenge.listOfChallengesDecoder
                 |> Http.expectJson (RD.fromResult >> ChallengesReceived)

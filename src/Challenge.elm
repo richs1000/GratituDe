@@ -41,6 +41,11 @@ challengeDecoder =
         |> Pipeline.required "description" challengeDescriptionDecoder
 
 
+listOfChallengesDecoder : Decode.Decoder (List Challenge)
+listOfChallengesDecoder =
+    Decode.list challengeDecoder
+
+
 type ChallengeId
     = ChallengeId Int
 
@@ -125,8 +130,3 @@ challengeCompletedToString (ChallengeCompleted completedAsBool) =
 
     else
         "Not Completed"
-
-
-listOfChallengesDecoder : Decode.Decoder (List Challenge)
-listOfChallengesDecoder =
-    Decode.list challengeDecoder

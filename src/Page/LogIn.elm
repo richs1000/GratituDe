@@ -154,10 +154,25 @@ updateLI msg model =
                     )
 
 
+
+-- fetchUsers : Cmd MsgLI
+-- fetchUsers =
+--     Http.get
+--         { url = "http://localhost:5019/users"
+--         , expect =
+--             User.listOfUsersDecoder
+--                 |> Http.expectJson (RD.fromResult >> UsersReceived)
+--         }
+{-
+   curl "https://teemingtooth.backendless.app/api/data/people?props=id,completedChallenges,name,password,objectId"
+
+-}
+
+
 fetchUsers : Cmd MsgLI
 fetchUsers =
     Http.get
-        { url = "http://localhost:5019/users"
+        { url = "https://teemingtooth.backendless.app/api/data/people"
         , expect =
             User.listOfUsersDecoder
                 |> Http.expectJson (RD.fromResult >> UsersReceived)

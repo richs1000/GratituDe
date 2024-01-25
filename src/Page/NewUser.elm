@@ -122,10 +122,28 @@ updateNU msg model =
             )
 
 
+
+-- createNewUser : User.User -> Cmd MsgNU
+-- createNewUser newUser =
+--     Http.post
+--         { url = "http://localhost:5019/users"
+--         , body = Http.jsonBody (User.newUserEncoder newUser)
+--         , expect = Http.expectJson NewUserCreated User.userDecoder
+--         }
+{-
+   curl -v \
+   -H "Content-Type: application/json" \
+   --request POST \
+   --data '{"name": "sam", "email": "email5@email.com", "password": "DuqOT2024!"}' \
+   https://teemingtooth.backendless.app/api/data/people
+
+-}
+
+
 createNewUser : User.User -> Cmd MsgNU
 createNewUser newUser =
     Http.post
-        { url = "http://localhost:5019/users"
+        { url = "https://teemingtooth.backendless.app/api/data/people"
         , body = Http.jsonBody (User.newUserEncoder newUser)
         , expect = Http.expectJson NewUserCreated User.userDecoder
         }

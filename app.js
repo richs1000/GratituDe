@@ -11177,40 +11177,6 @@ var $author$project$User$emptyUserId = $author$project$User$UserId(-1);
 var $author$project$Page$DisplayChallenge$ChallengeReceived = function (a) {
 	return {$: 'ChallengeReceived', a: a};
 };
-var $author$project$Challenge$Challenge = F3(
-	function (id, title, description) {
-		return {description: description, id: id, title: title};
-	});
-var $author$project$Challenge$ChallengeDescription = function (a) {
-	return {$: 'ChallengeDescription', a: a};
-};
-var $author$project$Challenge$challengeDescriptionDecoder = A2($elm$json$Json$Decode$map, $author$project$Challenge$ChallengeDescription, $elm$json$Json$Decode$string);
-var $author$project$Challenge$challengeIdDecoder = A2($elm$json$Json$Decode$map, $author$project$Challenge$ChallengeId, $elm$json$Json$Decode$int);
-var $author$project$Challenge$ChallengeTitle = function (a) {
-	return {$: 'ChallengeTitle', a: a};
-};
-var $author$project$Challenge$challengeTitleDecoder = A2($elm$json$Json$Decode$map, $author$project$Challenge$ChallengeTitle, $elm$json$Json$Decode$string);
-var $NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$custom = $elm$json$Json$Decode$map2($elm$core$Basics$apR);
-var $NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required = F3(
-	function (key, valDecoder, decoder) {
-		return A2(
-			$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$custom,
-			A2($elm$json$Json$Decode$field, key, valDecoder),
-			decoder);
-	});
-var $author$project$Challenge$challengeDecoder = A3(
-	$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
-	'description',
-	$author$project$Challenge$challengeDescriptionDecoder,
-	A3(
-		$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
-		'title',
-		$author$project$Challenge$challengeTitleDecoder,
-		A3(
-			$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
-			'id',
-			$author$project$Challenge$challengeIdDecoder,
-			$elm$json$Json$Decode$succeed($author$project$Challenge$Challenge))));
 var $author$project$Challenge$challengeIdToString = function (_v0) {
 	var idAsInt = _v0.a;
 	return $elm$core$String$fromInt(idAsInt);
@@ -11478,14 +11444,49 @@ var $elm$http$Http$get = function (r) {
 	return $elm$http$Http$request(
 		{body: $elm$http$Http$emptyBody, expect: r.expect, headers: _List_Nil, method: 'GET', timeout: $elm$core$Maybe$Nothing, tracker: $elm$core$Maybe$Nothing, url: r.url});
 };
+var $author$project$Challenge$Challenge = F3(
+	function (id, title, description) {
+		return {description: description, id: id, title: title};
+	});
+var $author$project$Challenge$ChallengeDescription = function (a) {
+	return {$: 'ChallengeDescription', a: a};
+};
+var $author$project$Challenge$challengeDescriptionDecoder = A2($elm$json$Json$Decode$map, $author$project$Challenge$ChallengeDescription, $elm$json$Json$Decode$string);
+var $author$project$Challenge$challengeIdDecoder = A2($elm$json$Json$Decode$map, $author$project$Challenge$ChallengeId, $elm$json$Json$Decode$int);
+var $author$project$Challenge$ChallengeTitle = function (a) {
+	return {$: 'ChallengeTitle', a: a};
+};
+var $author$project$Challenge$challengeTitleDecoder = A2($elm$json$Json$Decode$map, $author$project$Challenge$ChallengeTitle, $elm$json$Json$Decode$string);
+var $NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$custom = $elm$json$Json$Decode$map2($elm$core$Basics$apR);
+var $NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required = F3(
+	function (key, valDecoder, decoder) {
+		return A2(
+			$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$custom,
+			A2($elm$json$Json$Decode$field, key, valDecoder),
+			decoder);
+	});
+var $author$project$Challenge$challengeDecoder = A3(
+	$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
+	'description',
+	$author$project$Challenge$challengeDescriptionDecoder,
+	A3(
+		$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
+		'title',
+		$author$project$Challenge$challengeTitleDecoder,
+		A3(
+			$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
+			'id',
+			$author$project$Challenge$challengeIdDecoder,
+			$elm$json$Json$Decode$succeed($author$project$Challenge$Challenge))));
+var $author$project$Challenge$listOfChallengesDecoder = $elm$json$Json$Decode$list($author$project$Challenge$challengeDecoder);
 var $author$project$Page$DisplayChallenge$fetchChallenge = function (challengeId) {
 	return $elm$http$Http$get(
 		{
 			expect: A2(
 				$elm$http$Http$expectJson,
 				A2($elm$core$Basics$composeR, $krisajenkins$remotedata$RemoteData$fromResult, $author$project$Page$DisplayChallenge$ChallengeReceived),
-				$author$project$Challenge$challengeDecoder),
-			url: 'http://localhost:5019/challenges/' + $author$project$Challenge$challengeIdToString(challengeId)
+				$author$project$Challenge$listOfChallengesDecoder),
+			url: 'https://teemingtooth.backendless.app/api/data/challenges?where=id%3D' + $author$project$Challenge$challengeIdToString(challengeId)
 		});
 };
 var $krisajenkins$remotedata$RemoteData$Loading = {$: 'Loading'};
@@ -11509,9 +11510,9 @@ var $author$project$Page$DisplayChallenge$initDC = F3(
 var $author$project$Page$EditUser$UserReceived = function (a) {
 	return {$: 'UserReceived', a: a};
 };
-var $author$project$User$User = F5(
-	function (id, name, email, password, completedChallenges) {
-		return {completedChallenges: completedChallenges, email: email, id: id, name: name, password: password};
+var $author$project$User$User = F6(
+	function (id, name, email, password, completedChallenges, objectId) {
+		return {completedChallenges: completedChallenges, email: email, id: id, name: name, objectId: objectId, password: password};
 	});
 var $author$project$User$completedChallengesDecoder = $elm$json$Json$Decode$list($author$project$Challenge$challengeIdDecoder);
 var $author$project$User$UserEmail = function (a) {
@@ -11529,25 +11530,30 @@ var $author$project$User$UserPassword = function (a) {
 var $author$project$User$userPasswordDecoder = A2($elm$json$Json$Decode$map, $author$project$User$UserPassword, $elm$json$Json$Decode$string);
 var $author$project$User$userDecoder = A3(
 	$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
-	'completedChallenges',
-	$author$project$User$completedChallengesDecoder,
+	'objectId',
+	$elm$json$Json$Decode$string,
 	A3(
 		$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
-		'password',
-		$author$project$User$userPasswordDecoder,
+		'completedChallenges',
+		$author$project$User$completedChallengesDecoder,
 		A3(
 			$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
-			'email',
-			$author$project$User$userEmailDecoder,
+			'password',
+			$author$project$User$userPasswordDecoder,
 			A3(
 				$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
-				'name',
-				$author$project$User$userNameDecoder,
+				'email',
+				$author$project$User$userEmailDecoder,
 				A3(
 					$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
-					'id',
-					$author$project$User$userIdDecoder,
-					$elm$json$Json$Decode$succeed($author$project$User$User))))));
+					'name',
+					$author$project$User$userNameDecoder,
+					A3(
+						$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
+						'id',
+						$author$project$User$userIdDecoder,
+						$elm$json$Json$Decode$succeed($author$project$User$User)))))));
+var $author$project$User$listOfUsersDecoder = $elm$json$Json$Decode$list($author$project$User$userDecoder);
 var $author$project$User$userIdToString = function (_v0) {
 	var idAsInt = _v0.a;
 	return $elm$core$String$fromInt(idAsInt);
@@ -11558,8 +11564,8 @@ var $author$project$Page$EditUser$fetchUser = function (userId) {
 			expect: A2(
 				$elm$http$Http$expectJson,
 				A2($elm$core$Basics$composeR, $krisajenkins$remotedata$RemoteData$fromResult, $author$project$Page$EditUser$UserReceived),
-				$author$project$User$userDecoder),
-			url: 'http://localhost:5019/users/' + $author$project$User$userIdToString(userId)
+				$author$project$User$listOfUsersDecoder),
+			url: 'https://teemingtooth.backendless.app/api/data/people?where=id%3D' + $author$project$User$userIdToString(userId)
 		});
 };
 var $author$project$Page$EditUser$initialModelEU = function (navKeyParam) {
@@ -11574,14 +11580,13 @@ var $author$project$Page$EditUser$initEU = F2(
 var $author$project$Page$LogIn$UsersReceived = function (a) {
 	return {$: 'UsersReceived', a: a};
 };
-var $author$project$User$listOfUsersDecoder = $elm$json$Json$Decode$list($author$project$User$userDecoder);
 var $author$project$Page$LogIn$fetchUsers = $elm$http$Http$get(
 	{
 		expect: A2(
 			$elm$http$Http$expectJson,
 			A2($elm$core$Basics$composeR, $krisajenkins$remotedata$RemoteData$fromResult, $author$project$Page$LogIn$UsersReceived),
 			$author$project$User$listOfUsersDecoder),
-		url: 'http://localhost:5019/users'
+		url: 'https://teemingtooth.backendless.app/api/data/people'
 	});
 var $author$project$Page$LogIn$initialModelLI = function (navKeyParam) {
 	return {allUsers: _List_Nil, logInError: $elm$core$Maybe$Nothing, navKey: navKeyParam, newUser: $elm$core$Maybe$Nothing, userEmail: '', userPassword: ''};
@@ -11594,14 +11599,13 @@ var $author$project$Page$LogIn$initLI = function (navKey) {
 var $author$project$Page$ListOfChallenges$ChallengesReceived = function (a) {
 	return {$: 'ChallengesReceived', a: a};
 };
-var $author$project$Challenge$listOfChallengesDecoder = $elm$json$Json$Decode$list($author$project$Challenge$challengeDecoder);
 var $author$project$Page$ListOfChallenges$fetchChallenges = $elm$http$Http$get(
 	{
 		expect: A2(
 			$elm$http$Http$expectJson,
 			A2($elm$core$Basics$composeR, $krisajenkins$remotedata$RemoteData$fromResult, $author$project$Page$ListOfChallenges$ChallengesReceived),
 			$author$project$Challenge$listOfChallengesDecoder),
-		url: 'http://localhost:5019/challenges'
+		url: 'https://teemingtooth.backendless.app/api/data/challenges'
 	});
 var $author$project$Page$ListOfChallenges$initModelLoC = {challenges: $krisajenkins$remotedata$RemoteData$Loading};
 var $author$project$Page$ListOfChallenges$initLoC = _Utils_Tuple2($author$project$Page$ListOfChallenges$initModelLoC, $author$project$Page$ListOfChallenges$fetchChallenges);
@@ -12018,6 +12022,49 @@ var $author$project$ErrorMessages$buildErrorMessage = function (httpError) {
 			return message;
 	}
 };
+var $krisajenkins$remotedata$RemoteData$NotAsked = {$: 'NotAsked'};
+var $author$project$Page$DisplayChallenge$extractChallenge = function (responseFromServer) {
+	switch (responseFromServer.$) {
+		case 'NotAsked':
+			return $krisajenkins$remotedata$RemoteData$NotAsked;
+		case 'Loading':
+			return $krisajenkins$remotedata$RemoteData$Loading;
+		case 'Success':
+			if (responseFromServer.a.b) {
+				var _v1 = responseFromServer.a;
+				var firstChallenge = _v1.a;
+				var otherChallenges = _v1.b;
+				return $krisajenkins$remotedata$RemoteData$Success(firstChallenge);
+			} else {
+				return $krisajenkins$remotedata$RemoteData$Failure(
+					$elm$http$Http$BadBody('1'));
+			}
+		default:
+			var e = responseFromServer.a;
+			return $krisajenkins$remotedata$RemoteData$Failure(e);
+	}
+};
+var $author$project$Page$DisplayChallenge$extractUser = function (responseFromServer) {
+	switch (responseFromServer.$) {
+		case 'NotAsked':
+			return $krisajenkins$remotedata$RemoteData$NotAsked;
+		case 'Loading':
+			return $krisajenkins$remotedata$RemoteData$Loading;
+		case 'Success':
+			if (responseFromServer.a.b) {
+				var _v1 = responseFromServer.a;
+				var firstUser = _v1.a;
+				var otherUsers = _v1.b;
+				return $krisajenkins$remotedata$RemoteData$Success(firstUser);
+			} else {
+				return $krisajenkins$remotedata$RemoteData$Failure(
+					$elm$http$Http$BadBody('1'));
+			}
+		default:
+			var e = responseFromServer.a;
+			return $krisajenkins$remotedata$RemoteData$Failure(e);
+	}
+};
 var $author$project$Page$DisplayChallenge$UserReceived = function (a) {
 	return {$: 'UserReceived', a: a};
 };
@@ -12027,8 +12074,8 @@ var $author$project$Page$DisplayChallenge$fetchUser = function (userId) {
 			expect: A2(
 				$elm$http$Http$expectJson,
 				A2($elm$core$Basics$composeR, $krisajenkins$remotedata$RemoteData$fromResult, $author$project$Page$DisplayChallenge$UserReceived),
-				$author$project$User$userDecoder),
-			url: 'http://localhost:5019/users/' + $author$project$User$userIdToString(userId)
+				$author$project$User$listOfUsersDecoder),
+			url: 'https://teemingtooth.backendless.app/api/data/people?where=id%3D' + $author$project$User$userIdToString(userId)
 		});
 };
 var $author$project$Route$routeToString = function (route) {
@@ -12079,10 +12126,6 @@ var $author$project$User$userEmailEncoder = function (_v0) {
 	var email = _v0.a;
 	return $elm$json$Json$Encode$string(email);
 };
-var $author$project$User$userIdEncoder = function (_v0) {
-	var id = _v0.a;
-	return $elm$json$Json$Encode$int(id);
-};
 var $author$project$User$userNameEncoder = function (_v0) {
 	var name = _v0.a;
 	return $elm$json$Json$Encode$string(name);
@@ -12091,13 +12134,10 @@ var $author$project$User$userPasswordEncoder = function (_v0) {
 	var password = _v0.a;
 	return $elm$json$Json$Encode$string(password);
 };
-var $author$project$User$userEncoder = function (user) {
+var $author$project$User$newUserEncoder = function (user) {
 	return $elm$json$Json$Encode$object(
 		_List_fromArray(
 			[
-				_Utils_Tuple2(
-				'id',
-				$author$project$User$userIdEncoder(user.id)),
 				_Utils_Tuple2(
 				'name',
 				$author$project$User$userNameEncoder(user.name)),
@@ -12112,20 +12152,19 @@ var $author$project$User$userEncoder = function (user) {
 				$author$project$User$completedChallengesEncoder(user.completedChallenges))
 			]));
 };
+var $elm$http$Http$post = function (r) {
+	return $elm$http$Http$request(
+		{body: r.body, expect: r.expect, headers: _List_Nil, method: 'POST', timeout: $elm$core$Maybe$Nothing, tracker: $elm$core$Maybe$Nothing, url: r.url});
+};
 var $author$project$Page$DisplayChallenge$saveUser = function (user) {
 	if (user.$ === 'Success') {
-		var userData = user.a;
-		var userUrl = 'http://localhost:5019/users/' + $author$project$User$userIdToString(userData.id);
-		return $elm$http$Http$request(
+		var newUser = user.a;
+		return $elm$http$Http$post(
 			{
 				body: $elm$http$Http$jsonBody(
-					$author$project$User$userEncoder(userData)),
+					$author$project$User$newUserEncoder(newUser)),
 				expect: A2($elm$http$Http$expectJson, $author$project$Page$DisplayChallenge$UserSaved, $author$project$User$userDecoder),
-				headers: _List_Nil,
-				method: 'PATCH',
-				timeout: $elm$core$Maybe$Nothing,
-				tracker: $elm$core$Maybe$Nothing,
-				url: userUrl
+				url: 'https://teemingtooth.backendless.app/api/data/people'
 			});
 	} else {
 		return $elm$core$Platform$Cmd$none;
@@ -12198,14 +12237,18 @@ var $author$project$Page$DisplayChallenge$updateDC = F2(
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
-						{challenge: serverResponse}),
+						{
+							challenge: $author$project$Page$DisplayChallenge$extractChallenge(serverResponse)
+						}),
 					$author$project$Page$DisplayChallenge$fetchUser(model.userId));
 			case 'UserReceived':
 				var serverResponse = msg.a;
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
-						{user: serverResponse}),
+						{
+							user: $author$project$Page$DisplayChallenge$extractUser(serverResponse)
+						}),
 					$elm$core$Platform$Cmd$none);
 			case 'ToggleChallenge':
 				var challengeId = msg.a;
@@ -12249,6 +12292,27 @@ var $author$project$Page$DisplayChallenge$updateDC = F2(
 				}
 		}
 	});
+var $author$project$Page$EditUser$extractUser = function (responseFromServer) {
+	switch (responseFromServer.$) {
+		case 'NotAsked':
+			return $krisajenkins$remotedata$RemoteData$NotAsked;
+		case 'Loading':
+			return $krisajenkins$remotedata$RemoteData$Loading;
+		case 'Success':
+			if (responseFromServer.a.b) {
+				var _v1 = responseFromServer.a;
+				var firstUser = _v1.a;
+				var otherUsers = _v1.b;
+				return $krisajenkins$remotedata$RemoteData$Success(firstUser);
+			} else {
+				return $krisajenkins$remotedata$RemoteData$Failure(
+					$elm$http$Http$BadBody('1'));
+			}
+		default:
+			var e = responseFromServer.a;
+			return $krisajenkins$remotedata$RemoteData$Failure(e);
+	}
+};
 var $author$project$Page$EditUser$ChallengesReceived = function (a) {
 	return {$: 'ChallengesReceived', a: a};
 };
@@ -12258,9 +12322,8 @@ var $author$project$Page$EditUser$fetchChallenges = $elm$http$Http$get(
 			$elm$http$Http$expectJson,
 			A2($elm$core$Basics$composeR, $krisajenkins$remotedata$RemoteData$fromResult, $author$project$Page$EditUser$ChallengesReceived),
 			$author$project$Challenge$listOfChallengesDecoder),
-		url: 'http://localhost:5019/challenges'
+		url: 'https://teemingtooth.backendless.app/api/data/challenges'
 	});
-var $krisajenkins$remotedata$RemoteData$NotAsked = {$: 'NotAsked'};
 var $krisajenkins$remotedata$RemoteData$map = F2(
 	function (f, data) {
 		switch (data.$) {
@@ -12282,18 +12345,13 @@ var $author$project$Page$EditUser$UserSaved = function (a) {
 };
 var $author$project$Page$EditUser$saveUser = function (user) {
 	if (user.$ === 'Success') {
-		var userData = user.a;
-		var userUrl = 'http://localhost:5019/users/' + $author$project$User$userIdToString(userData.id);
-		return $elm$http$Http$request(
+		var newUser = user.a;
+		return $elm$http$Http$post(
 			{
 				body: $elm$http$Http$jsonBody(
-					$author$project$User$userEncoder(userData)),
+					$author$project$User$newUserEncoder(newUser)),
 				expect: A2($elm$http$Http$expectJson, $author$project$Page$EditUser$UserSaved, $author$project$User$userDecoder),
-				headers: _List_Nil,
-				method: 'PATCH',
-				timeout: $elm$core$Maybe$Nothing,
-				tracker: $elm$core$Maybe$Nothing,
-				url: userUrl
+				url: 'https://teemingtooth.backendless.app/api/data/people'
 			});
 	} else {
 		return $elm$core$Platform$Cmd$none;
@@ -12324,7 +12382,9 @@ var $author$project$Page$EditUser$updateEU = F2(
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
-						{user: serverResponse}),
+						{
+							user: $author$project$Page$EditUser$extractUser(serverResponse)
+						}),
 					$author$project$Page$EditUser$fetchChallenges);
 			case 'ChallengesReceived':
 				var responseFromServer = msg.a;
@@ -12502,42 +12562,20 @@ var $author$project$Page$ListOfChallenges$updateLoC = F2(
 var $author$project$Page$NewUser$NewUserCreated = function (a) {
 	return {$: 'NewUserCreated', a: a};
 };
-var $author$project$User$newUserEncoder = function (user) {
-	return $elm$json$Json$Encode$object(
-		_List_fromArray(
-			[
-				_Utils_Tuple2(
-				'name',
-				$author$project$User$userNameEncoder(user.name)),
-				_Utils_Tuple2(
-				'email',
-				$author$project$User$userEmailEncoder(user.email)),
-				_Utils_Tuple2(
-				'password',
-				$author$project$User$userPasswordEncoder(user.password)),
-				_Utils_Tuple2(
-				'completedChallenges',
-				$author$project$User$completedChallengesEncoder(user.completedChallenges))
-			]));
-};
-var $elm$http$Http$post = function (r) {
-	return $elm$http$Http$request(
-		{body: r.body, expect: r.expect, headers: _List_Nil, method: 'POST', timeout: $elm$core$Maybe$Nothing, tracker: $elm$core$Maybe$Nothing, url: r.url});
-};
 var $author$project$Page$NewUser$createNewUser = function (newUser) {
 	return $elm$http$Http$post(
 		{
 			body: $elm$http$Http$jsonBody(
 				$author$project$User$newUserEncoder(newUser)),
 			expect: A2($elm$http$Http$expectJson, $author$project$Page$NewUser$NewUserCreated, $author$project$User$userDecoder),
-			url: 'http://localhost:5019/users'
+			url: 'https://teemingtooth.backendless.app/api/data/people'
 		});
 };
 var $author$project$User$emptyCompletedChallenges = _List_Nil;
 var $author$project$User$emptyUserEmail = $author$project$User$UserEmail('');
 var $author$project$User$emptyUserName = $author$project$User$UserName('');
 var $author$project$User$emptyUserPassword = $author$project$User$UserPassword('DuqOT2024!');
-var $author$project$User$emptyUser = {completedChallenges: $author$project$User$emptyCompletedChallenges, email: $author$project$User$emptyUserEmail, id: $author$project$User$emptyUserId, name: $author$project$User$emptyUserName, password: $author$project$User$emptyUserPassword};
+var $author$project$User$emptyUser = {completedChallenges: $author$project$User$emptyCompletedChallenges, email: $author$project$User$emptyUserEmail, id: $author$project$User$emptyUserId, name: $author$project$User$emptyUserName, objectId: '', password: $author$project$User$emptyUserPassword};
 var $author$project$Page$NewUser$updateNU = F2(
 	function (msg, model) {
 		switch (msg.$) {
@@ -13164,8 +13202,8 @@ var $author$project$Page$EditUser$editUserForm = F2(
 						]))
 				]));
 	});
-var $author$project$Page$EditUser$viewFetchError = function (errorMessage) {
-	var errorHeading = 'Couldn\'t fetch post at this time.';
+var $author$project$Page$EditUser$viewFetchUserError = function (errorMessage) {
+	var errorHeading = 'Couldn\'t fetch user at this time.';
 	return A2(
 		$elm$html$Html$div,
 		_List_Nil,
@@ -13199,7 +13237,7 @@ var $author$project$Page$EditUser$viewUser = F2(
 				return A2($author$project$Page$EditUser$editUserForm, userData, challenges);
 			default:
 				var httpError = user.a;
-				return $author$project$Page$EditUser$viewFetchError(
+				return $author$project$Page$EditUser$viewFetchUserError(
 					$author$project$ErrorMessages$buildErrorMessage(httpError));
 		}
 	});
@@ -14185,4 +14223,4 @@ var $author$project$Main$main = $elm$browser$Browser$application(
 		view: $author$project$Main$viewMain
 	});
 _Platform_export({'Main':{'init':$author$project$Main$main(
-	$elm$json$Json$Decode$succeed(_Utils_Tuple0))({"versions":{"elm":"0.19.1"},"types":{"message":"Main.Msg","aliases":{"Url.Url":{"args":[],"type":"{ protocol : Url.Protocol, host : String.String, port_ : Maybe.Maybe Basics.Int, path : String.String, query : Maybe.Maybe String.String, fragment : Maybe.Maybe String.String }"},"Challenge.Challenge":{"args":[],"type":"{ id : Challenge.ChallengeId, title : Challenge.ChallengeTitle, description : Challenge.ChallengeDescription }"},"Date.RataDie":{"args":[],"type":"Basics.Int"},"User.User":{"args":[],"type":"{ id : User.UserId, name : User.UserName, email : User.UserEmail, password : User.UserPassword, completedChallenges : List.List Challenge.ChallengeId }"},"RemoteData.WebData":{"args":["a"],"type":"RemoteData.RemoteData Http.Error a"}},"unions":{"Main.Msg":{"args":[],"tags":{"EUPageMsg":["Page.EditUser.MsgEU"],"DCPageMsg":["Page.DisplayChallenge.MsgDC"],"NUPageMsg":["Page.NewUser.MsgNU"],"LIPageMsg":["Page.LogIn.MsgLI"],"LinkClicked":["Browser.UrlRequest"],"UrlChanged":["Url.Url"],"ReceiveDate":["Date.Date"],"LoCPageMsg":["Page.ListOfChallenges.MsgLoC"]}},"Date.Date":{"args":[],"tags":{"RD":["Date.RataDie"]}},"Basics.Int":{"args":[],"tags":{"Int":[]}},"Maybe.Maybe":{"args":["a"],"tags":{"Just":["a"],"Nothing":[]}},"Page.DisplayChallenge.MsgDC":{"args":[],"tags":{"ChallengeReceived":["RemoteData.WebData Challenge.Challenge"],"UserReceived":["RemoteData.WebData User.User"],"ToggleChallenge":["Challenge.ChallengeId"],"SaveUser":[],"UserSaved":["Result.Result Http.Error User.User"]}},"Page.EditUser.MsgEU":{"args":[],"tags":{"UserReceived":["RemoteData.WebData User.User"],"ChallengesReceived":["RemoteData.WebData (List.List Challenge.Challenge)"],"UpdateUserName":["String.String"],"ToggleChallenge":["Challenge.ChallengeId"],"SaveUser":[],"UserSaved":["Result.Result Http.Error User.User"]}},"Page.LogIn.MsgLI":{"args":[],"tags":{"FetchUsers":[],"UsersReceived":["RemoteData.WebData (List.List User.User)"],"UpdatePassword":["String.String"],"UpdateEmail":["String.String"],"LogInUser":[]}},"Page.ListOfChallenges.MsgLoC":{"args":[],"tags":{"FetchChallenges":[],"ChallengesReceived":["RemoteData.WebData (List.List Challenge.Challenge)"]}},"Page.NewUser.MsgNU":{"args":[],"tags":{"UpdateName":["String.String"],"UpdateEmail":["String.String"],"CreateNewUser":[],"NewUserCreated":["Result.Result Http.Error User.User"]}},"Url.Protocol":{"args":[],"tags":{"Http":[],"Https":[]}},"String.String":{"args":[],"tags":{"String":[]}},"Browser.UrlRequest":{"args":[],"tags":{"Internal":["Url.Url"],"External":["String.String"]}},"Challenge.ChallengeDescription":{"args":[],"tags":{"ChallengeDescription":["String.String"]}},"Challenge.ChallengeId":{"args":[],"tags":{"ChallengeId":["Basics.Int"]}},"Challenge.ChallengeTitle":{"args":[],"tags":{"ChallengeTitle":["String.String"]}},"Http.Error":{"args":[],"tags":{"BadUrl":["String.String"],"Timeout":[],"NetworkError":[],"BadStatus":["Basics.Int"],"BadBody":["String.String"]}},"List.List":{"args":["a"],"tags":{}},"RemoteData.RemoteData":{"args":["e","a"],"tags":{"NotAsked":[],"Loading":[],"Failure":["e"],"Success":["a"]}},"Result.Result":{"args":["error","value"],"tags":{"Ok":["value"],"Err":["error"]}},"User.UserEmail":{"args":[],"tags":{"UserEmail":["String.String"]}},"User.UserId":{"args":[],"tags":{"UserId":["Basics.Int"]}},"User.UserName":{"args":[],"tags":{"UserName":["String.String"]}},"User.UserPassword":{"args":[],"tags":{"UserPassword":["String.String"]}}}}})}});}(this));
+	$elm$json$Json$Decode$succeed(_Utils_Tuple0))({"versions":{"elm":"0.19.1"},"types":{"message":"Main.Msg","aliases":{"Url.Url":{"args":[],"type":"{ protocol : Url.Protocol, host : String.String, port_ : Maybe.Maybe Basics.Int, path : String.String, query : Maybe.Maybe String.String, fragment : Maybe.Maybe String.String }"},"Challenge.Challenge":{"args":[],"type":"{ id : Challenge.ChallengeId, title : Challenge.ChallengeTitle, description : Challenge.ChallengeDescription }"},"Date.RataDie":{"args":[],"type":"Basics.Int"},"User.User":{"args":[],"type":"{ id : User.UserId, name : User.UserName, email : User.UserEmail, password : User.UserPassword, completedChallenges : List.List Challenge.ChallengeId, objectId : String.String }"},"RemoteData.WebData":{"args":["a"],"type":"RemoteData.RemoteData Http.Error a"}},"unions":{"Main.Msg":{"args":[],"tags":{"EUPageMsg":["Page.EditUser.MsgEU"],"DCPageMsg":["Page.DisplayChallenge.MsgDC"],"NUPageMsg":["Page.NewUser.MsgNU"],"LIPageMsg":["Page.LogIn.MsgLI"],"LinkClicked":["Browser.UrlRequest"],"UrlChanged":["Url.Url"],"ReceiveDate":["Date.Date"],"LoCPageMsg":["Page.ListOfChallenges.MsgLoC"]}},"Date.Date":{"args":[],"tags":{"RD":["Date.RataDie"]}},"Basics.Int":{"args":[],"tags":{"Int":[]}},"Maybe.Maybe":{"args":["a"],"tags":{"Just":["a"],"Nothing":[]}},"Page.DisplayChallenge.MsgDC":{"args":[],"tags":{"ChallengeReceived":["RemoteData.WebData (List.List Challenge.Challenge)"],"UserReceived":["RemoteData.WebData (List.List User.User)"],"ToggleChallenge":["Challenge.ChallengeId"],"SaveUser":[],"UserSaved":["Result.Result Http.Error User.User"]}},"Page.EditUser.MsgEU":{"args":[],"tags":{"UserReceived":["RemoteData.WebData (List.List User.User)"],"ChallengesReceived":["RemoteData.WebData (List.List Challenge.Challenge)"],"UpdateUserName":["String.String"],"ToggleChallenge":["Challenge.ChallengeId"],"SaveUser":[],"UserSaved":["Result.Result Http.Error User.User"]}},"Page.LogIn.MsgLI":{"args":[],"tags":{"FetchUsers":[],"UsersReceived":["RemoteData.WebData (List.List User.User)"],"UpdatePassword":["String.String"],"UpdateEmail":["String.String"],"LogInUser":[]}},"Page.ListOfChallenges.MsgLoC":{"args":[],"tags":{"FetchChallenges":[],"ChallengesReceived":["RemoteData.WebData (List.List Challenge.Challenge)"]}},"Page.NewUser.MsgNU":{"args":[],"tags":{"UpdateName":["String.String"],"UpdateEmail":["String.String"],"CreateNewUser":[],"NewUserCreated":["Result.Result Http.Error User.User"]}},"Url.Protocol":{"args":[],"tags":{"Http":[],"Https":[]}},"String.String":{"args":[],"tags":{"String":[]}},"Browser.UrlRequest":{"args":[],"tags":{"Internal":["Url.Url"],"External":["String.String"]}},"Challenge.ChallengeDescription":{"args":[],"tags":{"ChallengeDescription":["String.String"]}},"Challenge.ChallengeId":{"args":[],"tags":{"ChallengeId":["Basics.Int"]}},"Challenge.ChallengeTitle":{"args":[],"tags":{"ChallengeTitle":["String.String"]}},"Http.Error":{"args":[],"tags":{"BadUrl":["String.String"],"Timeout":[],"NetworkError":[],"BadStatus":["Basics.Int"],"BadBody":["String.String"]}},"List.List":{"args":["a"],"tags":{}},"RemoteData.RemoteData":{"args":["e","a"],"tags":{"NotAsked":[],"Loading":[],"Failure":["e"],"Success":["a"]}},"Result.Result":{"args":["error","value"],"tags":{"Ok":["value"],"Err":["error"]}},"User.UserEmail":{"args":[],"tags":{"UserEmail":["String.String"]}},"User.UserId":{"args":[],"tags":{"UserId":["Basics.Int"]}},"User.UserName":{"args":[],"tags":{"UserName":["String.String"]}},"User.UserPassword":{"args":[],"tags":{"UserPassword":["String.String"]}}}}})}});}(this));

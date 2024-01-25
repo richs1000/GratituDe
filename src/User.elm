@@ -29,6 +29,7 @@ type alias User =
     , email : UserEmail
     , password : UserPassword
     , completedChallenges : List Challenge.ChallengeId
+    , objectId : String
     }
 
 
@@ -39,6 +40,7 @@ emptyUser =
     , email = emptyUserEmail
     , password = emptyUserPassword
     , completedChallenges = emptyCompletedChallenges
+    , objectId = ""
     }
 
 
@@ -50,6 +52,12 @@ userDecoder =
         |> Pipeline.required "email" userEmailDecoder
         |> Pipeline.required "password" userPasswordDecoder
         |> Pipeline.required "completedChallenges" completedChallengesDecoder
+        |> Pipeline.required "objectId" Decode.string
+
+
+listOfUsersDecoder : Decode.Decoder (List User)
+listOfUsersDecoder =
+    Decode.list userDecoder
 
 
 userEncoder : User -> Encode.Value
@@ -60,6 +68,7 @@ userEncoder user =
         , ( "email", userEmailEncoder user.email )
         , ( "password", userPasswordEncoder user.password )
         , ( "completedChallenges", completedChallengesEncoder user.completedChallenges )
+        , ( "objectId", Encode.string user.objectId )
         ]
 
 
@@ -71,11 +80,6 @@ newUserEncoder user =
         , ( "password", userPasswordEncoder user.password )
         , ( "completedChallenges", completedChallengesEncoder user.completedChallenges )
         ]
-
-
-listOfUsersDecoder : Decode.Decoder (List User)
-listOfUsersDecoder =
-    Decode.list userDecoder
 
 
 
