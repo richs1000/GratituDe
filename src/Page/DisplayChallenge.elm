@@ -139,7 +139,6 @@ extractChallenge responseFromServer =
             RD.Failure e
 
 
-
 extractUser : RD.WebData (List User.User) -> RD.WebData User.User
 extractUser responseFromServer =
     case responseFromServer of
@@ -157,6 +156,7 @@ extractUser responseFromServer =
 
         RD.Failure e ->
             RD.Failure e
+
 
 updateDC : MsgDC -> ModelDC -> ( ModelDC, Cmd MsgDC )
 updateDC msg model =
@@ -227,15 +227,36 @@ toggleChallenge user challengeId =
         { user | completedChallenges = challengeId :: user.completedChallenges }
 
 
+
+-- saveUser : RD.WebData User.User -> Cmd MsgDC
+-- saveUser user =
+--     case user of
+--         RD.Success newUser ->
+--             Http.post
+--                 { url = "https://teemingtooth.backendless.app/api/data/people"
+--                 , body = Http.jsonBody (User.newUserEncoder newUser)
+--                 , expect = Http.expectJson UserSaved User.userDecoder
+--                 }
+--         _ ->
+--             Cmd.none
+
+
 saveUser : RD.WebData User.User -> Cmd MsgDC
 saveUser user =
     case user of
         RD.Success newUser ->
-            Http.post
-                { url = "https://teemingtooth.backendless.app/api/data/people"
-                , body = Http.jsonBody (User.newUserEncoder newUser)
-                , expect = Http.expectJson UserSaved User.userDecoder
-                }
+            Http.request
+                (Debug.log
+                    "Save user request"
+                    { method = "PUT"
+                    , headers = []
+                    , url = "https://teemingtooth.backendless.app/api/data/people/" ++ newUser.objectId
+                    , body = Http.jsonBody (User.newUserEncoder newUser)
+                    , expect = Http.expectJson UserSaved User.userDecoder
+                    , timeout = Nothing
+                    , tracker = Nothing
+                    }
+                )
 
         _ ->
             Cmd.none

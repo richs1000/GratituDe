@@ -12159,20 +12159,23 @@ var $author$project$User$newUserEncoder = function (user) {
 				$author$project$User$completedChallengesEncoder(user.completedChallenges))
 			]));
 };
-var $elm$http$Http$post = function (r) {
-	return $elm$http$Http$request(
-		{body: r.body, expect: r.expect, headers: _List_Nil, method: 'POST', timeout: $elm$core$Maybe$Nothing, tracker: $elm$core$Maybe$Nothing, url: r.url});
-};
 var $author$project$Page$DisplayChallenge$saveUser = function (user) {
 	if (user.$ === 'Success') {
 		var newUser = user.a;
-		return $elm$http$Http$post(
-			{
-				body: $elm$http$Http$jsonBody(
-					$author$project$User$newUserEncoder(newUser)),
-				expect: A2($elm$http$Http$expectJson, $author$project$Page$DisplayChallenge$UserSaved, $author$project$User$userDecoder),
-				url: 'https://teemingtooth.backendless.app/api/data/people'
-			});
+		return $elm$http$Http$request(
+			A2(
+				$elm$core$Debug$log,
+				'Save user request',
+				{
+					body: $elm$http$Http$jsonBody(
+						$author$project$User$newUserEncoder(newUser)),
+					expect: A2($elm$http$Http$expectJson, $author$project$Page$DisplayChallenge$UserSaved, $author$project$User$userDecoder),
+					headers: _List_Nil,
+					method: 'PUT',
+					timeout: $elm$core$Maybe$Nothing,
+					tracker: $elm$core$Maybe$Nothing,
+					url: 'https://teemingtooth.backendless.app/api/data/people/' + newUser.objectId
+				}));
 	} else {
 		return $elm$core$Platform$Cmd$none;
 	}
@@ -12575,6 +12578,10 @@ var $author$project$Page$ListOfChallenges$updateLoC = F2(
 	});
 var $author$project$Page$NewUser$NewUserCreated = function (a) {
 	return {$: 'NewUserCreated', a: a};
+};
+var $elm$http$Http$post = function (r) {
+	return $elm$http$Http$request(
+		{body: r.body, expect: r.expect, headers: _List_Nil, method: 'POST', timeout: $elm$core$Maybe$Nothing, tracker: $elm$core$Maybe$Nothing, url: r.url});
 };
 var $author$project$Page$NewUser$createNewUser = function (newUser) {
 	return $elm$http$Http$post(
