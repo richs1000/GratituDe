@@ -20,22 +20,24 @@ type alias ModelEU =
     { navKey : Nav.Key
     , user : RD.WebData User.User
     , challenges : RD.WebData (List Challenge.Challenge)
+    , thisWeeksChallenge : Int
     , saveError : Maybe String
     }
 
 
-initialModelEU : Nav.Key -> ModelEU
-initialModelEU navKeyParam =
+initialModelEU : Int -> Nav.Key -> ModelEU
+initialModelEU thisWeek navKeyParam =
     { navKey = navKeyParam
     , user = RD.Loading
     , challenges = RD.Loading
+    , thisWeeksChallenge = thisWeek
     , saveError = Nothing
     }
 
 
-initEU : User.UserId -> Nav.Key -> ( ModelEU, Cmd MsgEU )
-initEU userId navKey =
-    ( initialModelEU navKey, fetchUser userId )
+initEU : User.UserId -> Int -> Nav.Key -> ( ModelEU, Cmd MsgEU )
+initEU userId thisWeek navKey =
+    ( initialModelEU thisWeek navKey, fetchUser userId )
 
 
 
@@ -205,6 +207,17 @@ toggleChallenge user challengeId =
            }
 
 -}
+-- saveUser : RD.WebData User.User -> Cmd MsgEU
+-- saveUser user =
+--     case user of
+--         RD.Success newUser ->
+--             Http.post
+--                 { url = "https://teemingtooth.backendless.app/api/data/people/" ++ newUser.objectId
+--                 , body = Http.jsonBody (User.newUserEncoder newUser)
+--                 , expect = Http.expectJson UserSaved User.userDecoder
+--                 }
+--         _ ->
+--             Cmd.none
 {-
    curl -v \
    -H "Content-Type: application/json" \
@@ -219,11 +232,20 @@ saveUser : RD.WebData User.User -> Cmd MsgEU
 saveUser user =
     case user of
         RD.Success newUser ->
-            Http.post
-                { url = "https://teemingtooth.backendless.app/api/data/people"
-                , body = Http.jsonBody (User.newUserEncoder newUser)
-                , expect = Http.expectJson UserSaved User.userDecoder
-                }
+            Http.request
+                (Debug.log
+                    "Save user request"
+                    { method = "PUT"
+
+                    -- , headers = [ Http.header "Content-Type" "application/json" ]
+                    , headers = []
+                    , url = "https://teemingtooth.backendless.app/api/data/people/" ++ newUser.objectId
+                    , body = Http.jsonBody (User.newUserEncoder newUser)
+                    , expect = Http.expectJson UserSaved User.userDecoder
+                    , timeout = Nothing
+                    , tracker = Nothing
+                    }
+                )
 
         _ ->
             Cmd.none
@@ -275,14 +297,14 @@ viewEU : ModelEU -> Html MsgEU
 viewEU model =
     div []
         [ h3 [] [ text "User Information" ]
-        , viewUser model.user model.challenges
+        , viewUser model
         , viewSaveError model.saveError
         ]
 
 
-viewUser : RD.WebData User.User -> RD.WebData (List Challenge.Challenge) -> Html MsgEU
-viewUser user challenges =
-    case user of
+viewUser : ModelEU -> Html MsgEU
+viewUser model =
+    case model.user of
         RD.NotAsked ->
             text ""
 
@@ -290,14 +312,14 @@ viewUser user challenges =
             h3 [] [ text "Loading User Data..." ]
 
         RD.Success userData ->
-            editUserForm userData challenges
+            editUserForm userData model.thisWeeksChallenge model.challenges
 
         RD.Failure httpError ->
             viewFetchUserError (EM.buildErrorMessage httpError)
 
 
-editUserForm : User.User -> RD.WebData (List Challenge.Challenge) -> Html MsgEU
-editUserForm user challenges =
+editUserForm : User.User -> Int -> RD.WebData (List Challenge.Challenge) -> Html MsgEU
+editUserForm user thisWeeksChallenge challenges =
     Html.form []
         [ div []
             [ text "Name"
@@ -309,7 +331,7 @@ editUserForm user challenges =
                 ]
                 []
             ]
-        , viewListOfChallenges user.completedChallenges challenges
+        , viewListOfChallenges user.completedChallenges thisWeeksChallenge challenges
         , br [] []
         , div []
             [ button [ type_ "button", onClick SaveUser ]
@@ -343,8 +365,8 @@ viewFetchUserError errorMessage =
         ]
 
 
-viewListOfChallenges : List Challenge.ChallengeId -> RD.WebData (List Challenge.Challenge) -> Html MsgEU
-viewListOfChallenges completedChallenges challenges =
+viewListOfChallenges : List Challenge.ChallengeId -> Int -> RD.WebData (List Challenge.Challenge) -> Html MsgEU
+viewListOfChallenges completedChallenges thisWeeksChallenge challenges =
     case challenges of
         RD.NotAsked ->
             text ""
@@ -353,10 +375,15 @@ viewListOfChallenges completedChallenges challenges =
             h3 [] [ text "Loading..." ]
 
         RD.Success listOfChallenges ->
+            let
+                shortenedListOfChallenges =
+                    List.sortBy Challenge.challengeIdAsInt listOfChallenges
+                        |> List.take thisWeeksChallenge
+            in
             div []
                 [ h3 [] [ text "Gratitude Challenges" ]
                 , div []
-                    (List.map (viewChallenge completedChallenges) listOfChallenges)
+                    (List.map (viewChallenge completedChallenges) shortenedListOfChallenges)
                 ]
 
         RD.Failure httpError ->

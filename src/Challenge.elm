@@ -65,6 +65,13 @@ challengeIdToString (ChallengeId idAsInt) =
     String.fromInt idAsInt
 
 
+challengeIdAsInt : Challenge -> Int
+challengeIdAsInt challenge =
+    case challenge.id of
+        ChallengeId idAsInt ->
+            idAsInt
+
+
 
 -- Extracts a challenge ID from a URL
 

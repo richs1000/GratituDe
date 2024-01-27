@@ -23,12 +23,14 @@ import RemoteData as RD
 
 type alias ModelLoC =
     { challenges : RD.WebData (List Challenge.Challenge)
+    , thisWeeksChallenge : Int
     }
 
 
-initModelLoC : ModelLoC
-initModelLoC =
+initModelLoC : Int -> ModelLoC
+initModelLoC theWeek =
     { challenges = RD.Loading
+    , thisWeeksChallenge = theWeek
     }
 
 
@@ -37,9 +39,9 @@ type MsgLoC
     | ChallengesReceived (RD.WebData (List Challenge.Challenge))
 
 
-initLoC : ( ModelLoC, Cmd MsgLoC )
-initLoC =
-    ( initModelLoC
+initLoC : Int -> ( ModelLoC, Cmd MsgLoC )
+initLoC theWeek =
+    ( initModelLoC theWeek
     , fetchChallenges
     )
 
@@ -87,13 +89,13 @@ viewLoC model =
     div []
         [ button [ Events.onClick FetchChallenges ]
             [ text "Refresh Challenges" ]
-        , viewListOfChallenges model.challenges
+        , viewListOfChallenges model
         ]
 
 
-viewListOfChallenges : RD.WebData (List Challenge.Challenge) -> Html MsgLoC
-viewListOfChallenges challenges =
-    case challenges of
+viewListOfChallenges : ModelLoC -> Html MsgLoC
+viewListOfChallenges model =
+    case model.challenges of
         RD.NotAsked ->
             text ""
 
@@ -101,10 +103,15 @@ viewListOfChallenges challenges =
             h3 [] [ text "Loading..." ]
 
         RD.Success listOfChallenges ->
+            let
+                shortenedListOfChallenges =
+                    List.sortBy Challenge.challengeIdAsInt listOfChallenges
+                        |> List.take model.thisWeeksChallenge
+            in
             div []
                 [ h3 [] [ text "Gratitude Challenges" ]
                 , table []
-                    (viewTableHeader :: List.map viewChallenge listOfChallenges)
+                    (viewTableHeader :: List.map viewChallenge shortenedListOfChallenges)
                 ]
 
         RD.Failure httpError ->
