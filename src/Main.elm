@@ -507,7 +507,7 @@ updateMain msg model =
             -- update current page to have the new model
             -- update the user in the current model based on the user who just logged in
             ( { model
-                | currentPage = LogInPage (Debug.log "In updateMain, LIModel = " updatedLIModel)
+                | currentPage = LogInPage updatedLIModel
                 , user = updatedLIModel.newUser
               }
               -- update the current command to be the command from the LI init function

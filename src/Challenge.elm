@@ -137,3 +137,106 @@ challengeCompletedToString (ChallengeCompleted completedAsBool) =
 
     else
         "Not Completed"
+
+
+
+-- Find the longest streak of completed challenges
+-- [5, 4, 3, 2, 1] -> 5
+-- [5, 3, 2, 1] -> 3
+-- [5, 3, 1] -> 1
+-- [5, 4, 2, 1] -> 2
+-- [6, 5, 4, 2, 1] -> 3
+
+
+longestStreak : List ChallengeId -> Int
+longestStreak challenges =
+    let
+        longestStreakHelper : Int -> Int -> List ChallengeId -> Int
+        longestStreakHelper streakCount maxStreak remainingChallenges =
+            case remainingChallenges of
+                [] ->
+                    -- We're at the end of the list of challenges, return the longest streak
+                    -- found in the list
+                    Basics.max 0 maxStreak
+
+                c :: [] ->
+                    -- There is one item left in the list, add one to the current streak count
+                    -- Compare the current streak count to the longest streak count found
+                    -- Return whichever is bigger
+                    Basics.max (streakCount + 1) maxStreak
+
+                c1 :: c2 :: cs ->
+                    if getIdAsInt c1 == (getIdAsInt c2 + 1) then
+                        -- The first and second challenge IDs in the list are consecutive
+                        -- Add one to the current streak count
+                        -- Update the longest streak count if the current streak count is longest
+                        -- Move on to the rest of the list (c2 :: cs)
+                        longestStreakHelper (streakCount + 1) (Basics.max (streakCount + 1) maxStreak) (c2 :: cs)
+
+                    else
+                        -- The first and second challenge IDs in the list are not consecutive
+                        -- Restart the current streak count at zero
+                        -- Update the longest streak count if the streak that just ended was longer
+                        -- Move on to the rest of the list (cs :: cs)
+                        longestStreakHelper 0 (Basics.max (streakCount + 1) maxStreak) (c2 :: cs)
+    in
+    longestStreakHelper 0 0 challenges
+
+
+
+-- Does the user have an active streak? If the user has already completed the current week's challenge
+-- or has completed the previous week's challenge, then they have an active streak. This function
+-- counts how many challenges in a row have been completed.
+-- If this week is week #6:
+-- [5, 4, 3, 2, 1] -> 5
+-- [5, 3, 2, 1] -> 1
+-- [5, 3, 1] -> 1
+-- [5, 4, 2, 1] -> 2
+-- [6, 5, 4, 2, 1] -> 3
+
+
+activeStreak : List ChallengeId -> Int -> Int
+activeStreak challenges thisWeek =
+    let
+        activeStreakHelper : Int -> List ChallengeId -> Int
+        activeStreakHelper streakCount remainingChallenges =
+            case remainingChallenges of
+                [] ->
+                    -- There are no remaining items, so return the length of the streak
+                    streakCount
+
+                c :: [] ->
+                    -- There is one item left in the list, add one to the current streak count
+                    -- Return the updated streak count
+                    streakCount + 1
+
+                c1 :: c2 :: cs ->
+                    if getIdAsInt c1 == (getIdAsInt c2 + 1) then
+                        -- The first and second challenge IDs in the list are consecutive
+                        -- Add one to the current streak count
+                        -- Move on to the rest of the list (c2 :: cs)
+                        activeStreakHelper (streakCount + 1) (c2 :: cs)
+
+                    else
+                        -- The streak ended, return the streak count
+                        streakCount + 1
+    in
+    case challenges of
+        [] ->
+            0
+
+        c :: cs ->
+            if (getIdAsInt c == thisWeek) || (getIdAsInt c == thisWeek - 1) then
+                activeStreakHelper 0 (c :: cs)
+
+            else
+                0
+
+
+
+-- Convert a ChallengeId type to a regular Int so I can use it for sorting
+
+
+getIdAsInt : ChallengeId -> Int
+getIdAsInt (ChallengeId idAsInt) =
+    idAsInt

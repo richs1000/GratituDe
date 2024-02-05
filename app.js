@@ -11928,7 +11928,6 @@ var $author$project$Main$initMain = F3(
 var $elm$core$Platform$Sub$batch = _Platform_batch;
 var $elm$core$Platform$Sub$none = $elm$core$Platform$Sub$batch(_List_Nil);
 var $elm$browser$Browser$Navigation$load = _Browser_load;
-var $elm$core$Debug$log = _Debug_log;
 var $justinmimbs$date$Date$divWithRemainder = F2(
 	function (a, b) {
 		return _Utils_Tuple2(
@@ -12123,6 +12122,7 @@ var $elm$http$Http$jsonBody = function (value) {
 		'application/json',
 		A2($elm$json$Json$Encode$encode, 0, value));
 };
+var $elm$core$Debug$log = _Debug_log;
 var $elm$json$Json$Encode$int = _Json_wrap;
 var $author$project$Challenge$challengeIdEncoder = function (_v0) {
 	var id = _v0.a;
@@ -12357,19 +12357,16 @@ var $author$project$Page$EditUser$saveUser = function (user) {
 	if (user.$ === 'Success') {
 		var newUser = user.a;
 		return $elm$http$Http$request(
-			A2(
-				$elm$core$Debug$log,
-				'Save user request',
-				{
-					body: $elm$http$Http$jsonBody(
-						$author$project$User$newUserEncoder(newUser)),
-					expect: A2($elm$http$Http$expectJson, $author$project$Page$EditUser$UserSaved, $author$project$User$userDecoder),
-					headers: _List_Nil,
-					method: 'PUT',
-					timeout: $elm$core$Maybe$Nothing,
-					tracker: $elm$core$Maybe$Nothing,
-					url: 'https://teemingtooth.backendless.app/api/data/people/' + newUser.objectId
-				}));
+			{
+				body: $elm$http$Http$jsonBody(
+					$author$project$User$newUserEncoder(newUser)),
+				expect: A2($elm$http$Http$expectJson, $author$project$Page$EditUser$UserSaved, $author$project$User$userDecoder),
+				headers: _List_Nil,
+				method: 'PUT',
+				timeout: $elm$core$Maybe$Nothing,
+				tracker: $elm$core$Maybe$Nothing,
+				url: 'https://teemingtooth.backendless.app/api/data/people/' + newUser.objectId
+			});
 	} else {
 		return $elm$core$Platform$Cmd$none;
 	}
@@ -12772,8 +12769,7 @@ var $author$project$Main$updateMain = F2(
 							_Utils_update(
 								model,
 								{
-									currentPage: $author$project$Main$LogInPage(
-										A2($elm$core$Debug$log, 'In updateMain, LIModel = ', updatedLIModel)),
+									currentPage: $author$project$Main$LogInPage(updatedLIModel),
 									user: updatedLIModel.newUser
 								}),
 							A2($elm$core$Platform$Cmd$map, $author$project$Main$LIPageMsg, updatedLICmd));
@@ -13313,6 +13309,123 @@ var $author$project$Page$EditUser$viewListOfChallenges = F3(
 					$author$project$ErrorMessages$buildErrorMessage(httpError));
 		}
 	});
+var $author$project$Challenge$getIdAsInt = function (_v0) {
+	var idAsInt = _v0.a;
+	return idAsInt;
+};
+var $author$project$Challenge$activeStreak = F2(
+	function (challenges, thisWeek) {
+		var activeStreakHelper = F2(
+			function (streakCount, remainingChallenges) {
+				activeStreakHelper:
+				while (true) {
+					if (!remainingChallenges.b) {
+						return streakCount;
+					} else {
+						if (!remainingChallenges.b.b) {
+							var c = remainingChallenges.a;
+							return streakCount + 1;
+						} else {
+							var c1 = remainingChallenges.a;
+							var _v1 = remainingChallenges.b;
+							var c2 = _v1.a;
+							var cs = _v1.b;
+							if (_Utils_eq(
+								$author$project$Challenge$getIdAsInt(c1),
+								$author$project$Challenge$getIdAsInt(c2) + 1)) {
+								var $temp$streakCount = streakCount + 1,
+									$temp$remainingChallenges = A2($elm$core$List$cons, c2, cs);
+								streakCount = $temp$streakCount;
+								remainingChallenges = $temp$remainingChallenges;
+								continue activeStreakHelper;
+							} else {
+								return streakCount + 1;
+							}
+						}
+					}
+				}
+			});
+		if (!challenges.b) {
+			return 0;
+		} else {
+			var c = challenges.a;
+			var cs = challenges.b;
+			return (_Utils_eq(
+				$author$project$Challenge$getIdAsInt(c),
+				thisWeek) || _Utils_eq(
+				$author$project$Challenge$getIdAsInt(c),
+				thisWeek - 1)) ? A2(
+				activeStreakHelper,
+				0,
+				A2($elm$core$List$cons, c, cs)) : 0;
+		}
+	});
+var $author$project$Challenge$longestStreak = function (challenges) {
+	var longestStreakHelper = F3(
+		function (streakCount, maxStreak, remainingChallenges) {
+			longestStreakHelper:
+			while (true) {
+				if (!remainingChallenges.b) {
+					return A2($elm$core$Basics$max, 0, maxStreak);
+				} else {
+					if (!remainingChallenges.b.b) {
+						var c = remainingChallenges.a;
+						return A2($elm$core$Basics$max, streakCount + 1, maxStreak);
+					} else {
+						var c1 = remainingChallenges.a;
+						var _v1 = remainingChallenges.b;
+						var c2 = _v1.a;
+						var cs = _v1.b;
+						if (_Utils_eq(
+							$author$project$Challenge$getIdAsInt(c1),
+							$author$project$Challenge$getIdAsInt(c2) + 1)) {
+							var $temp$streakCount = streakCount + 1,
+								$temp$maxStreak = A2($elm$core$Basics$max, streakCount + 1, maxStreak),
+								$temp$remainingChallenges = A2($elm$core$List$cons, c2, cs);
+							streakCount = $temp$streakCount;
+							maxStreak = $temp$maxStreak;
+							remainingChallenges = $temp$remainingChallenges;
+							continue longestStreakHelper;
+						} else {
+							var $temp$streakCount = 0,
+								$temp$maxStreak = A2($elm$core$Basics$max, streakCount + 1, maxStreak),
+								$temp$remainingChallenges = A2($elm$core$List$cons, c2, cs);
+							streakCount = $temp$streakCount;
+							maxStreak = $temp$maxStreak;
+							remainingChallenges = $temp$remainingChallenges;
+							continue longestStreakHelper;
+						}
+					}
+				}
+			}
+		});
+	return A3(longestStreakHelper, 0, 0, challenges);
+};
+var $author$project$Page$EditUser$viewStreakCount = F2(
+	function (completedChallenges, thisWeeksChallenge) {
+		var sortedCompletedChallenges = $elm$core$List$reverse(
+			A2(
+				$elm$core$List$filter,
+				function (cId) {
+					return _Utils_cmp(
+						$author$project$Challenge$getIdAsInt(cId),
+						thisWeeksChallenge) < 1;
+				},
+				A2($elm$core$List$sortBy, $author$project$Challenge$getIdAsInt, completedChallenges)));
+		return A2(
+			$elm$html$Html$div,
+			_List_Nil,
+			_List_fromArray(
+				[
+					$elm$html$Html$text(
+					'Longest Streak ' + $elm$core$String$fromInt(
+						$author$project$Challenge$longestStreak(sortedCompletedChallenges))),
+					A2($elm$html$Html$br, _List_Nil, _List_Nil),
+					$elm$html$Html$text(
+					'Active Streak ' + $elm$core$String$fromInt(
+						A2($author$project$Challenge$activeStreak, sortedCompletedChallenges, thisWeeksChallenge)))
+				]));
+	});
 var $author$project$Page$EditUser$editUserForm = F3(
 	function (user, thisWeeksChallenge, challenges) {
 		return A2(
@@ -13356,7 +13469,8 @@ var $author$project$Page$EditUser$editUserForm = F3(
 								[
 									$elm$html$Html$text('Update User Information')
 								]))
-						]))
+						])),
+					A2($author$project$Page$EditUser$viewStreakCount, user.completedChallenges, thisWeeksChallenge)
 				]));
 	});
 var $author$project$Page$EditUser$viewFetchUserError = function (errorMessage) {

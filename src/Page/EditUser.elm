@@ -41,16 +41,6 @@ initEU userId thisWeek navKey =
 
 
 
--- fetchUser : User.UserId -> Cmd MsgEU
--- fetchUser userId =
---     Http.get
---         { url = "http://localhost:5019/users/" ++ User.userIdToString userId
---         , expect =
---             User.userDecoder
---                 -- func1 >> func2 == \param -> func2 (fun1 param)
---                 -- RD.fromResult >> UserReceived = \p -> UserReceived (RD.fromResult p)
---                 |> Http.expectJson (RD.fromResult >> UserReceived)
---         }
 {-
    curl "https://teemingtooth.backendless.app/api/data/people/first?props=id,completedChallenges,name,password,objectId&where=id&3D1"
 -}
@@ -69,17 +59,6 @@ fetchUser userId =
                 -- RD.fromResult >> UserReceived = \p -> UserReceived (RD.fromResult p)
                 |> Http.expectJson (RD.fromResult >> UserReceived)
         }
-
-
-
--- fetchChallenges : Cmd MsgEU
--- fetchChallenges =
---     Http.get
---         { url = "http://localhost:5019/challenges"
---         , expect =
---             Challenge.listOfChallengesDecoder
---                 |> Http.expectJson (RD.fromResult >> ChallengesReceived)
---         }
 
 
 fetchChallenges : Cmd MsgEU
@@ -198,27 +177,6 @@ toggleChallenge user challengeId =
 
 
 {-
-   createNewUser : User.User -> Cmd MsgNU
-   createNewUser newUser =
-       Http.post
-           { url = "https://teemingtooth.backendless.app/api/data/people"
-           , body = Http.jsonBody (User.newUserEncoder newUser)
-           , expect = Http.expectJson NewUserCreated User.userDecoder
-           }
-
--}
--- saveUser : RD.WebData User.User -> Cmd MsgEU
--- saveUser user =
---     case user of
---         RD.Success newUser ->
---             Http.post
---                 { url = "https://teemingtooth.backendless.app/api/data/people/" ++ newUser.objectId
---                 , body = Http.jsonBody (User.newUserEncoder newUser)
---                 , expect = Http.expectJson UserSaved User.userDecoder
---                 }
---         _ ->
---             Cmd.none
-{-
    curl -v \
    -H "Content-Type: application/json" \
    --request PUT \
@@ -233,64 +191,19 @@ saveUser user =
     case user of
         RD.Success newUser ->
             Http.request
-                (Debug.log
-                    "Save user request"
-                    { method = "PUT"
+                { method = "PUT"
 
-                    -- , headers = [ Http.header "Content-Type" "application/json" ]
-                    , headers = []
-                    , url = "https://teemingtooth.backendless.app/api/data/people/" ++ newUser.objectId
-                    , body = Http.jsonBody (User.newUserEncoder newUser)
-                    , expect = Http.expectJson UserSaved User.userDecoder
-                    , timeout = Nothing
-                    , tracker = Nothing
-                    }
-                )
+                -- , headers = [ Http.header "Content-Type" "application/json" ]
+                , headers = []
+                , url = "https://teemingtooth.backendless.app/api/data/people/" ++ newUser.objectId
+                , body = Http.jsonBody (User.newUserEncoder newUser)
+                , expect = Http.expectJson UserSaved User.userDecoder
+                , timeout = Nothing
+                , tracker = Nothing
+                }
 
         _ ->
             Cmd.none
-
-
-
-{-
-   saveUser : RD.WebData User.User -> Cmd MsgEU
-   saveUser user =
-       case user of
-           RD.Success userData ->
-               let
-                   userUrl =
-                       "http://localhost:5019/users/"
-                           ++ User.userIdToString userData.id
-               in
-               Http.request
-                   -- PATCH means update a resource already on the server
-                   { method = "PATCH"
-
-                   -- No additional information to the server
-                   , headers = []
-
-                   -- Location of the resource we want to modify
-                   , url = userUrl
-
-                   -- Updated user data (that has been converted to JSON)
-                   -- This will add the Content-Type: application/json header
-                   -- to our HTTP request behind the scenes. That is how the
-                   -- server knows the body of a request is in JSON format.
-                   , body = Http.jsonBody (User.userEncoder userData)
-
-                   -- we expect the response body to be JSON as well
-                   , expect = Http.expectJson UserSaved User.userDecoder
-
-                   -- Wait for the server forever
-                   , timeout = Nothing
-
-                   -- Do not track the progress of the request
-                   , tracker = Nothing
-                   }
-
-           _ ->
-               Cmd.none
--}
 
 
 viewEU : ModelEU -> Html MsgEU
@@ -337,6 +250,31 @@ editUserForm user thisWeeksChallenge challenges =
             [ button [ type_ "button", onClick SaveUser ]
                 [ text "Update User Information" ]
             ]
+        , viewStreakCount user.completedChallenges thisWeeksChallenge
+        ]
+
+
+viewStreakCount : List Challenge.ChallengeId -> Int -> Html MsgEU
+viewStreakCount completedChallenges thisWeeksChallenge =
+    let
+        -- A list of ChallengeIds sorted in decreasing order. After I sort it I
+        -- remove any challenges that are bigger than the current week, so I don't
+        -- get bad data (i.e., challenges that haven't happened yet) in there
+        -- In the end I use pattern matching to split out the first completed challenge
+        -- and remaining completed challenges
+        sortedCompletedChallenges : List Challenge.ChallengeId
+        sortedCompletedChallenges =
+            -- Sort the list in increasing order
+            List.sortBy Challenge.getIdAsInt completedChallenges
+                -- Filter out challenges that haven't happened yet
+                |> List.filter (\cId -> Challenge.getIdAsInt cId <= thisWeeksChallenge)
+                -- Sort the list in decreasing order
+                |> List.reverse
+    in
+    div []
+        [ text ("Longest Streak " ++ String.fromInt (Challenge.longestStreak sortedCompletedChallenges))
+        , br [] []
+        , text ("Active Streak " ++ String.fromInt (Challenge.activeStreak sortedCompletedChallenges thisWeeksChallenge))
         ]
 
 
